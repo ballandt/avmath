@@ -21,13 +21,13 @@ Developing version | 1.2.0
 ---
 ### Features
 
-* [Standard features](https://www.github.com/ballandt/evmath/blob/master/evmath/__init__.py)
+* [Standard features](https://github.com/ballandt/evmath/blob/master/src/evmath/__init__.py)
   * trigonometry
   * faculties
   * exponential functions
   * constants
 
-* [Geometry](https://www.github.com/ballandt/evmath/blob/master/evmath/geo.py)
+* [Geometry](https://github.com/ballandt/evmath/blob/master/src/evmath/geo.py)
   * vectors
   * matrices
   * angles
