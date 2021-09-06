@@ -16,7 +16,7 @@ on the programming part.
 Category | Data
 ------------ | -------------
 Author | Camillo Ballandt
-Release version | [1.1.0](https://github.com/ballandt/evmath/archive/evmath-1.1.0.tar.gz)
+Release version | [1.1.0](https://github.com/ballandt/evmath/archive/v1.1.0.tar.gz)
 Developing version | 1.1.1
 ---
 ### Features
