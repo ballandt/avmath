@@ -1,5 +1,5 @@
-"""EVMATH
-Evmath is a module for math handling in one module.
+"""AVMATH
+Avmath is a module for math handling in one module.
 
 The main part of the module is geometry ('avmath.geometry').
 Geometry is a avmath submodule including methods for
@@ -20,8 +20,8 @@ properly as wished.
 """
 
 __author__ = "Camillo Ballandt"
-__version__ = "1.2.0-beta1"
-__date__ = "2021/09/06"
+__version__ = "1.2.0-beta2"
+__date__ = "2021/09/08"
 
 import math
 
