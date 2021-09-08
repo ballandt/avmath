@@ -98,7 +98,7 @@ class Angle:
     def get(self, mode):
         """Returns float value of angle. Mode defines angle mode and is the entered
         mode if nothing is defined. If defined,mode must be given as
-        f.e. 'evmath.Angle.DEG'."""
+        f.e. 'avmath.Angle.DEG'."""
         return self.value * mode / self.mode if mode != self.mode else self.value
 
 

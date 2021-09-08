@@ -1,14 +1,14 @@
 """EVMATH
 Evmath is a module for math handling in one module.
 
-The main part of the module is geometry ('evmath.geometry').
-Geometry is a evmath submodule including methods for
+The main part of the module is geometry ('avmath.geometry').
+Geometry is a avmath submodule including methods for
 geometrical calculation. Includes features for points,
 vectors, straights, areas, angles, matrices and structures. It is tried
 to handle different amounts of dimensions, but not in all
 cases every amount of dimensions is possible.
 Concrete description follows with each class and method
-(see 'help(evmath.geometry)')
+(see 'help(avmath.geometry)')
 
 It also contains a small collection of important
 constants and functions (for example pi or sine). These are
