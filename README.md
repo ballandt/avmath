@@ -1,9 +1,11 @@
-# Evmath v1.2.0-beta1
+# Avmath v1.2.0-beta2
 
 ---
-Website: (https://ballandt.github.io/projects/evmath/index.html)
-Documentation: (https://ballandt.github.io/docs/evmath.html)
+Website: https://ballandt.github.io/projects/evmath/index.html
+Documentation: https://ballandt.github.io/docs/evmath.html
 ---
+[Info](#current-developments)
+
 ### Description
 
 Evmath is a python package that contains advances math features
@@ -11,7 +13,7 @@ and functionalities. It is created to easily access deeper math
 without the need of mathematical support, so it shall to concentrate
 on the programming part.
 ---
-### Information
+###Information
 
 Category | Data
 ------------ | -------------
@@ -40,7 +42,7 @@ Developing version | 1.2.0
 standard math library.
 * Uncertainties in documentation and version control
 ---
-## Current developments
+##Current developments
 
 Some dates have changed due to uploading issues.
 ### v1.2.0
