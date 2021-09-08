@@ -1,6 +1,12 @@
 # AdVanced Math Changelog
 
 ---
+## 1.2.0 (2021-09-10)
+
+* Github-PyPi coordination
+* valid metadata
+* link and documentation fixes
+---
 ## 1.1.0 (2021-09-01)
 
 * Angle class

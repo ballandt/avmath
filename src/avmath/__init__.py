@@ -20,7 +20,7 @@ properly as wished.
 """
 
 __author__ = "Camillo Ballandt"
-__version__ = "1.2.0-beta2"
+__version__ = "1.2.0"
 __date__ = "2021/09/08"
 
 import math

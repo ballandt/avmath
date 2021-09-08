@@ -1,4 +1,4 @@
-# AdVanced Math v1.2.0-beta2
+# AdVanced Math v1.2.0
 
 ---
 Website: https://ballandt.github.io/projects/avmath/index.html
@@ -8,7 +8,7 @@ Documentation: https://ballandt.github.io/docs/avmath.html
 
 * [Description](#description)
   * [General information](#information)
-  * [Extended description](#extended description)
+  * [Extended description](#extended-description)
 * [Features](#features)
 * [Changelog](CHANGELOG.md)
 * [Developments](DEVELOPMENTS.md)
@@ -21,8 +21,8 @@ Documentation: https://ballandt.github.io/docs/avmath.html
 Category | Data
 ------------ | -------------
 Author | Camillo Ballandt
-Release version | [1.1.0](https://www.github.com/ballandt/avmath/releases/tag/1.1.0)
-Developing version | 1.2.0
+Release version | [1.2.0](https://www.github.com/ballandt/avmath/releases/tag/1.2.0)
+Developing version | 1.3.0
 ### Extended description
 
 AdVanced Math is a python package that contains advances math features

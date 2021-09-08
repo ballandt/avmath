@@ -2,22 +2,8 @@
 
 ##Contents
 
-* [Version 1.2.0](#v120)
 * [Version 1.2.1](#121)
 * [Version 1.3.0](#v130)
----
-## v1.2.0
-
-Previewed release date: 2021-09-10
-### Description:
-
-Avmath 1.2.0 shall be the first stable and coordinated evmath
-release on both, github and pypi.
-
-### News:
-* Github-PyPi coordination
-* Valid documentation and meta data
-* Upload-bug fixes
 ---
 ## v1.3.0
 
