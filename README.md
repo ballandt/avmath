@@ -42,7 +42,7 @@ Developing version | 1.2.0
 standard math library.
 * Uncertainties in documentation and version control
 ---
-##Current developments
+## Current developments
 
 Some dates have changed due to uploading issues.
 ### v1.2.0
