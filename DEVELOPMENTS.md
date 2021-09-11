@@ -2,7 +2,6 @@
 
 ##Contents
 
-* [Version 1.2.1](#121)
 * [Version 1.3.0](#v130)
 ---
 ## v1.3.0

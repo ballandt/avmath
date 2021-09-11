@@ -1,4 +1,4 @@
-# AdVanced Math v1.2.0
+# AdVanced Math v1.3.0-beta1
 
 ---
 Website: https://ballandt.github.io/projects/avmath/index.html
@@ -47,7 +47,3 @@ more advanced parts.
   * angles
   * point structures
   * vector areas
----
-## Releases
-
-The supported release for avmath is [_First Release_](https://www.github.com/ballandt/avmath/releases/tag/1.1.0) v1.1.0 .
