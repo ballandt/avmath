@@ -1,5 +1,7 @@
-from .geo import Point
-import avmath
+"""AVMATH ANA
+AdVanced math ANAlysis is the analysis submodule
+of avmath. It implements function features."""
+
 from . import ArgumentError
 
 

@@ -1,5 +1,15 @@
-from . import ArgumentError, sin, arccos, pi
+"""AVMATH LINA
+AdVanced math LINear Algebra is a submodule of avmath.
+It contains linear algebra features like vectors, matrices
+angles and systems of linear equations.
+It is an mathematically independent submodule, but needs to
+import copy and logging for intern handling.
+"""
+
+import copy
 import logging
+
+from . import ArgumentError, sin, arccos, pi
 
 
 class DimensionError(Exception):
@@ -42,6 +52,7 @@ class GeometricalError(Exception):
 
 class MatrixSizeError(Exception):
     """Raised if operations require matrix with wrong size."""
+
     def __init__(self, issue):
         self.arg = issue
 
@@ -51,19 +62,21 @@ class MatrixSizeError(Exception):
 
 class MatrixMultiplicationError(Exception):
     """Raised if matrix multiplication can not be executed due to
-    different amounts of columns and rows."""
+    different amounts of columns and rows.
+    """
 
     def __init__(self, got, want):
         self.got = got
         self.want = want
 
     def __str__(self):
-        return "Matrix with "+str(self.got)+" rows cannot be multiplied with "+str(self.want)+"column matrix."
+        return "Matrix with " + str(self.got) + " rows cannot be multiplied with " + str(self.want) + "column matrix."
 
 
 class GeometricalWarning:
     """Raised if shape without opt="flat" is called, but flat returns 'False'. Program does not get interrupted.
-    Use 'GeometricalWarning.disable_warning()' to ignore warning."""
+    Use 'GeometricalWarning.disable_warning()' to ignore warning.
+    """
     __warning = True
 
     def __init__(self, arg):
@@ -95,6 +108,12 @@ class Angle:
             self.value = gra
             self.mode = Angle.GRA
 
+    def __eq__(self, other):
+        """Checks equality of Points. Uses _FLOAT_EQ to prevent errors
+        due to float operations."""
+        from . import _FLOAT_EQ
+        return abs(self.get(Angle.RAD) - other.get(Angle.RAD)) <= _FLOAT_EQ
+
     def get(self, mode):
         """Returns float value of angle. Mode defines angle mode and is the entered
         mode if nothing is defined. If defined,mode must be given as
@@ -104,6 +123,7 @@ class Angle:
 
 class Point:
     """A coordinate in a coordinate system with any amount of dimensions."""
+
     def __init__(self, *args):
         self.value = list(args)
         self.dims = len(self.value)
@@ -111,12 +131,24 @@ class Point:
     def __getitem__(self, item):
         return self.value[item]
 
+    def __eq__(self, other):
+        """Returns the equality of two points. Uses _FLOAT_EQ to compare."""
+        from . import _FLOAT_EQ
+        if not Point.dimcheck(self, other):
+            return False
+        for i in range(len(self.value)):
+            if abs(self.value[i] - other.value[i]) > _FLOAT_EQ:
+                return False
+            else:
+                pass
+        return True
+
     def expand(self, args):
         """Expands Point -by- 'args' dimensions."""
         for _ in range(args):
             self.value.append(0)
         return Point(*self.value)
-    
+
     @staticmethod
     def dimcheck(*args):
         """Returns 'True' if arguments have same amount of dimensions. Else returns 'False'."""
@@ -134,13 +166,13 @@ class Point:
         c = abs(abv)
         b = abs(acv)
         alpha = Vector.angle(abv, acv)
-        area = 0.5*b*c*(sin(alpha.get(Angle.RAD)))
+        area = 0.5 * b * c * (sin(alpha.get(Angle.RAD)))
         return area
 
 
 class Vector:
-    """A vector with any amount of dimensions."""
-    
+    """Vector with any amount of dimensions."""
+
     def __init__(self, *args, begin=None, end=None):
         if not begin:
             self.value = list(args)
@@ -152,34 +184,41 @@ class Vector:
                 raise DimensionError(end.dims, begin.dims)
             self.value = [end[i] - begin[i] for i in range(begin.dims)]
             self.dims = len(self.value)
-    
+
     def __getitem__(self, item):
         """Returns value of 'item's dimension."""
         return self.value[item]
 
     def __repr__(self):
         """Returns string for built-in print function."""
-        return str(self.value)
+        return str(Matrix(self))
 
-    def __neg__(self):
-        """Returns negative vector."""
-        return -1 * self
-    
     def __len__(self):
         """Returns the amount of dimensions of a vector."""
         return len(self.value)
 
-    def __eq__(self, other):
-        """Return the equality of the vector's values"""
-        return self.value == other.value
+    def __neg__(self):
+        """Returns negative vector."""
+        return -1 * self
 
-    def __ne__(self, other):
-        """Returns the negative equality of the vector's values"""
-        return self.value != other.value
+    def __eq__(self, other):
+        """Return the equality of the vector's values. Uses _FLOAT_EQ
+        to compare.
+        """
+        from . import _FLOAT_EQ
+        if not Vector.dimcheck(self, other):
+            return False
+        for i in range(self.dims):
+            if abs(self.value[i] - other.value[i]) > _FLOAT_EQ:
+                return False
+            else:
+                pass
+        return True
 
     def __abs__(self):
         """Returns absolute of a vector.
-            abs(vector) can be used."""
+            abs(vector) can be used.
+            """
         res = 0
         for i in range(self.dims):
             res += self.value[i] ** 2
@@ -197,14 +236,15 @@ class Vector:
         """Subtracts two vectors."""
         return self + -other
 
-    def __mul__(self, arg2):
+    def __mul__(self, other):
         """Scalar multiplication of two vectors.
-            Can also be used for vector and scalar."""
-        if type(arg2) in (int, float):
-            return Vector.__scalar_mul(arg2, self)
-        elif arg2.dims != self.dims:
-            raise AmountOfDimensionsError(self.dims, arg2.dims)
-        res = [self.value[i] * arg2.value[i] for i in range(self.dims)]
+            Can also be used for vector and scalar.
+            """
+        if type(other) in (int, float):
+            return Vector.__scalar_mul(other, self)
+        if other.dims != self.dims:
+            raise AmountOfDimensionsError(self.dims, other.dims)
+        res = [self.value[i] * other.value[i] for i in range(self.dims)]
         ares = 0
         for e in res:
             ares += e
@@ -213,14 +253,15 @@ class Vector:
     __rmul__ = __mul__
 
     def __truediv__(self, sca):
-        """Division operator in order vector / scalar."""
+        """Division operator in order vector / scalar. Mathematically incorrect,"""
         res = [self.value[i] / sca for i in range(self.dims)]
         return Vector(*tuple(res))
-    
+
     def __pow__(self, arg2):
         """Vector multiplication. (No other sign available)
             vector1 ** vector2 (= vector1 x vector2) can be used.
-            Only 3 dimensions supported."""
+            Only 3 dimensions supported.
+            """
         if self.dims != 3:
             raise AmountOfDimensionsError(self.dims, 3)
         elif arg2.dims != 3:
@@ -230,7 +271,7 @@ class Vector:
         res[1] = (self.value[2] * arg2.value[0]) - (self.value[0] * arg2.value[2])
         res[2] = (self.value[0] * arg2.value[1]) - (self.value[1] * arg2.value[0])
         return Vector(*tuple(res))
-    
+
     def unitvec(self):
         """Returns vector with absolute 1 and same direction as self."""
         if abs(self) == 0:
@@ -264,8 +305,8 @@ class Vector:
         vecs = list(args)
         flat = True
         uvec = (vecs[0] ** vecs[1]).unitvec()
-        for i in range(len(vecs)-1):
-            flat = flat and ((vecs[i] ** vecs[i+1]).unitvec() == uvec)
+        for i in range(len(vecs) - 1):
+            flat = flat and ((vecs[i] ** vecs[i + 1]).unitvec() == uvec)
         return flat
 
     @staticmethod
@@ -284,23 +325,26 @@ class Vector:
         spr = vec1 * vec2
         abs1 = abs(vec1)
         abs2 = abs(vec2)
-        cosang = spr/(abs1*abs2)
+        cosang = spr / (abs1 * abs2)
         ang = arccos(cosang)
         return Angle(rad=ang)
 
 
 class Area:
+    """Vector area"""
     def __init__(self, ovec, rvec1, rvec2):
         self.ovec = ovec
         self.rvec1 = rvec1
         self.rvec2 = rvec2
         self.area = abs(rvec1 ** rvec2)
-    
+
     def nvec(self):
+        """Returns normal vector of area."""
         return self.rvec1 ** self.rvec2
 
 
 class Straight:
+    """Vector straight"""
     def __init__(self, mode, **kwargs):
         if mode == "normal":
             self.sv = kwargs['sv']
@@ -310,6 +354,7 @@ class Straight:
 
 
 class Structure:
+    """Point structure"""
     def __init__(self, *args):
         """A class for calculations with many points."""
         self.points = args
@@ -365,38 +410,77 @@ class Structure:
 
 
 class Matrix:
-    """A mathematical matrix with any amount of rows and columns."""
+    """Mathematical matrix with any amount of rows and columns."""
 
     def __init__(self, *args):
         """Initializes the matrix. Enter a list for each row."""
-        self.value = list(args)
-        for e in self.value:
-            if not len(self.value[0]) == len(e):
-                raise ArgumentError(e, "row with "+str(len(self.value[0]))+" members")
-        self.size = (len(self.value[0]), len(self.value))
-        self.rows = self.size[0]
-        self.columns = self.size[1]
+        if len(args) == 1 and type(args[0]) == Vector:
+            self.value = []
+            for e in args[0].value:
+                self.value.append([e])
+        else:
+            self.value = list(args)
+            for e in self.value:
+                if not len(self.value[0]) == len(e):
+                    raise ArgumentError(e, "row with " + str(len(self.value[0])) + " members")
 
     def __repr__(self):
         """Prints matrix in an understandable view."""
-        b_e_list = []
-        for e in self.value:
-            b_e_list.append(sorted(e)[-1]) if abs(sorted(e)[-1]) > abs(sorted(e)[0]) else b_e_list.append(sorted(e)[0])
-        b_e = sorted(b_e_list)[-1] if abs(sorted(b_e_list)[-1]) > abs(sorted(b_e_list)[0]) else sorted(b_e_list)[0]
-        digits = len(str(b_e))
-        ret_str = ""
-        for e in self.value[0]:
-            ret_str += str(e) + ((digits - len(str(e)) + 1) * " ")
+        ret_str = "\n"
+        if len(self.value) == 1:
+            ret_str += "["
+            for e in self.value[0]:
+                ret_str += 2 * " " + str(e)
+            ret_str += 2 * " " + "]"
+            return ret_str
+        longest_element_list = list(map(str, self.value[0]))
         for i in range(1, len(self.value)):
+            for j in range(len(self.value[i])):
+                if len(str(self.value[i][j])) > len(longest_element_list[j]):
+                    longest_element_list[j] = str(self.value[i][j])
+        digits_list = list(map(len, longest_element_list))
+        b_element = sorted(digits_list)[-1]
+        if b_element < 3:
+            distance = 1
+        if b_element < 8:
+            distance = 2
+        else:
+            distance = 3
+        for i in range(len(self.value)):
+            if i == 0:
+                ret_str += "┌" + distance * " "
+            elif i == len(self.value) - 1:
+                ret_str += "└" + distance * " "
+            else:
+                ret_str += "|" + distance * " "
+            for j in range(len(self.value[i])):
+                ret_str += str(self.value[i][j]) + ((digits_list[j] - len(str(self.value[i][j])) + distance) * " ")
+            if i == 0:
+                ret_str += "┐"
+            elif i == len(self.value) - 1:
+                ret_str += "┘"
+            else:
+                ret_str += "|"
             ret_str += "\n"
-            for e in self.value[i]:
-                ret_str += str(e) + (digits - len(str(e)) + 1) * " "
         return ret_str
 
     def __getitem__(self, item):
         """Returns item. To be used in following order:
-        'matrix[x][y]'."""
+        'matrix[m][n]'."""
         return self.value[item]
+
+    def __eq__(self, other):
+        """Returns equality of two matrices. Uses _FLOAT_EQ"""
+        from . import _FLOAT_EQ
+        if self.size() != other.size():
+            return False
+        for i in range(len(self.value)):
+            for j in range(len(self.value[i])):
+                if abs(self[i][j] - other[i][j]) > _FLOAT_EQ:
+                    pass
+                else:
+                    return False
+        return True
 
     def __neg__(self):
         """Returns negative matrix."""
@@ -411,8 +495,8 @@ class Matrix:
         """Adds two matrices."""
         if type(other) != Matrix:
             raise ArgumentError(type(other), Matrix)
-        elif self.size != other.size:
-            raise ArgumentError("matrix with size "+str(other.size), "matrix with size"+str(self.size))
+        elif self.size() != other.size():
+            raise ArgumentError("matrix with size " + str(other.size()), "matrix with size" + str(self.size()))
         args = []
         for i in range(len(self.value)):
             args.append([])
@@ -427,12 +511,21 @@ class Matrix:
     def __mul__(self, other):
         """Multiplies two matrices."""
         if type(other) == int or type(other) == float:
-            return Matrix.__scmul(self, other)
-        elif self.columns != other.rows:
-            raise MatrixMultiplicationError(self.columns, other.rows)
-        ret_mat = Matrix.create(self.size[0], other.size[1])
-        for i in range(self.rows):
-            for j in range(self.columns):
+            return Matrix.__scalar_mul(self, other)
+        elif type(other) == Vector:
+            if self.size()[1] != other.dims:
+                raise MatrixMultiplicationError(str(self.size()[1]), other.dims)
+            v_matrix = Matrix(other)
+            ret_mat = self * v_matrix
+            args = ()
+            for e in ret_mat.value:
+                args += (e[0],)
+            return Vector(*args)
+        elif self.size()[1] != other.size()[0]:
+            raise MatrixMultiplicationError(other.size()[0], self.size()[1])
+        ret_mat = Matrix.create(self.size()[0], other.size()[1])
+        for i in range(self.size()[0]):
+            for j in range(other.size()[1]):
                 ret_mat[i][j] = Vector(*tuple(self.row(i))) * Vector(*tuple(other.column(j)))
         return ret_mat
 
@@ -441,11 +534,13 @@ class Matrix:
     def __pow__(self, power):
         """Power operation for matrix^scalar."""
         ret_mat = self
+        if power == -1:
+            return self.inverse()
         for i in range(1, power):
             ret_mat *= self
         return ret_mat
 
-    def __scmul(self, other):
+    def __scalar_mul(self, other):
         """Intern scalar multiplication method"""
         args = []
         for i in range(len(self.value)):
@@ -454,18 +549,25 @@ class Matrix:
                 args[i].append(e * other)
         return Matrix(*tuple(args))
 
-    def dots(self):
-        """Returns amount of coefficients."""
-        return self.size[0] * self.size[1]
+    def size(self, option=None):
+        """Returns list of matrix size. [m, n]"""
+        if not option:
+            return [len(self.value), len(self.value[0])]
+        elif option == "xy":
+            return [len(self.value[0]), len(self.value)]
 
-    def index(self, ele):
-        """Returns position of given ele in a list. Can contain
+    def at(self, m, n):
+        """Returns element at given position. Begins at 0."""
+        return self.value[m][n]
+
+    def index(self, element):
+        """Returns position of given element in a list. Can contain
         multiple return arguments. If ele is not in matrix an
         empty list is returned."""
         position = []
         for i in range(len(self.value)):
             for e in self.value[i]:
-                if ele == e:
+                if element == e:
                     position.append([self.value[i].index(e), i])
         return position
 
@@ -484,42 +586,126 @@ class Matrix:
         """Method to append rows or columns to matrix."""
         ret_mat = self
         if row:
-            if len(row) != self.size[0]:
-                raise MatrixSizeError("Cannot append"+str(len(row))+"element row to matrix with size"+str(self.size))
+            if len(row) != self.size()[1]:
+                raise MatrixSizeError(
+                    "Cannot append" + str(len(row)) + "element row to matrix with size" + str(self.size()))
             ret_mat.value.append(row)
         elif column:
-            if len(column) != self.size[1]:
-                raise MatrixSizeError("Cannot append"+str(len(column))+"element row to matrix with size"+str(self.size))
-            for i in range(ret_mat.rows):
+            if len(column) != self.size()[0]:
+                raise MatrixSizeError("Cannot append " + str(len(column))
+                                      + " element row to matrix with size" + str(self.size()))
+            for i in range(ret_mat.size()[1]):
                 ret_mat.value[i].append(column[i])
         return ret_mat
 
+    def remove(self, rindex=None, cindex=None):
+        """Returns a matrix with given row or column removed."""
+        ret_mat = copy.deepcopy(self)
+        if rindex is not None:
+            del ret_mat.value[rindex]
+        if cindex is not None:
+            for i in range(len(ret_mat.value)):
+                del ret_mat.value[i][cindex]
+        return ret_mat
+
     def transpose(self):
-        """Method for matrix transposition.
-        a b          a c
-        c d     gets b d"""
+        """Returns transposed matrix."""
         args = []
-        for i in range(self.columns):
+        for i in range(self.size()[1]):
             args.append(self.column(i))
         return Matrix(*tuple(args))
 
+    def det(self):
+        """Returns determinant of a matrix."""
+        if self.size()[0] != self.size()[1]:
+            raise MatrixSizeError("Matrix must be quadratic.")
+        if self.size() == [2, 2]:
+            return self[0][0] * self[1][1] - self[1][0] * self[0][1]
+        else:
+            answer = 0
+            for i in range(self.size()[1]):
+                smaller_matrix = self.remove(0, i)
+                k = (-1) ** i * self[0][i] * smaller_matrix.det()
+                answer += k
+        return answer
+
+    __abs__ = det
+
+    def cof(self):
+        """Returns cofactor matrix."""
+        ret_mat = Matrix.create(self.size()[0], self.size()[1])
+        for i in range(self.size()[1]):
+            for j in range(self.size()[0]):
+                smaller_matrix = self.remove(i, j)
+                if smaller_matrix.size() == [1, 1]:
+                    ret_mat[i][j] = (-1) ** (i + j) * smaller_matrix[0][0]
+                else:
+                    ret_mat[i][j] = (-1) ** (i + j) * self.remove(i, j).det()
+        return ret_mat
+
+    def adj(self):
+        """Returns adjunct of a matrix."""
+        ret_mat = copy.deepcopy(self)
+        return ret_mat.cof().transpose()
+
+    def inverse(self):
+        """Returns inverted matrix."""
+        if self.size()[0] != self.size()[1]:
+            raise MatrixSizeError("Matrix must be quadratic.")
+        if self.det() == 0:
+            raise ZeroDivisionError("Determinant must not be 0.")
+        ret_mat = copy.deepcopy(self).adj()
+        ret_mat *= 1 / self.det()
+        return ret_mat
+
     @staticmethod
     def create(m, n):
-        """Staticmethod to create a mXn matrix that contains
-        only 0s."""
+        """Staticmethod to create a m X n matrix that contains
+        only 0s.
+        """
         args = []
-        for i in range(n):
+        for i in range(m):
             args.append([])
-            for j in range(m):
+            for j in range(n):
                 args[i].append(0)
         return Matrix(*tuple(args))
 
     @staticmethod
     def create_identity(rows):
         """Staticmethod to create an identity matrix with any
-        amount of rows."""
+        amount of rows.
+        """
         ret_mat = Matrix.create(rows, rows)
         for i in range(rows):
             for j in range(rows):
                 ret_mat[i][j] = 1 if i == j else 0
         return ret_mat
+
+
+class SLE(Matrix):
+    """System of linear equations"""
+    def __init__(self, *args):
+        """Initializes a matrix that contains both, coefficients and results. Insert in the following way:
+        SLE([a,b,c,d],
+            [e,f,g,h],
+            [i,j,k,l])
+         for
+         | a x1 + b x2 + c x3 = d |
+         | e x1 + f x2 + g x3 = h |
+         | i x1 + j x2 + k x3 = l |
+         """
+        super().__init__(*args)
+        if self.size()[1] != self.size()[0] + 1:
+            raise MatrixSizeError("Matrix for SLE must have the size m x n where n = m +1")
+
+    def solve(self):
+        """Splits matrix in coefficients and results and uses matrix multiplication to solve
+        the system.
+        """
+        coefficients = copy.deepcopy(self).remove(cindex=-1)
+        results = Matrix(self.column(-1)).transpose()
+        return coefficients.inverse() * results
+
+    def x(self, index):
+        """Returns the unknown of given index. Starts at 0"""
+        return self.solve().at(index, 0)

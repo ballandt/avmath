@@ -1,30 +1,23 @@
 """AVMATH
-Avmath is a module for math handling in one module.
+AdVanced math is a module for algebra, arithmetics and analysis.
+It is devided in the submodules lina (LINear Algebra), ana (ANAlysis)
+and the arithmetics in the main directory.
 
-The main part of the module is geometry ('avmath.geometry').
-Geometry is a avmath submodule including methods for
-geometrical calculation. Includes features for points,
-vectors, straights, areas, angles, matrices and structures. It is tried
-to handle different amounts of dimensions, but not in all
-cases every amount of dimensions is possible.
-Concrete description follows with each class and method
-(see 'help(avmath.geometry)')
+It uses python algorithms to allow the access to deeper math and
+shall simplify maths to concentrate on the usage of math.
 
-It also contains a small collection of important
-constants and functions (for example pi or sine). These are
-sometimes copied from the builtin 'math' module so that only
-one module may be used.
-
-This module has not got a license. It may be distributed
-properly as wished.
+Github: https://www.github.com/ballandt/avmath
+PyPi: https://www.pypi.org/project/avmath
 """
 
 __author__ = "Camillo Ballandt"
-__version__ = "1.2.0"
-__date__ = "2021/09/08"
+__version__ = "1.2.0-beta2"
+__date__ = "2021/09/19"
 
 import math
 
+_FLOAT_EQ = 1e-10
+_DIVISION_ROUND_DECS = 2
 
 class ArgumentError(Exception):
     """Raised if wrong argument is given."""

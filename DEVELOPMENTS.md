@@ -1,25 +1,28 @@
 # AdVanced Math developments
 
-##Contents
-
-* [Version 1.3.0](#v130)
 ---
-## v1.3.0
+## Announcements
 
-Previewed release date: 2021-10-01
+---
+Version 1.3.0 will be retarded and released as 2.0.0.
+
+---
+## Contents
+
+* [Version 2.0.0](#v200)
+---
+## v2.0.0
+
+Previewed release date: 2021-10-15
 ### Description:
 
-Avmath 1.3.0 is supposed to bring the components planned
-for 1.2.0. It is a geometry update for matrices and vectors.
-Additionally, avmath 1.3.0 will bring the mathematical independence of
-avmath. All classes and functions shall be managed intern.
+Avmath 2.0.0 is a major release that will bring many new features and
+updated API.
 ### News
-* matrices
-  * determinant function
-* vectors
-  * matrix operations
+
 * independence of math module
-* functions
-  * function class
-  * function.at(x) method
+* trigonometric functions: modulo for better values
+* `avmath.ana.f`
+  * maximum and minimum 
   * numerical differentiation
+  * numerical integral
