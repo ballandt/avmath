@@ -1,15 +1,16 @@
-"""AVMATH LINA
-AdVanced math LINear Algebra is a submodule of avmath.
-It contains linear algebra features like vectors, matrices
+"""AVMATH ALGEBRA
+AdVanced math algebra submodule containing
+linear algebra features like vectors, matrices
 angles and systems of linear equations.
-It is an mathematically independent submodule, but needs to
-import copy and logging for intern handling.
+It is an mathematically independent submodule,
+but needs to import copy and logging for intern
+handling.
 """
 
 import copy
 import logging
 
-from . import ArgumentError, sin, arccos, pi
+from . import ArgumentError, sin, arccos, pi, _Point
 
 
 class DimensionError(Exception):
@@ -117,46 +118,26 @@ class Angle:
     def get(self, mode):
         """Returns float value of angle. Mode defines angle mode and is the entered
         mode if nothing is defined. If defined,mode must be given as
-        f.e. 'avmath.Angle.DEG'."""
+        f.e. 'avmath.Angle.DEG'.
+        """
         return self.value * mode / self.mode if mode != self.mode else self.value
 
 
-class Point:
+class Point (_Point):
     """A coordinate in a coordinate system with any amount of dimensions."""
 
     def __init__(self, *args):
-        self.value = list(args)
+        super().__init__(*args)
         self.dims = len(self.value)
 
-    def __getitem__(self, item):
-        return self.value[item]
-
-    def __eq__(self, other):
-        """Returns the equality of two points. Uses _FLOAT_EQ to compare."""
-        from . import _FLOAT_EQ
-        if not Point.dimcheck(self, other):
-            return False
-        for i in range(len(self.value)):
-            if abs(self.value[i] - other.value[i]) > _FLOAT_EQ:
-                return False
-            else:
-                pass
-        return True
+    def __repr__(self):
+        return str(tuple(self.value))
 
     def expand(self, args):
         """Expands Point -by- 'args' dimensions."""
         for _ in range(args):
             self.value.append(0)
         return Point(*self.value)
-
-    @staticmethod
-    def dimcheck(*args):
-        """Returns 'True' if arguments have same amount of dimensions. Else returns 'False'."""
-        dims = args[0].dims
-        dimstrue = True
-        for i in range(len(args)):
-            dimstrue = dimstrue and (dims == args[i].dims)
-        return dimstrue
 
     @staticmethod
     def triangulate(p1, p2, p3):
@@ -410,7 +391,7 @@ class Structure:
 
 
 class Matrix:
-    """Mathematical matrix with any amount of rows and columns."""
+    """Mathematical matrix"""
 
     def __init__(self, *args):
         """Initializes the matrix. Enter a list for each row."""
@@ -466,8 +447,26 @@ class Matrix:
 
     def __getitem__(self, item):
         """Returns item. To be used in following order:
-        'matrix[m][n]'."""
+        'matrix[m][n]'.
+        """
         return self.value[item]
+
+    def __contains__(self, item):
+        ret_val = True
+        for e in self.value:
+            ret_val = ret_val and (item in e)
+        return ret_val
+
+    def __setitem__(self, key, value):
+        """Sets item to given value."""
+        self.value[key] = value
+
+    def __round__(self, n=None):
+        ret_mat = copy.deepcopy(self)
+        for i in range(len(ret_mat.value)):
+            for j in range(len(ret_mat.value[i])):
+                ret_mat.value[i][j] = round(ret_mat.value[i][j], n)
+        return ret_mat
 
     def __eq__(self, other):
         """Returns equality of two matrices. Uses _FLOAT_EQ"""
@@ -563,7 +562,8 @@ class Matrix:
     def index(self, element):
         """Returns position of given element in a list. Can contain
         multiple return arguments. If ele is not in matrix an
-        empty list is returned."""
+        empty list is returned.
+        """
         position = []
         for i in range(len(self.value)):
             for e in self.value[i]:
@@ -661,7 +661,7 @@ class Matrix:
     @staticmethod
     def create(m, n):
         """Staticmethod to create a m X n matrix that contains
-        only 0s.
+        only zeros.
         """
         args = []
         for i in range(m):

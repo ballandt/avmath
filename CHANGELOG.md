@@ -1,6 +1,38 @@
 # AdVanced Math Changelog
 
 ---
+## 2.0.0 (2021-10-24)
+#### API Changes
+* `avmath.sin()` takes only x argument
+* `avmath.pi()` takes no arguments
+* `avmath.e()` takes no arguments
+* renamed `avmath.arcsinh` to `avmath.arsinh`
+* renamed `avmath.arccosh` to `avmath.arcosh`
+* renamed `avmath.arctanh` to `avmath.artanh`
+* renamed `avmath.geo` to `avmath.algebra`
+* renamed `avmath.funtions` to `avmath.analysis`
+
+#### Minor Changes
+* All functions use Taylor series instead of `math`-module
+* `avmath.scope` dictionary with avmath functions for `eval` locals
+* `avmath._Point` prototype for points in submodules
+* `avmath.analysis`:
+  * `avmath.analysis.Point` class for point values
+  * `avmath.f.__neg__()` for negative function
+  * `avmath.f.at()` uses `avmath.scope` for locals
+  * `avmath.f.set_scope()` to set scope to different dictionary
+  * `avmath.f.append_scope()` to append dictionary to scope
+  * `avmath.f.max()` to find maximum of a function in a certain space
+  * `avmath.f.min()` to find minimum of a function in a certain space
+  * `avmath.f.numdif()` to find numerical differentiation at an x value
+  * `avmath.f.numint()` to find numerical integral in a certain space
+  * `avmath.Point` inherits from `avmath._Point` prototype
+* `avmath.algebra`:
+  * `avmath.algebra.Point` inherits from `avmath._Point`
+  * `avmath.Matrix.__contains__()` function created
+  * `avmath.Matrix.__setitem__()` function created
+  * `avmath.Matrix.__round__()` function created
+
 ## 2.0.0-beta2 (2021-09-19)
 #### API Changes
 * renamed `avmath.geo` -> `avmath.lina`

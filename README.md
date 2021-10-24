@@ -1,6 +1,6 @@
-# AdVanced Math v2.0.0-beta2
+# AdVanced Math v2.0.0
 
-***
+---
 Website: https://ballandt.github.io/projects/avmath/index.html <br>
 Documentation: https://ballandt.github.io/docs/avmath.html
 ---
@@ -21,8 +21,8 @@ Documentation: https://ballandt.github.io/docs/avmath.html
 Category | Data
 ------------ | -------------
 Author | Camillo Ballandt
-Release version | [1.2.0](https://www.github.com/ballandt/avmath/releases/tag/1.2.0)
-Developing version | 2.0.0
+Release version | [2.0.0](https://www.github.com/ballandt/avmath/releases/tag/2.0.0)
+Developing version | 2.1.0
 ### Extended description
 
 AdVanced Math is a python package that contains advances math features
@@ -35,19 +35,20 @@ more advanced parts.
 ---
 ## Features
 
-* [Standard features](https://www.github.com/ballandt/avmath/blob/master/scr/avmath/__init__.py)
+* [Basic features](https://www.github.com/ballandt/avmath/blob/master/scr/avmath/__init__.py)
   * trigonometry
   * faculties
   * exponential functions
   * constants
 
-* [Linear algebra](https://www.github.com/ballandt/avmath/blob/master/src/evmath/lina.py)
+* [Linear algebra](https://www.github.com/ballandt/avmath/blob/master/src/evmath/algebra.py)
   * vectors
   * matrices
   * angles
   * point structures
   * vector areas
   * systems of linear equations
-* [Analysis](https://www.github.com/ballandt/avmath/blob/master/src/evmath/ana.py)
+* [Analysis](https://www.github.com/ballandt/avmath/blob/master/src/evmath/analysis.py)
   * mathematical functions
-  * get y value
+  * maxima / minima
+  * numerical differentiation and integral
