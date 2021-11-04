@@ -96,7 +96,7 @@ class Angle:
 
     DEG = 90
     GRA = 100
-    RAD = pi()
+    RAD = pi
 
     def __init__(self, deg=None, rad=None, gra=None):
         if deg:
@@ -657,6 +657,30 @@ class Matrix:
         ret_mat = copy.deepcopy(self).adj()
         ret_mat *= 1 / self.det()
         return ret_mat
+
+    def ref(self):
+        """Returns matrix in row echelon form."""
+        copy_mat = copy.deepcopy(self)
+        for i in range(copy_mat.size()[0]):
+            copy_mat.value[i].append(i)
+        sorted_rows = []
+        for j in range(copy_mat.size()[1]):
+            for i in range(copy_mat.size()[0]):
+                if (copy_mat.value[i][j] != 0 or j == copy_mat.size()[1] - 1) and copy_mat.value[i] not in sorted_rows:
+                    sorted_rows.append(copy_mat.value[i])
+        for e in sorted_rows:
+            e = e.pop()
+        j = 0
+        while sorted_rows[0][j] == 0:
+            j += 1
+        dividend = sorted_rows[0][j]
+        for i in range(len(sorted_rows[0])):
+            sorted_rows[0][i] /= dividend
+        for k in range(j, len(sorted_rows[0])):
+            for i in range(1, len(sorted_rows)):
+                if sorted_rows[i][j] != 0:
+                    pass
+        return sorted_rows
 
     @staticmethod
     def create(m, n):

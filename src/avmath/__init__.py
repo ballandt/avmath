@@ -14,8 +14,11 @@ __author__ = "Camillo Ballandt"
 __version__ = "2.0.0"
 __date__ = "2021/10/24"
 
-_FLOAT_EQ = 1e-10
-_DIVISION_ROUND_DECS = 2
+import time
+
+_FLOAT_EQ = 1e-16
+_TAYLOR_DIFFERENCE = 1e-16
+_MAX_CALCULATION_TIME = 5
 
 
 class ArgumentError(Exception):
@@ -60,17 +63,6 @@ class _Point:
         return dimstrue
 
 
-def exp(*arg):
-    """Exponential number in order: exp(x,y,z) = x^y^z"""
-    args = len(arg)
-    counter = args - 1
-    res = arg[counter - 1] ** arg[counter]
-    for _ in range(args - 2):
-        res = arg[(counter - 2)] ** res
-        counter -= 1
-    return res
-
-
 def is_even(x):
     return x/2 == round(x/2)
 
@@ -79,47 +71,47 @@ def fac(x, opt=None):
     """Faculty"""
     if x < 0:
         raise ArgumentError("x < 0", "x >= 0")
+    if int(x) != x:
+        raise ArgumentError("real x", "natural x")
+    x = int(x)
     res = 1
-    if opt == "even":
+    if opt == "double":
         if not is_even(x):
-            raise ArgumentError(x, "even number")
-        for i in range(1, int(x / 2)+1):
-            res *= 2*i
-    elif opt == "odd":
-        if is_even(x):
-            raise ArgumentError(x, "odd number")
-        for i in range(int(x/2) + 1):
-            res *= 2*i + 1
+            for i in range(int(x / 2) + 1):
+                res *= 2 * i + 1
+        else:
+            for i in range(1, int(x / 2)+1):
+                res *= 2*i
     else:
         for i in range(1, x + 1):
             res *= i
     return res
 
 
-def e():
-    """Euler's number e"""
-    res = 0
-    for k in range(19):
-        res += 1 / fac(k)
-    return res
+e = 2.718_281_828_459_045_235_360
 
-
-def pi():
-    """Pi"""
-    res = 0
-    for k in range(24):
-        res += ((-1) ** k) / (4 ** k) * ((2 / (4 * k + 1)) + (2 / (4 * k + 2)) + (1 / (4 * k + 3)))
-    return res
+pi = 3.141_592_653_589_793_238_463
 
 
 def ln(x):
-    """Natural logarithm"""
-    if not x:
-        raise ArgumentError(0, "x > 0")
+    if x < 0:
+        raise ArgumentError(x, "x > 0")
+    summand = 0
+    while x > e:
+        x /= e
+        summand += 1
+    while x < 1/e:
+        x *= e
+        summand -= 1
     res = 0
-    for k in range(round(x) * 10):
-        res += (x - 1)**(2*k + 1) / ((2*k + 1) * (x + 1)**(2*k + 1))
-    return 2 * res
+    k = 0
+    while True:
+        mem_res = res
+        res += (x - 1) ** (2 * k + 1) / ((2 * k + 1) * (x + 1) ** (2 * k + 1))
+        if abs(mem_res - res) < _TAYLOR_DIFFERENCE:
+            break
+        k += 1
+    return 2 * res + summand
 
 
 def log(x, base):
@@ -127,32 +119,30 @@ def log(x, base):
     return ln(x) / ln(base)
 
 
-def __period_resolving(value):
-    """Returns values from -pi to pi for better handling
-    for trigonometric functions.
-    """
-    value %= 2 * pi()
-    if value >= pi():
-        value = -(value % pi())
-    return value
-
-
 def sin(x):
     """Sine"""
-    x = __period_resolving(x)
+    x %= 2 * pi
     res = 0
-    for k in range(16):
-        res += (-1)**k * x**(2*k + 1) / fac(2*k + 1)
-    return res
+    k = 0
+    while True:
+        mem_res = res
+        res += (-1) ** k * x ** (2 * k + 1) / fac(2 * k + 1)
+        if abs(mem_res - res) < _TAYLOR_DIFFERENCE:
+            return res
+        k += 1
 
 
 def cos(x):
     """Cosine"""
-    x = __period_resolving(x)
+    x %= 2 * pi
     res = 0
-    for k in range(16):
+    k = 0
+    while True:
+        mem_res = res
         res += (-1) ** k * (x**(2 * k) / fac(2 * k))
-    return res
+        if abs(mem_res - res) < _TAYLOR_DIFFERENCE:
+            return res
+        k += 1
 
 
 def tan(x):
@@ -164,45 +154,73 @@ def arcsin(x):
     """Arcus sine"""
     if x > 1:
         raise ArgumentError("x > 1", "x <= 1")
-    x = __period_resolving(x)
+    if x == 1:
+        return pi / 2
     res = x
-    for k in range(1, int(x*150)):
-        res += fac(2*k - 1, opt="odd") * x**(2*k + 1) / (fac(2*k, opt="even") * (2*k + 1))
+    k = 1
+    while k < 150:
+        mem_res = res
+        res += fac(2 * k - 1, opt="double") * x ** (2 * k + 1) / (fac(2 * k, opt="double") * (2 * k + 1))
+        if abs(mem_res - res) < _TAYLOR_DIFFERENCE:
+            break
+        k += 1
     return res
 
 
 def arccos(x):
     """Arcus cosine"""
-    return pi()/2 - arcsin(x)
+    return pi/2 - arcsin(x)
 
 
 def arctan(x):
     """Arcus tangent"""
     res = 0
-    if abs(x) < 1:
-        for k in range(80):
+    k = 0
+    if abs(x) <= 1:
+        start_time = time.time()
+        while (time.time() - start_time) < _MAX_CALCULATION_TIME:
+            mem_res = res
             res += (-1)**k * x**(2*k + 1) / (2*k + 1)
+            if abs(mem_res - res) < _TAYLOR_DIFFERENCE:
+                break
+            k += 1
     else:
-        res = pi() / 2 if x > 0 else -pi()/2
-        for k in range(16):
+        if x >= 0:
+            res = pi /2
+        else:
+            res = -pi / 2
+        start_time = time.time()
+        while (time.time() - start_time) < _MAX_CALCULATION_TIME:
+            mem_res = res
             res += (-1)**(k + 1) / ((2*k + 1) * x**(2*k + 1))
+            if abs(mem_res - res) < _TAYLOR_DIFFERENCE:
+                break
+            k += 1
     return res
 
 
 def sinh(x):
     """Hyperbolic sin"""
     res = 0
-    for k in range(int(16+x)):
-        res += x**(2*k + 1) / fac(2*k + 1)
-    return res
+    k = 0
+    while True:
+        mem_res = res
+        res += x ** (2 * k + 1) / fac(2 * k + 1)
+        if abs(mem_res - res) < _TAYLOR_DIFFERENCE:
+            return res
+        k += 1
 
 
 def cosh(x):
     """Hyperbolic cosine"""
     res = 0
-    for k in range(int(16+x)):
+    k = 0
+    while True:
+        mem_res = res
         res += x**(2*k) / fac(2*k)
-    return res
+        if abs(mem_res - res) < _TAYLOR_DIFFERENCE:
+            return res
+        k += 1
 
 
 def tanh(x):

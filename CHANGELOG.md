@@ -1,6 +1,25 @@
 # AdVanced Math Changelog
 
 ---
+## 3.0.0 (2021-11-04) - in development
+#### API Changes
+* redesigned function `avmath.pi()` to constant `avmath.pi`
+* redesigned function `avmath.e()` to constant `avmath.e`
+
+#### Minor changes
+* imports `time`-module for taylor-loops
+* `_FLOAT_EQ` changed to value `1e-16`
+* new constant `_TAYLOR_DIFFERENCE` as minimal difference between results for taylor-loops with value `1e-16`
+* new constant `_MAX_CALCULATION_TIME` for maximum calculation time in taylor-loops with value 5 seconds
+* `avmath.fac()` has parameter `opt` for double faculty
+* 
+
+#### Bug fixes
+* `avmath.fac()` checks if input can be interpreted as integer
+* `avmath.ln()` works properly in entire domain
+* trigonometric functions use `while`-loops and `_TAYLOR_DIFFERENCE` to calculate to the best return value possible
+
+---
 ## 2.0.0 (2021-10-24)
 #### API Changes
 * `avmath.sin()` takes only x argument
@@ -33,6 +52,7 @@
   * `avmath.Matrix.__setitem__()` function created
   * `avmath.Matrix.__round__()` function created
 
+---
 ## 2.0.0-beta2 (2021-09-19)
 #### API Changes
 * renamed `avmath.geo` -> `avmath.lina`
@@ -65,13 +85,12 @@
 
 ---
 ## 1.2.0 (2021-09-10)
-
 * Github-PyPi coordination
 * valid metadata
 * link and documentation fixes
+
 ---
 ## 1.1.0 (2021-09-01)
-
 * Angle class
   * Modes DEG, RAD, GRA
   * Angle.get() method
