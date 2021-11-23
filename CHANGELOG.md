@@ -1,10 +1,16 @@
 # AdVanced Math Changelog
 
 ---
-## 3.0.0 (2021-11-04) - in development
+## 3.0.0 (2021-11-23) - in development
 #### API Changes
 * redesigned function `avmath.pi()` to constant `avmath.pi`
 * redesigned function `avmath.e()` to constant `avmath.e`
+* deletion of class `avmath.algebra.Angle`
+* `avmath.algebra.Vector.angle()` returns float
+* deletion of class `avmath.algebra.Straight`
+* renamed `avmath.algebra.Point` to `avmath.algebra.Tuple`
+* changed location of vector product from `avmath.algebra.Vector.__pow__()` to `avmath.algebra.Vector.cross()`
+* `avmath.algebra.Vector.pow()` returns vector multiplied n times by itself
 
 #### Minor changes
 * imports `time`-module for taylor-loops
@@ -12,12 +18,13 @@
 * new constant `_TAYLOR_DIFFERENCE` as minimal difference between results for taylor-loops with value `1e-16`
 * new constant `_MAX_CALCULATION_TIME` for maximum calculation time in taylor-loops with value 5 seconds
 * `avmath.fac()` has parameter `opt` for double faculty
-* 
+* `avmath._check_types()` checks if all members of tuple are of specified types 
 
 #### Bug fixes
 * `avmath.fac()` checks if input can be interpreted as integer
 * `avmath.ln()` works properly in entire domain
 * trigonometric functions use `while`-loops and `_TAYLOR_DIFFERENCE` to calculate to the best return value possible
+* `avmath.cos()` works properly with negative values
 
 ---
 ## 2.0.0 (2021-10-24)

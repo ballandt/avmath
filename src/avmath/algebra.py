@@ -9,8 +9,9 @@ handling.
 
 import copy
 import logging
+from typing import Union, Optional
 
-from . import ArgumentError, sin, arccos, pi, _Point
+from . import ArgumentError, sin, arccos, _check_types
 
 
 class DimensionError(Exception):
@@ -91,473 +92,429 @@ class GeometricalWarning:
         GeometricalWarning.__warning = False
 
 
-class Angle:
-    """Class for angle handling"""
-
-    DEG = 90
-    GRA = 100
-    RAD = pi
-
-    def __init__(self, deg=None, rad=None, gra=None):
-        if deg:
-            self.value = deg
-            self.mode = Angle.DEG
-        elif rad:
-            self.value = rad
-            self.mode = Angle.RAD
-        elif gra:
-            self.value = gra
-            self.mode = Angle.GRA
-
-    def __eq__(self, other):
-        """Checks equality of Points. Uses _FLOAT_EQ to prevent errors
-        due to float operations."""
-        from . import _FLOAT_EQ
-        return abs(self.get(Angle.RAD) - other.get(Angle.RAD)) <= _FLOAT_EQ
-
-    def get(self, mode):
-        """Returns float value of angle. Mode defines angle mode and is the entered
-        mode if nothing is defined. If defined,mode must be given as
-        f.e. 'avmath.Angle.DEG'.
-        """
-        return self.value * mode / self.mode if mode != self.mode else self.value
-
-
-class Point (_Point):
-    """A coordinate in a coordinate system with any amount of dimensions."""
-
-    def __init__(self, *args):
-        super().__init__(*args)
-        self.dims = len(self.value)
-
-    def __repr__(self):
-        return str(tuple(self.value))
-
-    def expand(self, args):
-        """Expands Point -by- 'args' dimensions."""
-        for _ in range(args):
-            self.value.append(0)
-        return Point(*self.value)
-
-    @staticmethod
-    def triangulate(p1, p2, p3):
-        """Returns area between three points."""
-        abv = Vector(begin=p1, end=p2)
-        acv = Vector(begin=p1, end=p3)
-        c = abs(abv)
-        b = abs(acv)
-        alpha = Vector.angle(abv, acv)
-        area = 0.5 * b * c * (sin(alpha.get(Angle.RAD)))
-        return area
+# class Angle:
+#     """Class for angle handling"""
+#
+#     DEG = 90
+#     GRA = 100
+#     RAD = pi
+#
+#     def __init__(self, deg=None, rad=None, gra=None):
+#         if deg:
+#             self.__value = deg
+#             self.mode = Angle.DEG
+#         elif rad:
+#             self.__value = rad
+#             self.mode = Angle.RAD
+#         elif gra:
+#             self.__value = gra
+#             self.mode = Angle.GRA
+#
+#     def __eq__(self, other):
+#         """Checks equality of Points. Uses _FLOAT_EQ to prevent errors
+#         due to float operations."""
+#         from . import _FLOAT_EQ
+#         return abs(self.get(Angle.RAD) - other.get(Angle.RAD)) <= _FLOAT_EQ
+#
+#     def get(self, mode):
+#         """Returns float value of angle. Mode defines angle mode and is the entered
+#         mode if nothing is defined. If defined,mode must be given as
+#         f.e. 'avmath.Angle.DEG'.
+#         """
+#         return self.__value * mode / self.mode if mode != self.mode else self.__value
 
 
-class Vector:
-    """Vector with any amount of dimensions."""
+class Tuple:
+    """Algebraic tuple. Can also be interpreted as point in the coordinate system."""
 
-    def __init__(self, *args, begin=None, end=None):
-        if not begin:
-            self.value = list(args)
-            self.dims = len(self.value)
-        else:
-            if type(begin) != Point or type(end) != Point:
-                raise ArgumentError([type(begin), type(end)], Point)
-            if begin.dims != end.dims:
-                raise DimensionError(end.dims, begin.dims)
-            self.value = [end[i] - begin[i] for i in range(begin.dims)]
-            self.dims = len(self.value)
+    def __init__(self, *args: Union[int, float, complex, list]):
+        _check_types(args, int, float, complex, list)
+        if type(args[0]) == list:
+            self._value = args[0]
+        self._value = list(args)
+
+    def __iter__(self):
+        for ele in self._value:
+            yield ele
 
     def __getitem__(self, item):
         """Returns value of 'item's dimension."""
-        return self.value[item]
+        return self._value[item]
 
-    def __repr__(self):
-        """Returns string for built-in print function."""
-        return str(Matrix(self))
+    # def __setitem__(self, key, value):
+    #     """Sets specific item in copied version. Warning: operation changes
+    #     mutable _value list so all id-members will be infected.
+    #     """
+    #     self._value[key] = value
 
-    def __len__(self):
-        """Returns the amount of dimensions of a vector."""
-        return len(self.value)
+    def __repr__(self) -> str:
+        """Returns string representation."""
+        return str(tuple(self._value))
 
-    def __neg__(self):
-        """Returns negative vector."""
-        return -1 * self
+    def __eq__(self, other: 'Tuple') -> bool:
+        """Checks if elements are equal."""
+        return self._value == other._value
 
-    def __eq__(self, other):
-        """Return the equality of the vector's values. Uses _FLOAT_EQ
-        to compare.
+    def __len__(self) -> int:
+        """Returns the length or dimension of a tuple"""
+        return len(self._value)
+
+    dim = __len__
+
+    def __neg__(self) -> 'Tuple':
+        return self * -1
+
+    def __add__(self, other: 'Tuple') -> 'Tuple':
+        """Adds two tuples:
+        a + b = (a_1 + b_1, a_2 + b_2, ... , a_n + b_n)
         """
-        from . import _FLOAT_EQ
-        if not Vector.dimcheck(self, other):
-            return False
-        for i in range(self.dims):
-            if abs(self.value[i] - other.value[i]) > _FLOAT_EQ:
+        if not Tuple.dimcheck(self, other):
+            raise AmountOfDimensionsError(other.dim(), self.dim())
+        result = []
+        for i in range(self.dim()):
+            result.append(self[i] + other[i])
+        return Tuple(*tuple(result))
+
+    def __sub__(self, other: 'Tuple') -> 'Tuple':
+        """Reversed addition:
+        a - b = a + (-b)"""
+        return self + -other
+
+    def __mul__(self, other: Union[int, float]):
+        """Scalar multiplication:
+        r * a = (r*a_1, r*a_2, ... , r*a_n)    (a e R^n, r e R)"""
+        result = []
+        for ele in self._value:
+            result.append(ele * other)
+        return Tuple(*tuple(result))
+
+    __rmul__ = __mul__
+
+    def append(self, value: Union[int, float]):
+        """Expands tuple by args dimensions."""
+        self._value.append(value)
+
+    @staticmethod
+    def dimcheck(*args) -> bool:
+        """Checks if arguments have the same amount of dimensions."""
+        dimension = args[0].dim()
+        for ele in args:
+            if not ele.dim() == dimension:
                 return False
-            else:
-                pass
         return True
+
+    @staticmethod
+    def triangulate(p: 'Tuple', q: 'Tuple', r: 'Tuple') -> float:
+        """Returns area between three points."""
+        abv = Vector(begin=p, end=q)
+        acv = Vector(begin=p, end=r)
+        c = abs(abv)
+        b = abs(acv)
+        phi = Vector.angle(abv, acv)
+        area = 0.5 * b * c * (sin(phi))
+        return area
+
+
+class Vector(Tuple):
+    """Vector with any amount of dimensions."""
+
+    def __init__(self, *args: Union[int, float, complex, 'Tuple'],
+                 begin: Optional['Tuple'] = None,
+                 end: Optional['Tuple'] = None):
+
+        if not begin and type(args[0]) != Tuple:
+            super().__init__(*args)
+
+        elif not begin and type(args[0]) == Tuple:
+            super().__init__(*tuple(args[0]))
+
+        else:
+            _check_types((begin, end), Tuple)
+            if begin.dim() != end.dim():
+                raise DimensionError(end.dim(), begin.dim())
+            super().__init__(*tuple([end[i] - begin[i] for i in range(begin.dim())]))
 
     def __abs__(self):
         """Returns absolute of a vector.
             abs(vector) can be used.
             """
         res = 0
-        for i in range(self.dims):
-            res += self.value[i] ** 2
+        for i in range(self.dim()):
+            res += self._value[i] ** 2
         self.abs = res ** 0.5
         return self.abs
 
-    def __add__(self, other):
-        """Adds two vectors."""
-        if not Vector.dimcheck(self, other):
-            raise DimensionError(other.dims, self.dims)
-        res = [self.value[i] + other.value[i] for i in range(self.dims)]
-        return Vector(*tuple(res))
-
-    def __sub__(self, other):
-        """Subtracts two vectors."""
-        return self + -other
-
-    def __mul__(self, other):
+    def __mul__(self, other: Union['Vector', int, float, complex]):
         """Scalar multiplication of two vectors.
-            Can also be used for vector and scalar.
             """
-        if type(other) in (int, float):
-            return Vector.__scalar_mul(other, self)
-        if other.dims != self.dims:
-            raise AmountOfDimensionsError(self.dims, other.dims)
-        res = [self.value[i] * other.value[i] for i in range(self.dims)]
-        ares = 0
-        for e in res:
-            ares += e
-        return ares
+        if type(other) != Vector:
+            return Vector(Tuple(*tuple(self)) * other)
+        if not Vector.dimcheck(self, other):
+            raise AmountOfDimensionsError(self.dim(), other.dim())
+        res = 0
+        for i in range(self.dim()):
+            res += self[i] * other[i]
+        return res
 
     __rmul__ = __mul__
 
-    def __truediv__(self, sca):
-        """Division operator in order vector / scalar. Mathematically incorrect,"""
-        res = [self.value[i] / sca for i in range(self.dims)]
-        return Vector(*tuple(res))
+    def __pow__(self, power: int, modulo=None):
+        _check_types((power,), int)
+        if power == 0:
+            return self.unit()
+        res = 1
+        for i in range(power):
+            res *= self
+        return res
 
-    def __pow__(self, arg2):
-        """Vector multiplication. (No other sign available)
-            vector1 ** vector2 (= vector1 x vector2) can be used.
+    def cross(self, other: 'Vector') -> 'Vector':
+        """Vector multiplication.
+            vector1 * vector2 means vector1 x vector2
             Only 3 dimensions supported.
             """
-        if self.dims != 3:
-            raise AmountOfDimensionsError(self.dims, 3)
-        elif arg2.dims != 3:
-            raise AmountOfDimensionsError(arg2.dims, 3)
+        if self.dim() != 3:
+            raise AmountOfDimensionsError(self.dim(), 3)
+        elif other.dim() != 3:
+            raise AmountOfDimensionsError(other.dim(), 3)
         res = [0, 0, 0]
-        res[0] = (self.value[1] * arg2.value[2]) - (self.value[2] * arg2.value[1])
-        res[1] = (self.value[2] * arg2.value[0]) - (self.value[0] * arg2.value[2])
-        res[2] = (self.value[0] * arg2.value[1]) - (self.value[1] * arg2.value[0])
+        res[0] = (self[1] * other[2]) - (self[2] * other[1])
+        res[1] = (self[2] * other[0]) - (self[0] * other[2])
+        res[2] = (self[0] * other[1]) - (self[1] * other[0])
         return Vector(*tuple(res))
 
-    def unitvec(self):
+    def unit(self) -> 'Vector':
         """Returns vector with absolute 1 and same direction as self."""
         if abs(self) == 0:
             raise GeometricalError("Vector with absolute 0 has no unitvec")
         else:
-            res = self / abs(self)
+            res = self * (1 / abs(self))
             return res
 
     @staticmethod
-    def spat(vec1, vec2, vec3):
-        """Returns spat volume in following formula: (vec1 x vec2) * vec3"""
-        return (vec1 ** vec2) * vec3
+    def spat(a: 'Vector', b: 'Vector', c: 'Vector') -> float:
+        """Returns spat volume in following formula: (a x b) * c"""
+        return (a.cross(b)) * c
 
     @staticmethod
-    def dimcheck(*args):
-        """Returns 'True' if arguments have same amount of dimensions. Else returns 'False'."""
-        dims = args[0].dims
-        dimstrue = True
-        for i in range(len(args)):
-            dimstrue = dimstrue and (dims == args[i].dims)
-        return dimstrue
-
-    @staticmethod
-    def flat(*args):
+    def lin_indep(*args: 'Vector', dim: int) -> bool:
         """Returns 'True' if area between vectors is flat. Else returns 'False'"""
         twodims = True
         for e in args:
-            twodims = twodims and e.dims == 2
-        if twodims:
+            twodims = twodims and e.dim() == 2
+        if twodims and dim > 2:
             return True
-        vecs = list(args)
-        flat = True
-        uvec = (vecs[0] ** vecs[1]).unitvec()
-        for i in range(len(vecs) - 1):
-            flat = flat and ((vecs[i] ** vecs[i + 1]).unitvec() == uvec)
-        return flat
+        unitvector = args[0].unit()
+        for e in args:
+            if e.unit() != unitvector:
+                return False
+        return True
 
     @staticmethod
-    def __scalar_mul(sca, vec):
-        """Intern scalar multiplication function."""
-        res = [sca * vec.value[i] for i in range(vec.dims)]
-        return Vector(*tuple(res))
-
-    @staticmethod
-    def angle(vec1, vec2):
+    def angle(a: 'Vector', b: 'Vector') -> float:
         """Returns angle between two vectors."""
-        if not Vector.dimcheck(vec1, vec2):
-            raise DimensionError(vec2.dims, vec1.dims)
-        if vec1.dims != 2 and vec1.dims != 3:
-            raise AmountOfDimensionsError(vec1.dims, "2 or 3")
-        spr = vec1 * vec2
-        abs1 = abs(vec1)
-        abs2 = abs(vec2)
-        cosang = spr / (abs1 * abs2)
-        ang = arccos(cosang)
-        return Angle(rad=ang)
-
-
-class Area:
-    """Vector area"""
-    def __init__(self, ovec, rvec1, rvec2):
-        self.ovec = ovec
-        self.rvec1 = rvec1
-        self.rvec2 = rvec2
-        self.area = abs(rvec1 ** rvec2)
-
-    def nvec(self):
-        """Returns normal vector of area."""
-        return self.rvec1 ** self.rvec2
-
-
-class Straight:
-    """Vector straight"""
-    def __init__(self, mode, **kwargs):
-        if mode == "normal":
-            self.sv = kwargs['sv']
-            self.dv = kwargs['dv']
-            self.par = kwargs['par']
-            self.x = self.sv + (self.dv * self.par)
+        if not Vector.dimcheck(a, b):
+            raise DimensionError(b.dim(), a.dim())
+        if a.dim() not in (2, 3):
+            raise AmountOfDimensionsError(a.dim(), "2 or 3")
+        angle = arccos(a*b / (abs(a) * abs(b)))
+        return angle
 
 
 class Structure:
     """Point structure"""
-    def __init__(self, *args):
-        """A class for calculations with many points."""
+    def __init__(self, *args: 'Tuple'):
+        _check_types(args, Tuple)
+        if not Tuple.dimcheck(*args):
+            raise DimensionError(other="Tuples have different amount of dimensions.")
         self.points = args
+        self.vectors = [Vector(begin=self.points[-1], end=self.points[0])]
+        for i in range(1, len(self.points)):
+            self.vectors.append(Vector(begin=self.points[i - 1], end=self.points[i]))
+
+    def flat(self):
+        unitvector = (self.vectors[0].cross(self.vectors[-1])).unit()
+        for i in range(len(self.vectors) - 1):
+            if (self.vectors[i].cross(self.vectors[i+1])).unit() != unitvector:
+                return False
+        return True
 
     def circ(self):
-        """Returns the circumference of the area between any amount of points."""
-        if not Point.dimcheck(*self.points):
-            raise DimensionError(other="Points have different amount of dimensions.")
+        """Returns the circumference of the area opened by any amount of vectors."""
         u = 0
-        for i in range(len(self.points)):
-            if i < (len(self.points) - 1):
-                u += abs(Vector(begin=self.points[i], end=self.points[i + 1]))
-            elif i == (len(self.points) - 1):
-                u += abs(Vector(begin=self.points[i], end=self.points[0]))
+        for e in self.vectors:
+            u += abs(e)
         return u
 
     def area(self, opt=None):
-        """Returns area between any amount of points."""
-        if not Vector.dimcheck(*self.points):
-            raise DimensionError(other="Points have different amount of dimensions.")
-        # args = list(self.points)
-        twodim = True
-        for i in range(len(self.points)):
-            if self.points[i].dims == 2:
-                pass
-            else:
-                twodim = False
-        vecs = []
-        for i in range(len(self.points)):
-            if i < len(self.points) - 1:
-                vecs.append(Vector(begin=self.points[i], end=self.points[i + 1]))
-            else:
-                vecs.append(Vector(begin=self.points[i], end=self.points[0]))
-        a = 0
+        """Returns area opened by any amount of vectors."""
+        area = 0
         if opt == "flat":
-            if not Vector.flat(*vecs):
+            if not self.flat():
                 raise GeometricalError("No flat area found.")
-            for i in range(len(self.points) - 2):
-                a += Point.triangulate(self.points[0], self.points[i + 1], self.points[i + 2])
-            return a
-        elif opt is None:
-            if not Vector.flat(*vecs):
-                GeometricalWarning("Area is not flat.")
-            for i in range(len(self.points) - 2):
-                a += Point.triangulate(self.points[0], self.points[i + 1], self.points[i + 2])
-            return a
-        elif opt == "twodim":
-            if not twodim:
-                raise DimensionError(other="Points do not have 2 dimensions")
-            for i in range(len(self.points) - 2):
-                a += Point.triangulate(self.points[0], self.points[i + 1], self.points[i + 2])
-            return a
+        if not self.flat():
+            GeometricalWarning("Area does not seem to be flat.")
+        for i in range(1, len(self.points) - 1):
+            area += Tuple.triangulate(self.points[0], self.points[i], self.points[i + 1])
+        return area
 
 
-class Matrix:
+class Matrix(Tuple):
     """Mathematical matrix"""
 
-    def __init__(self, *args):
+    def __init__(self, *args: Union[list, 'Vector']):
         """Initializes the matrix. Enter a list for each row."""
-        if len(args) == 1 and type(args[0]) == Vector:
-            self.value = []
-            for e in args[0].value:
-                self.value.append([e])
+        if type(args[0]) == Vector:
+            value = []
+            for e in args[0]._value:
+                value.append([e])
         else:
-            self.value = list(args)
-            for e in self.value:
-                if not len(self.value[0]) == len(e):
-                    raise ArgumentError(e, "row with " + str(len(self.value[0])) + " members")
+            value = list(args)
+            for e in value:
+                if not len(value[0]) == len(e):
+                    raise ArgumentError(e, "row with " + str(len(args[0])) + " members")
+                # _check_types(e, int, float)
+        super().__init__(*tuple(args))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Prints matrix in an understandable view."""
         ret_str = "\n"
-        if len(self.value) == 1:
+        if self.size()[0] == 1:
             ret_str += "["
-            for e in self.value[0]:
+            for e in self[0]:
                 ret_str += 2 * " " + str(e)
             ret_str += 2 * " " + "]"
             return ret_str
-        longest_element_list = list(map(str, self.value[0]))
-        for i in range(1, len(self.value)):
-            for j in range(len(self.value[i])):
-                if len(str(self.value[i][j])) > len(longest_element_list[j]):
-                    longest_element_list[j] = str(self.value[i][j])
+        longest_element_list = list(map(str, self[0]))
+        for i in range(1, self.size()[0]):
+            for j in range(self.size()[1]):
+                if len(str(self[i][j])) > len(longest_element_list[j]):
+                    longest_element_list[j] = str(self[i][j])
         digits_list = list(map(len, longest_element_list))
         b_element = sorted(digits_list)[-1]
         if b_element < 3:
             distance = 1
-        if b_element < 8:
+        elif b_element < 8:
             distance = 2
         else:
             distance = 3
-        for i in range(len(self.value)):
+        for i in range(self.size()[0]):
             if i == 0:
                 ret_str += "┌" + distance * " "
-            elif i == len(self.value) - 1:
+            elif i == self.size()[0] - 1:
                 ret_str += "└" + distance * " "
             else:
                 ret_str += "|" + distance * " "
-            for j in range(len(self.value[i])):
-                ret_str += str(self.value[i][j]) + ((digits_list[j] - len(str(self.value[i][j])) + distance) * " ")
+            for j in range(self.size()[1]):
+                ret_str += str(self[i][j]) + ((digits_list[j] - len(str(self[i][j])) + distance) * " ")
             if i == 0:
                 ret_str += "┐"
-            elif i == len(self.value) - 1:
+            elif i == self.size()[0] - 1:
                 ret_str += "┘"
             else:
                 ret_str += "|"
             ret_str += "\n"
         return ret_str
 
-    def __getitem__(self, item):
-        """Returns item. To be used in following order:
-        'matrix[m][n]'.
-        """
-        return self.value[item]
-
-    def __contains__(self, item):
+    def __contains__(self, item: Union[int, float]) -> bool:
         ret_val = True
-        for e in self.value:
+        for e in self._value:
             ret_val = ret_val and (item in e)
         return ret_val
 
-    def __setitem__(self, key, value):
-        """Sets item to given value."""
-        self.value[key] = value
-
-    def __round__(self, n=None):
+    def __round__(self, n: int = None) -> 'Matrix':
         ret_mat = copy.deepcopy(self)
-        for i in range(len(ret_mat.value)):
-            for j in range(len(ret_mat.value[i])):
-                ret_mat.value[i][j] = round(ret_mat.value[i][j], n)
+        for i in range(self.size()[0]):
+            for j in range(self.size()[1]):
+                ret_mat._value[i][j] = round(ret_mat._value[i][j], n)
         return ret_mat
 
-    def __eq__(self, other):
-        """Returns equality of two matrices. Uses _FLOAT_EQ"""
-        from . import _FLOAT_EQ
-        if self.size() != other.size():
-            return False
-        for i in range(len(self.value)):
-            for j in range(len(self.value[i])):
-                if abs(self[i][j] - other[i][j]) > _FLOAT_EQ:
-                    pass
-                else:
-                    return False
-        return True
-
-    def __neg__(self):
+    def __neg__(self) -> 'Matrix':
         """Returns negative matrix."""
         args = []
-        for i in range(len(self.value)):
+        for i in range(self.size()[0]):
             args.append([])
-            for j in range(len(self.value[i])):
+            for j in range(self.size()[1]):
                 args[i].append(self[i][j] * -1)
         return Matrix(*tuple(args))
 
-    def __add__(self, other):
+    def __add__(self, other: 'Matrix') -> 'Matrix':
         """Adds two matrices."""
         if type(other) != Matrix:
             raise ArgumentError(type(other), Matrix)
         elif self.size() != other.size():
             raise ArgumentError("matrix with size " + str(other.size()), "matrix with size" + str(self.size()))
         args = []
-        for i in range(len(self.value)):
+        for i in range(self.size()[0]):
             args.append([])
-            for j in range(len(self.value[i])):
+            for j in range(self.size()[1]):
                 args[i].append(self[i][j] + other[i][j])
         return Matrix(*tuple(args))
 
-    def __sub__(self, other):
+    def __sub__(self, other: 'Matrix') -> 'Matrix':
         """Subtracts a matrix from another."""
         return self + -other
 
-    def __mul__(self, other):
+    def __mul__(self, other: Union['Matrix', 'Vector', int]) -> Union['Matrix', 'Vector']:
         """Multiplies two matrices."""
         if type(other) == int or type(other) == float:
-            return Matrix.__scalar_mul(self, other)
+            return Matrix.__scalar_multiplication(self, other)
         elif type(other) == Vector:
-            if self.size()[1] != other.dims:
-                raise MatrixMultiplicationError(str(self.size()[1]), other.dims)
+            if self.size()[1] != other.dim():
+                raise MatrixMultiplicationError(str(self.size()[1]), other.dim())
             v_matrix = Matrix(other)
             ret_mat = self * v_matrix
             args = ()
-            for e in ret_mat.value:
+            for e in ret_mat._value:
                 args += (e[0],)
             return Vector(*args)
-        elif self.size()[1] != other.size()[0]:
-            raise MatrixMultiplicationError(other.size()[0], self.size()[1])
-        ret_mat = Matrix.create(self.size()[0], other.size()[1])
-        for i in range(self.size()[0]):
-            for j in range(other.size()[1]):
-                ret_mat[i][j] = Vector(*tuple(self.row(i))) * Vector(*tuple(other.column(j)))
-        return ret_mat
+        elif type(other) == Matrix:
+            if self.size()[1] != other.size()[0]:
+                raise MatrixMultiplicationError(other.size()[0], self.size()[1])
+            ret_mat = Matrix.create(self.size()[0], other.size()[1])
+            for i in range(self.size()[0]):
+                for j in range(other.size()[1]):
+                    ret_mat[i][j] = Vector(*tuple(self.row(i))) * Vector(*tuple(other.column(j)))
+            return ret_mat
 
     __rmul__ = __mul__
 
-    def __pow__(self, power):
+    def __pow__(self, power: int):
         """Power operation for matrix^scalar."""
+        if self.size()[0] == self.size()[1]:
+            raise MatrixSizeError("Matrix must be quadratic for A^0 = E_m")
+        if type(power) is not int:
+            raise ArgumentError("Power od type"+str(type(power)), int)
         ret_mat = self
         if power == -1:
             return self.inverse()
+        elif power == 0:
+            return Matrix.create_identity(self.size()[0])
         for i in range(1, power):
             ret_mat *= self
         return ret_mat
 
-    def __scalar_mul(self, other):
+    def __scalar_multiplication(self, other):
         """Intern scalar multiplication method"""
         args = []
-        for i in range(len(self.value)):
+        for i in range(self.size()[0]):
             args.append([])
-            for e in self.value[i]:
+            for e in self[i]:
                 args[i].append(e * other)
         return Matrix(*tuple(args))
 
     def size(self, option=None):
         """Returns list of matrix size. [m, n]"""
         if not option:
-            return [len(self.value), len(self.value[0])]
+            return [len(self._value), len(self._value[0])]
         elif option == "xy":
-            return [len(self.value[0]), len(self.value)]
+            return [len(self._value[0]), len(self._value)]
+
+    def dim(self):
+        return self.size()[0] * self.size()[1]
 
     def at(self, m, n):
         """Returns element at given position. Begins at 0."""
-        return self.value[m][n]
+        return self[m][n]
 
     def index(self, element):
         """Returns position of given element in a list. Can contain
@@ -565,16 +522,16 @@ class Matrix:
         empty list is returned.
         """
         position = []
-        for i in range(len(self.value)):
-            for e in self.value[i]:
+        for i in range(self.size()[0]):
+            for e in self[i]:
                 if element == e:
-                    position.append([self.value[i].index(e), i])
+                    position.append([self[i].index(e), i])
         return position
 
     def column(self, cindex):
         """Returns column with specific index."""
         ret_list = []
-        for e in self.value:
+        for e in self._value:
             ret_list.append(e[cindex])
         return ret_list
 
@@ -589,23 +546,23 @@ class Matrix:
             if len(row) != self.size()[1]:
                 raise MatrixSizeError(
                     "Cannot append" + str(len(row)) + "element row to matrix with size" + str(self.size()))
-            ret_mat.value.append(row)
+            ret_mat._value.append(row)
         elif column:
             if len(column) != self.size()[0]:
                 raise MatrixSizeError("Cannot append " + str(len(column))
                                       + " element row to matrix with size" + str(self.size()))
             for i in range(ret_mat.size()[1]):
-                ret_mat.value[i].append(column[i])
+                ret_mat._value[i].append(column[i])
         return ret_mat
 
     def remove(self, rindex=None, cindex=None):
         """Returns a matrix with given row or column removed."""
         ret_mat = copy.deepcopy(self)
         if rindex is not None:
-            del ret_mat.value[rindex]
+            del ret_mat._value[rindex]
         if cindex is not None:
-            for i in range(len(ret_mat.value)):
-                del ret_mat.value[i][cindex]
+            for i in range(len(ret_mat._value)):
+                del ret_mat._value[i][cindex]
         return ret_mat
 
     def transpose(self):
@@ -658,29 +615,29 @@ class Matrix:
         ret_mat *= 1 / self.det()
         return ret_mat
 
-    def ref(self):
-        """Returns matrix in row echelon form."""
-        copy_mat = copy.deepcopy(self)
-        for i in range(copy_mat.size()[0]):
-            copy_mat.value[i].append(i)
-        sorted_rows = []
-        for j in range(copy_mat.size()[1]):
-            for i in range(copy_mat.size()[0]):
-                if (copy_mat.value[i][j] != 0 or j == copy_mat.size()[1] - 1) and copy_mat.value[i] not in sorted_rows:
-                    sorted_rows.append(copy_mat.value[i])
-        for e in sorted_rows:
-            e = e.pop()
-        j = 0
-        while sorted_rows[0][j] == 0:
-            j += 1
-        dividend = sorted_rows[0][j]
-        for i in range(len(sorted_rows[0])):
-            sorted_rows[0][i] /= dividend
-        for k in range(j, len(sorted_rows[0])):
-            for i in range(1, len(sorted_rows)):
-                if sorted_rows[i][j] != 0:
-                    pass
-        return sorted_rows
+    # def ref(self):
+    #     """Returns matrix in row echelon form."""
+    #     copy_mat = copy.deepcopy(self)
+    #     for i in range(copy_mat.size()[0]):
+    #         copy_mat._value[i].append(i)
+    #     sorted_rows = []
+    #     for j in range(copy_mat.size()[1]):
+    #         for i in range(copy_mat.size()[0]):
+    #             if (copy_mat._value[i][j] != 0 or j == copy_mat.size()[1] - 1) and copy_mat._value[i] not in sorted_rows:
+    #                 sorted_rows.append(copy_mat._value[i])
+    #     for e in sorted_rows:
+    #         e = e.pop()
+    #     j = 0
+    #     while sorted_rows[0][j] == 0:
+    #         j += 1
+    #     dividend = sorted_rows[0][j]
+    #     for i in range(len(sorted_rows[0])):
+    #         sorted_rows[0][i] /= dividend
+    #     for k in range(j, len(sorted_rows[0])):
+    #         for i in range(1, len(sorted_rows)):
+    #             if sorted_rows[i][j] != 0:
+    #                 pass
+    #     return sorted_rows
 
     @staticmethod
     def create(m, n):

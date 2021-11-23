@@ -19,6 +19,8 @@ import time
 _FLOAT_EQ = 1e-16
 _TAYLOR_DIFFERENCE = 1e-16
 _MAX_CALCULATION_TIME = 5
+e = 2.718_281_828_459_045_235_360
+pi = 3.141_592_653_589_793_238_463
 
 
 class ArgumentError(Exception):
@@ -36,18 +38,20 @@ class _Point:
     """Prototype for points in lina and ana"""
 
     def __init__(self, *args):
-        self.value = list(args)
+        self.__value = list(args)
 
     def __getitem__(self, item):
-        return self.value[item]
+        return self.__value[item]
+
+    def __setitem__(self, key, value):
+        self.__value[key] = value
 
     def __eq__(self, other):
         """Returns the equality of two points. Uses _FLOAT_EQ to compare."""
-        from . import _FLOAT_EQ
         if not _Point.dimcheck(self, other):
             return False
-        for i in range(len(self.value)):
-            if abs(self.value[i] - other.value[i]) > _FLOAT_EQ:
+        for i in range(len(self.__value)):
+            if abs(self.__value[i] - other._value[i]) > _FLOAT_EQ:
                 return False
             else:
                 pass
@@ -61,6 +65,13 @@ class _Point:
         for i in range(len(args)):
             dimstrue = dimstrue and (dims == args[i].dims)
         return dimstrue
+
+
+def _check_types(arg, *types):
+    for ele in arg:
+        if not type(ele) in types:
+            raise ArgumentError(ele, "int or float")
+    return True
 
 
 def is_even(x):
@@ -88,12 +99,8 @@ def fac(x, opt=None):
     return res
 
 
-e = 2.718_281_828_459_045_235_360
-
-pi = 3.141_592_653_589_793_238_463
-
-
 def ln(x):
+    """Natural logarithm"""
     if x < 0:
         raise ArgumentError(x, "x > 0")
     summand = 0
@@ -115,7 +122,7 @@ def ln(x):
 
 
 def log(x, base):
-    """Logarithm in order: log{base} ({exp})"""
+    """Logarithm"""
     return ln(x) / ln(base)
 
 
@@ -160,7 +167,8 @@ def arcsin(x):
     k = 1
     while k < 150:
         mem_res = res
-        res += fac(2 * k - 1, opt="double") * x ** (2 * k + 1) / (fac(2 * k, opt="double") * (2 * k + 1))
+        res += fac(2 * k - 1, opt="double") * x ** (2 * k + 1) /\
+               (fac(2 * k, opt="double") * (2 * k + 1))
         if abs(mem_res - res) < _TAYLOR_DIFFERENCE:
             break
         k += 1
@@ -186,7 +194,7 @@ def arctan(x):
             k += 1
     else:
         if x >= 0:
-            res = pi /2
+            res = pi / 2
         else:
             res = -pi / 2
         start_time = time.time()

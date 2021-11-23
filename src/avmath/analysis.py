@@ -2,7 +2,7 @@
 AdVanced math  analysis submodule
 implementing function features."""
 
-from . import scope as _scope, _Point
+from . import scope as _scope, _Point, log
 
 
 class Point(_Point):
@@ -12,7 +12,7 @@ class Point(_Point):
         super().__init__(x, y)
 
     def __repr__(self):
-        return str(tuple(self.value))
+        return str(tuple(self.__value))
 
 
 class f:
@@ -54,7 +54,7 @@ class f:
     def max(self, xmin, xmax, step=None):
         """Finds maxima of a function in a given space"""
         if not step:
-            step = (xmax - xmin) * 1e-5
+            step = (xmax - xmin) * 1e-4
         maxima = []
         position = xmin
         last_position = xmin
@@ -63,8 +63,13 @@ class f:
             b_last_position = last_position
             last_position = position
             position += step
-            if self.at(b_last_position) < self.at(last_position) and self.at(last_position) > self.at(position):
-                maxima.append(Point(last_position, self.at(last_position)))
+            digits = 12 #round(log(1/step, 10))
+            if round(self.at(b_last_position), digits) < round(self.at(last_position), digits) and round(self.at(last_position), digits) > round(self.at(position), digits):
+                print(self.at(last_position), step)
+                if step < 1e-14:
+                    maxima.append(Point(last_position, self.at(last_position)))
+                else:
+                    maxima.append(*tuple(self.max(b_last_position, position)))
         return maxima
 
     def min(self, xmin, xmax, step=None):
