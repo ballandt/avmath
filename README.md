@@ -20,7 +20,7 @@ _Avmath_ is a python library for mathematics.
 Category | Data
 ------------ | -------------
 Author | Camillo Ballandt
-Release version | [2.0.0](https://www.github.com/ballandt/avmath/releases/tag/2.0.0)
+Release version | [2.0.0](https://www.github.com/ballandt/avmath/releases/tag/v2.0.0)
 Developing version | [3.0.0](https://github.com/ballandt/avmath/blob/master/DEVELOPMENTS.md)
 ### Extended description
 
