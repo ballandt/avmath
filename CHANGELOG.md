@@ -1,7 +1,7 @@
 # AdVanced Math Changelog
 
 ---
-## 3.0.0 (2021-11-23) - in development
+## 3.0.0 (2021-11-25) - in development
 #### API Changes
 * redesigned function `avmath.pi()` to constant `avmath.pi`
 * redesigned function `avmath.e()` to constant `avmath.e`
@@ -11,6 +11,12 @@
 * renamed `avmath.algebra.Point` to `avmath.algebra.Tuple`
 * changed location of vector product from `avmath.algebra.Vector.__pow__()` to `avmath.algebra.Vector.cross()`
 * `avmath.algebra.Vector.pow()` returns vector multiplied n times by itself
+* deletion of `avmath._Point` class
+* renamed `avmath.analysis.f` to `avmath.analysis.Function`
+* Deletion of `avmath.algebra.AmountOfDimensionsError`. `avmath.algebra.DimensionError`gets called instead.
+* Deletion of `avmath.algebra.MatrixMultiplicationError`. `avmath.algebra.MatrixSizeError` gets called instead.
+* `avmath.algebra.Matrix.row()` and `[...].Matrix.column()` return vectors
+* renamed `avmath.algebra.Structure.circ()` to `[...].Structure.circumference`
 
 #### Minor changes
 * imports `time`-module for taylor-loops
@@ -18,13 +24,21 @@
 * new constant `_TAYLOR_DIFFERENCE` as minimal difference between results for taylor-loops with value `1e-16`
 * new constant `_MAX_CALCULATION_TIME` for maximum calculation time in taylor-loops with value 5 seconds
 * `avmath.fac()` has parameter `opt` for double faculty
-* `avmath._check_types()` checks if all members of tuple are of specified types 
+* `avmath._check_types()` checks if all members of tuple are of specified types
+* `avmath.analysis.Function.newton_method()` for Newton's method from given x_n
+* `avmath.analysis.Function.root()` returns all roots of the function in given domain
+* `avmath.analysis.Function` allows `^` as power and coefficients
+* new constant `avmath.phi` for golden ratio
+* new constant `avmath.gamma` for Euler-Mascheroni constant
+* new function `avmath.sgn()` for signum function
+* `__all__` for `__init__.py`, `algebra.py` and `analysis.py`
 
 #### Bug fixes
 * `avmath.fac()` checks if input can be interpreted as integer
 * `avmath.ln()` works properly in entire domain
 * trigonometric functions use `while`-loops and `_TAYLOR_DIFFERENCE` to calculate to the best return value possible
 * `avmath.cos()` works properly with negative values
+* `avmath.analysis.Function.max()` does not raise RecursionError
 
 ---
 ## 2.0.0 (2021-10-24)
@@ -84,7 +98,7 @@
     * `det()` method returns the determinant of a matrix
     * `cof()` method returns cofactor matrix
     * `adj()` method returns cofactor matrix
-    * `inverse()` method returns inversed matrix
+    * `inverse()` method returns inverted matrix
   * `avmath.lina.SLE` system of linear equations inherited from matrix:
     * `__init__()` method creates matrix with parameters and results
     * `solve` method returns matrix with all unknowns

@@ -1,73 +1,51 @@
 """AVMATH
-AdVanced math is a module for algebra, arithmetics and analysis.
-It is divided in the submodules lina (LINear Algebra), ana (ANAlysis)
-and the arithmetics in the main directory.
+Avmath is a module for algebra, arithmetics and analysis.
 
-It uses python algorithms to allow the access to deeper math and
-shall simplify maths to concentrate on the usage of math.
+Avmath uses python algorithms to numerically calculate mathematical
+problems. It mainly concentrates on the concepts of functions, vec-
+tors and matrices.
 
 Github: https://www.github.com/ballandt/avmath
 PyPi: https://www.pypi.org/project/avmath
 """
 
 __author__ = "Camillo Ballandt"
-__version__ = "2.0.0"
-__date__ = "2021/10/24"
+__version__ = "3.0.0"
+__date__ = "2021/12/01"
+
+__all__ = ["sin", "cos", "tan",
+           "arcsin", "arccos", "arctan",
+           "sinh", "cosh", "tanh",
+           "arsinh", "arcosh", "artanh",
+           "ln", "log", "is_even", "fac", "sgn",
+           "pi", "e", "phi", "gamma"]
 
 import time
+from typing import Iterable as _Iterable
 
 _FLOAT_EQ = 1e-16
 _TAYLOR_DIFFERENCE = 1e-16
 _MAX_CALCULATION_TIME = 5
+
 e = 2.718_281_828_459_045_235_360
 pi = 3.141_592_653_589_793_238_463
+phi = 1.618_033_988_749_894_848_205
+gamma = 0.577_215_664_901_532_860_607
 
 
 class ArgumentError(Exception):
-    """Raised if wrong argument is given."""
+    """Raised if false argument is given."""
 
     def __init__(self, got, want):
         self.got = got
         self.want = want
 
     def __str__(self):
-        return "False argument given. Expected " + str(self.want) + ", got " + str(self.got) + "."
+        return f"False argument given. Expected {self.want}, got {self.got}."
 
 
-class _Point:
-    """Prototype for points in lina and ana"""
-
-    def __init__(self, *args):
-        self.__value = list(args)
-
-    def __getitem__(self, item):
-        return self.__value[item]
-
-    def __setitem__(self, key, value):
-        self.__value[key] = value
-
-    def __eq__(self, other):
-        """Returns the equality of two points. Uses _FLOAT_EQ to compare."""
-        if not _Point.dimcheck(self, other):
-            return False
-        for i in range(len(self.__value)):
-            if abs(self.__value[i] - other._value[i]) > _FLOAT_EQ:
-                return False
-            else:
-                pass
-        return True
-
-    @staticmethod
-    def dimcheck(*args):
-        """Returns 'True' if arguments have same amount of dimensions. Else returns 'False'."""
-        dims = args[0].dims
-        dimstrue = True
-        for i in range(len(args)):
-            dimstrue = dimstrue and (dims == args[i].dims)
-        return dimstrue
-
-
-def _check_types(arg, *types):
+def _check_types(arg: _Iterable, *types):
+    """Checks if the elements of the argument belong to the given types."""
     for ele in arg:
         if not type(ele) in types:
             raise ArgumentError(ele, "int or float")
@@ -75,11 +53,25 @@ def _check_types(arg, *types):
 
 
 def is_even(x):
+    """Checks if x is an even number"""
     return x/2 == round(x/2)
 
 
+def sgn(x):
+    """Returns signum of x"""
+    if x < 0:
+        return -1
+    elif x == 0:
+        return 0
+    elif x > 0:
+        return 1
+
+
 def fac(x, opt=None):
-    """Faculty"""
+    """Returns faculty of x.
+    fac(x)               is x!
+    fac(x, opt="double") is x!!
+    """
     if x < 0:
         raise ArgumentError("x < 0", "x >= 0")
     if int(x) != x:
@@ -167,8 +159,7 @@ def arcsin(x):
     k = 1
     while k < 150:
         mem_res = res
-        res += fac(2 * k - 1, opt="double") * x ** (2 * k + 1) /\
-               (fac(2 * k, opt="double") * (2 * k + 1))
+        res += fac(2 * k - 1, opt="double") * x ** (2 * k + 1) / (fac(2 * k, opt="double") * (2 * k + 1))
         if abs(mem_res - res) < _TAYLOR_DIFFERENCE:
             break
         k += 1

@@ -1,10 +1,7 @@
 """AVMATH ALGEBRA
-AdVanced math algebra submodule containing
-linear algebra features like vectors, matrices
-angles and systems of linear equations.
-It is an mathematically independent submodule,
-but needs to import copy and logging for intern
-handling.
+AdVanced math algebra submodule containing linear algebra
+features tuples, vectors, matrices and systems of linear
+equations.
 """
 
 import copy
@@ -12,6 +9,8 @@ import logging
 from typing import Union, Optional
 
 from . import ArgumentError, sin, arccos, _check_types
+
+__all__ = ["Tuple", "Structure", "Matrix", "Vector", "SLE"]
 
 
 class DimensionError(Exception):
@@ -26,24 +25,13 @@ class DimensionError(Exception):
 
     def __str__(self):
         try:
-            return "Different amount of dimensions. Expected " + str(self.want) + "; got " + str(self.got)
+            return f"Wrong amount of dimensions. Expected {self.want}; got {self.got}"
         except AttributeError:
             return self.other
 
 
-class AmountOfDimensionsError(Exception):
-    """Raised if vector has not got a defined amount of dimensions."""
-
-    def __init__(self, got, want):
-        self.got = got
-        self.want = want
-
-    def __str__(self):
-        return "Wrong amount of dimensions. Expected " + str(self.want) + "; got " + str(self.got)
-
-
 class GeometricalError(Exception):
-    """Raised if shape with opt="flat" is called, but the flat returns 'False'"""
+    """Raised geometrical order cannot be executed."""
 
     def __init__(self, arg):
         self.arg = arg
@@ -62,21 +50,9 @@ class MatrixSizeError(Exception):
         return self.arg
 
 
-class MatrixMultiplicationError(Exception):
-    """Raised if matrix multiplication can not be executed due to
-    different amounts of columns and rows.
-    """
-
-    def __init__(self, got, want):
-        self.got = got
-        self.want = want
-
-    def __str__(self):
-        return "Matrix with " + str(self.got) + " rows cannot be multiplied with " + str(self.want) + "column matrix."
-
-
 class GeometricalWarning:
-    """Raised if shape without opt="flat" is called, but flat returns 'False'. Program does not get interrupted.
+    """Raised if shape without opt="flat" is called, but flat returns 'False'.
+    Program does not get interrupted.
     Use 'GeometricalWarning.disable_warning()' to ignore warning.
     """
     __warning = True
@@ -89,39 +65,9 @@ class GeometricalWarning:
 
     @classmethod
     def disable_warning(cls):
+        """Function to allow to permanently disable GeometricalWarning
+        in case the calculation are too inexact."""
         GeometricalWarning.__warning = False
-
-
-# class Angle:
-#     """Class for angle handling"""
-#
-#     DEG = 90
-#     GRA = 100
-#     RAD = pi
-#
-#     def __init__(self, deg=None, rad=None, gra=None):
-#         if deg:
-#             self.__value = deg
-#             self.mode = Angle.DEG
-#         elif rad:
-#             self.__value = rad
-#             self.mode = Angle.RAD
-#         elif gra:
-#             self.__value = gra
-#             self.mode = Angle.GRA
-#
-#     def __eq__(self, other):
-#         """Checks equality of Points. Uses _FLOAT_EQ to prevent errors
-#         due to float operations."""
-#         from . import _FLOAT_EQ
-#         return abs(self.get(Angle.RAD) - other.get(Angle.RAD)) <= _FLOAT_EQ
-#
-#     def get(self, mode):
-#         """Returns float value of angle. Mode defines angle mode and is the entered
-#         mode if nothing is defined. If defined,mode must be given as
-#         f.e. 'avmath.Angle.DEG'.
-#         """
-#         return self.__value * mode / self.mode if mode != self.mode else self.__value
 
 
 class Tuple:
@@ -134,18 +80,13 @@ class Tuple:
         self._value = list(args)
 
     def __iter__(self):
+        """Returns iterator to convert tuple to iterable object."""
         for ele in self._value:
             yield ele
 
     def __getitem__(self, item):
         """Returns value of 'item's dimension."""
         return self._value[item]
-
-    # def __setitem__(self, key, value):
-    #     """Sets specific item in copied version. Warning: operation changes
-    #     mutable _value list so all id-members will be infected.
-    #     """
-    #     self._value[key] = value
 
     def __repr__(self) -> str:
         """Returns string representation."""
@@ -161,28 +102,31 @@ class Tuple:
 
     dim = __len__
 
-    def __neg__(self) -> 'Tuple':
+    def __neg__(self):
+        """Returns negative tuple."""
         return self * -1
 
-    def __add__(self, other: 'Tuple') -> 'Tuple':
+    def __add__(self, other):
         """Adds two tuples:
         a + b = (a_1 + b_1, a_2 + b_2, ... , a_n + b_n)
         """
         if not Tuple.dimcheck(self, other):
-            raise AmountOfDimensionsError(other.dim(), self.dim())
+            raise DimensionError(other.dim(), self.dim())
         result = []
         for i in range(self.dim()):
             result.append(self[i] + other[i])
         return Tuple(*tuple(result))
 
-    def __sub__(self, other: 'Tuple') -> 'Tuple':
+    def __sub__(self, other):
         """Reversed addition:
-        a - b = a + (-b)"""
+        a - b = a + (-b)
+        """
         return self + -other
 
     def __mul__(self, other: Union[int, float]):
         """Scalar multiplication:
-        r * a = (r*a_1, r*a_2, ... , r*a_n)    (a e R^n, r e R)"""
+        r * a = (r*a_1, r*a_2, ... , r*a_n)    (a e R^n, r e R)
+        """
         result = []
         for ele in self._value:
             result.append(ele * other)
@@ -221,6 +165,30 @@ class Vector(Tuple):
     def __init__(self, *args: Union[int, float, complex, 'Tuple'],
                  begin: Optional['Tuple'] = None,
                  end: Optional['Tuple'] = None):
+        """Takes whether number arguments, vectorizes Tuple or
+        creates vector beween two Tuples.
+
+        For number insert:
+        Vector(a_1, a_2, a_3)
+        for
+        ┌ a_1 ┐
+        | a_2 |  or (a_1, a_2, a_3)
+        └ a_3 ┘
+
+        For vectorization:
+        Vector(Tuple(a_1, a_2, a_3))
+        for
+        ┌ a_1 ┐
+        | a_2 |  or (a_1, a_2, a_3)
+        └ a_3 ┘
+
+        For linking of points:
+        Vector(begin=Tuple(a_1, a_2, a_3), end=Tuple(b_1, b_2, b_3))
+        for
+        ┌ b_1 - a_1 ┐
+        | b_2 - a_2 |  or (b_1 - a_1, b_2 - a_2, b_3 - a_3)
+        └ b_3 - a_3 ┘
+        """
 
         if not begin and type(args[0]) != Tuple:
             super().__init__(*args)
@@ -236,7 +204,11 @@ class Vector(Tuple):
 
     def __abs__(self):
         """Returns absolute of a vector.
-            abs(vector) can be used.
+            Insert
+            abs(Vector(a_1, a_2, [...], a_n))
+            For
+               ________________________________
+            \\/ (a_1)^2 + (a_2)^2 + ... + (a_n)^2
             """
         res = 0
         for i in range(self.dim()):
@@ -244,13 +216,17 @@ class Vector(Tuple):
         self.abs = res ** 0.5
         return self.abs
 
-    def __mul__(self, other: Union['Vector', int, float, complex]):
+    def __mul__(self, other: Union['Vector', int, float, complex]) -> Union['Vector', int, float, complex]:
         """Scalar multiplication of two vectors.
-            """
+        Insert
+        Vector(a_1, a_2, [...], a_n) * Vector(b_1, b_2, [...], b_n)
+        For
+        (a_1, a_2, ..., a_n) * (b_1, b_2, ..., b_n) = a_1 b_1 + a_2 b_2 + ... + a_n b_n
+        """
         if type(other) != Vector:
             return Vector(Tuple(*tuple(self)) * other)
         if not Vector.dimcheck(self, other):
-            raise AmountOfDimensionsError(self.dim(), other.dim())
+            raise DimensionError(self.dim(), other.dim())
         res = 0
         for i in range(self.dim()):
             res += self[i] * other[i]
@@ -258,7 +234,16 @@ class Vector(Tuple):
 
     __rmul__ = __mul__
 
-    def __pow__(self, power: int, modulo=None):
+    def __pow__(self, power: int, modulo=None) -> Union['Vector', int, float, complex]:
+        """Returns result of power times scalar multiplied vector. Power 0 returns unit-
+        vector.
+        Insert
+        a = Vector(a_1, a_2, [...], a_n)
+        a**p
+        for
+        a * a * ... * a
+            p times
+        """
         _check_types((power,), int)
         if power == 0:
             return self.unit()
@@ -269,13 +254,16 @@ class Vector(Tuple):
 
     def cross(self, other: 'Vector') -> 'Vector':
         """Vector multiplication.
-            vector1 * vector2 means vector1 x vector2
             Only 3 dimensions supported.
+            Insert
+            Vector(a_1, a_2, a_3).cross(Vector(b_1, b_2, b_3))
+            For
+            (a_1, a_2, a_3) x (b_1, b_2, b_3) = (a_2 b_3 - a_3 b_2, a_1 b_1 - a_1 b_3, a_1 b_2 - a_2 b_1)
             """
         if self.dim() != 3:
-            raise AmountOfDimensionsError(self.dim(), 3)
+            raise DimensionError(self.dim(), 3)
         elif other.dim() != 3:
-            raise AmountOfDimensionsError(other.dim(), 3)
+            raise DimensionError(other.dim(), 3)
         res = [0, 0, 0]
         res[0] = (self[1] * other[2]) - (self[2] * other[1])
         res[1] = (self[2] * other[0]) - (self[0] * other[2])
@@ -283,7 +271,11 @@ class Vector(Tuple):
         return Vector(*tuple(res))
 
     def unit(self) -> 'Vector':
-        """Returns vector with absolute 1 and same direction as self."""
+        """Returns vector with absolute 1 and same direction as self.
+        Insert
+        Vector(a_1, a_2, [...], a_n).unit()
+        For
+        a / |a|"""
         if abs(self) == 0:
             raise GeometricalError("Vector with absolute 0 has no unitvec")
         else:
@@ -292,11 +284,17 @@ class Vector(Tuple):
 
     @staticmethod
     def spat(a: 'Vector', b: 'Vector', c: 'Vector') -> float:
-        """Returns spat volume in following formula: (a x b) * c"""
+        """Returns spat volume.
+        Insert
+        Vector.spat(Vector(a_1, a_2, a_3),
+                    Vector(b_1, b_2, b_3),
+                    Vector(c_1, c_2, c_3))
+        For
+        (a x b) * c"""
         return (a.cross(b)) * c
 
     @staticmethod
-    def lin_indep(*args: 'Vector', dim: int) -> bool:
+    def flat(*args: 'Vector', dim: int) -> bool:
         """Returns 'True' if area between vectors is flat. Else returns 'False'"""
         twodims = True
         for e in args:
@@ -311,17 +309,25 @@ class Vector(Tuple):
 
     @staticmethod
     def angle(a: 'Vector', b: 'Vector') -> float:
-        """Returns angle between two vectors."""
+        """Returns angle between two vectors.
+        Insert
+        Vector.angle(Vector(a_1, [...], a_n), Vector(b_1, [...], b_n))
+        For
+               (a_1, ..., a_n) (b_1, ..., b_n)
+        arccos(-------------------------------) = phi    (1 < n < 4)
+                          |a| * |b|
+        """
         if not Vector.dimcheck(a, b):
             raise DimensionError(b.dim(), a.dim())
         if a.dim() not in (2, 3):
-            raise AmountOfDimensionsError(a.dim(), "2 or 3")
+            raise DimensionError(a.dim(), "2 or 3")
         angle = arccos(a*b / (abs(a) * abs(b)))
         return angle
 
 
 class Structure:
     """Point structure"""
+
     def __init__(self, *args: 'Tuple'):
         _check_types(args, Tuple)
         if not Tuple.dimcheck(*args):
@@ -338,8 +344,8 @@ class Structure:
                 return False
         return True
 
-    def circ(self):
-        """Returns the circumference of the area opened by any amount of vectors."""
+    def circumference(self):
+        """Returns the circumference of the area opened by any amount of points."""
         u = 0
         for e in self.vectors:
             u += abs(e)
@@ -362,7 +368,17 @@ class Matrix(Tuple):
     """Mathematical matrix"""
 
     def __init__(self, *args: Union[list, 'Vector']):
-        """Initializes the matrix. Enter a list for each row."""
+        """Initializes the matrix. Enter a list for each row.
+
+        insert
+        Matrix([a_11, a_12, a_13],
+               [a_21, a_22, a_23],
+               [a_31, a_32, a_33])
+        for
+        ┌ a_11  a_12 a_13 ┐
+        | a_21  a_22 a_23 |
+        └ a_31 a_32 a_33  ┘
+        """
         if type(args[0]) == Vector:
             value = []
             for e in args[0]._value:
@@ -372,7 +388,7 @@ class Matrix(Tuple):
             for e in value:
                 if not len(value[0]) == len(e):
                     raise ArgumentError(e, "row with " + str(len(args[0])) + " members")
-                # _check_types(e, int, float)
+                _check_types(e, int, float, complex)
         super().__init__(*tuple(args))
 
     def __repr__(self) -> str:
@@ -416,12 +432,14 @@ class Matrix(Tuple):
         return ret_str
 
     def __contains__(self, item: Union[int, float]) -> bool:
+        """Returns if element is in matrix."""
         ret_val = True
         for e in self._value:
             ret_val = ret_val and (item in e)
         return ret_val
 
     def __round__(self, n: int = None) -> 'Matrix':
+        """Returns matrix with rounded values."""
         ret_mat = copy.deepcopy(self)
         for i in range(self.size()[0]):
             for j in range(self.size()[1]):
@@ -454,34 +472,39 @@ class Matrix(Tuple):
         """Subtracts a matrix from another."""
         return self + -other
 
-    def __mul__(self, other: Union['Matrix', 'Vector', int]) -> Union['Matrix', 'Vector']:
+    def __mul__(self,
+                other: Union['Matrix', 'Vector', int, float, complex]) -> Union['Matrix', 'Vector']:
         """Multiplies two matrices."""
-        if type(other) == int or type(other) == float:
+        if type(other) in (int, float, complex):
             return Matrix.__scalar_multiplication(self, other)
+
         elif type(other) == Vector:
             if self.size()[1] != other.dim():
-                raise MatrixMultiplicationError(str(self.size()[1]), other.dim())
+                raise MatrixSizeError(f"Vector with size {other.dim()} cannot be multiplied"
+                                      f" by matrix with size {self.size()}")
             v_matrix = Matrix(other)
             ret_mat = self * v_matrix
             args = ()
             for e in ret_mat._value:
                 args += (e[0],)
             return Vector(*args)
+
         elif type(other) == Matrix:
             if self.size()[1] != other.size()[0]:
-                raise MatrixMultiplicationError(other.size()[0], self.size()[1])
+                raise MatrixSizeError(f"Matrix with {other.size()[0]} rows cannot be multiplied"
+                                      f" by {self.size()[1]} column matrix.")
             ret_mat = Matrix.create(self.size()[0], other.size()[1])
             for i in range(self.size()[0]):
                 for j in range(other.size()[1]):
-                    ret_mat[i][j] = Vector(*tuple(self.row(i))) * Vector(*tuple(other.column(j)))
+                    ret_mat[i][j] = self.row(i) * other.column(j)
             return ret_mat
 
     __rmul__ = __mul__
 
-    def __pow__(self, power: int):
+    def __pow__(self, power: int) -> 'Matrix':
         """Power operation for matrix^scalar."""
         if self.size()[0] == self.size()[1]:
-            raise MatrixSizeError("Matrix must be quadratic for A^0 = E_m")
+            raise MatrixSizeError("Matrix must be quadratic.")
         if type(power) is not int:
             raise ArgumentError("Power od type"+str(type(power)), int)
         ret_mat = self
@@ -489,11 +512,12 @@ class Matrix(Tuple):
             return self.inverse()
         elif power == 0:
             return Matrix.create_identity(self.size()[0])
-        for i in range(1, power):
-            ret_mat *= self
-        return ret_mat
+        else:
+            for i in range(1, power):
+                ret_mat *= self
+            return ret_mat
 
-    def __scalar_multiplication(self, other):
+    def __scalar_multiplication(self, other: Union[int, float, complex]) -> 'Matrix':
         """Intern scalar multiplication method"""
         args = []
         for i in range(self.size()[0]):
@@ -502,21 +526,18 @@ class Matrix(Tuple):
                 args[i].append(e * other)
         return Matrix(*tuple(args))
 
-    def size(self, option=None):
+    def size(self, option=None) -> list:
         """Returns list of matrix size. [m, n]"""
         if not option:
             return [len(self._value), len(self._value[0])]
         elif option == "xy":
             return [len(self._value[0]), len(self._value)]
 
-    def dim(self):
+    def dim(self) -> int:
+        """Returns the dimension of a matrix."""
         return self.size()[0] * self.size()[1]
 
-    def at(self, m, n):
-        """Returns element at given position. Begins at 0."""
-        return self[m][n]
-
-    def index(self, element):
+    def index(self, element: Union[int, float, complex]) -> list:
         """Returns position of given element in a list. Can contain
         multiple return arguments. If ele is not in matrix an
         empty list is returned.
@@ -528,34 +549,32 @@ class Matrix(Tuple):
                     position.append([self[i].index(e), i])
         return position
 
-    def column(self, cindex):
+    def column(self, column_index: int) -> 'Vector':
         """Returns column with specific index."""
         ret_list = []
         for e in self._value:
-            ret_list.append(e[cindex])
-        return ret_list
+            ret_list.append(e[column_index])
+        return Vector(*tuple(ret_list))
 
-    def row(self, rindex):
+    def row(self, row_index: int) -> 'Vector':
         """Returns row with specific index."""
-        return self[rindex]
+        return Vector(*tuple(self[row_index]))
 
-    def append(self, row=None, column=None):
+    def append(self, row=None, column=None) -> 'Matrix':
         """Method to append rows or columns to matrix."""
         ret_mat = self
         if row:
             if len(row) != self.size()[1]:
-                raise MatrixSizeError(
-                    "Cannot append" + str(len(row)) + "element row to matrix with size" + str(self.size()))
-            ret_mat._value.append(row)
+                raise MatrixSizeError(f"Cannot append {len(row)} element row to matrix with size {self.size()}.")
+            ret_mat._value.append(list(row))
         elif column:
             if len(column) != self.size()[0]:
-                raise MatrixSizeError("Cannot append " + str(len(column))
-                                      + " element row to matrix with size" + str(self.size()))
+                raise MatrixSizeError(f"Cannot append {len(column)} element row to matrix with size{self.size()}")
             for i in range(ret_mat.size()[1]):
                 ret_mat._value[i].append(column[i])
         return ret_mat
 
-    def remove(self, rindex=None, cindex=None):
+    def remove(self, rindex: int = None, cindex: int = None) -> 'Matrix':
         """Returns a matrix with given row or column removed."""
         ret_mat = copy.deepcopy(self)
         if rindex is not None:
@@ -565,14 +584,14 @@ class Matrix(Tuple):
                 del ret_mat._value[i][cindex]
         return ret_mat
 
-    def transpose(self):
+    def transpose(self) -> 'Matrix':
         """Returns transposed matrix."""
         args = []
         for i in range(self.size()[1]):
-            args.append(self.column(i))
+            args.append(list(self.column(i)))
         return Matrix(*tuple(args))
 
-    def det(self):
+    def det(self) -> Union[int, float, complex]:
         """Returns determinant of a matrix."""
         if self.size()[0] != self.size()[1]:
             raise MatrixSizeError("Matrix must be quadratic.")
@@ -588,7 +607,7 @@ class Matrix(Tuple):
 
     __abs__ = det
 
-    def cof(self):
+    def cof(self) -> 'Matrix':
         """Returns cofactor matrix."""
         ret_mat = Matrix.create(self.size()[0], self.size()[1])
         for i in range(self.size()[1]):
@@ -600,12 +619,12 @@ class Matrix(Tuple):
                     ret_mat[i][j] = (-1) ** (i + j) * self.remove(i, j).det()
         return ret_mat
 
-    def adj(self):
+    def adj(self) -> 'Matrix':
         """Returns adjunct of a matrix."""
         ret_mat = copy.deepcopy(self)
         return ret_mat.cof().transpose()
 
-    def inverse(self):
+    def inverse(self) -> 'Matrix':
         """Returns inverted matrix."""
         if self.size()[0] != self.size()[1]:
             raise MatrixSizeError("Matrix must be quadratic.")
@@ -615,32 +634,8 @@ class Matrix(Tuple):
         ret_mat *= 1 / self.det()
         return ret_mat
 
-    # def ref(self):
-    #     """Returns matrix in row echelon form."""
-    #     copy_mat = copy.deepcopy(self)
-    #     for i in range(copy_mat.size()[0]):
-    #         copy_mat._value[i].append(i)
-    #     sorted_rows = []
-    #     for j in range(copy_mat.size()[1]):
-    #         for i in range(copy_mat.size()[0]):
-    #             if (copy_mat._value[i][j] != 0 or j == copy_mat.size()[1] - 1) and copy_mat._value[i] not in sorted_rows:
-    #                 sorted_rows.append(copy_mat._value[i])
-    #     for e in sorted_rows:
-    #         e = e.pop()
-    #     j = 0
-    #     while sorted_rows[0][j] == 0:
-    #         j += 1
-    #     dividend = sorted_rows[0][j]
-    #     for i in range(len(sorted_rows[0])):
-    #         sorted_rows[0][i] /= dividend
-    #     for k in range(j, len(sorted_rows[0])):
-    #         for i in range(1, len(sorted_rows)):
-    #             if sorted_rows[i][j] != 0:
-    #                 pass
-    #     return sorted_rows
-
     @staticmethod
-    def create(m, n):
+    def create(m: int, n: int) -> 'Matrix':
         """Staticmethod to create a m X n matrix that contains
         only zeros.
         """
@@ -652,7 +647,7 @@ class Matrix(Tuple):
         return Matrix(*tuple(args))
 
     @staticmethod
-    def create_identity(rows):
+    def create_identity(rows: int) -> 'Matrix':
         """Staticmethod to create an identity matrix with any
         amount of rows.
         """
@@ -667,13 +662,14 @@ class SLE(Matrix):
     """System of linear equations"""
     def __init__(self, *args):
         """Initializes a matrix that contains both, coefficients and results. Insert in the following way:
-        SLE([a,b,c,d],
-            [e,f,g,h],
-            [i,j,k,l])
+
+        SLE([a_11, a_12, a_13, b_1],
+            [a_21, a_22, a_23, b_2],
+            [a_31, a_32, a_33, b_3])
          for
-         | a x1 + b x2 + c x3 = d |
-         | e x1 + f x2 + g x3 = h |
-         | i x1 + j x2 + k x3 = l |
+         | a_11 x_1 + a_12 x_2 + a_13 x_3 = b_1 |
+         | a_21 x_1 + a_22 x_2 + a_23 x_3 = b_2 |
+         | a_31 x_1 + a_32 x_2 + a_33 x_3 = b_3 |
          """
         super().__init__(*args)
         if self.size()[1] != self.size()[0] + 1:
@@ -684,9 +680,9 @@ class SLE(Matrix):
         the system.
         """
         coefficients = copy.deepcopy(self).remove(cindex=-1)
-        results = Matrix(self.column(-1)).transpose()
+        results = self.column(-1)
         return coefficients.inverse() * results
 
     def x(self, index):
         """Returns the unknown of given index. Starts at 0"""
-        return self.solve().at(index, 0)
+        return self.solve()[index]

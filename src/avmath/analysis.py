@@ -2,98 +2,184 @@
 AdVanced math  analysis submodule
 implementing function features."""
 
-from . import scope as _scope, _Point, log
+__all__ = ["Point", "Function"]
+
+from typing import Union as _Union
+from . import scope as _scope, sgn
+
+real = _Union[int, float]
 
 
-class Point(_Point):
+class Point:
     """Point in coordinate system. (Two dimensions)"""
 
     def __init__(self, x, y):
-        super().__init__(x, y)
+        self.__value = list(args)
+
+    def __getitem__(self, item):
+        return self.__value[item]
 
     def __repr__(self):
         return str(tuple(self.__value))
 
+    def __eq__(self, other):
+        """Returns the equality of two points. Uses _FLOAT_EQ to compare."""
+        for i in range(len(self.__value)):
+            if abs(self.__value[i] - other._value[i]) > _FLOAT_EQ:
+                return False
+            else:
+                pass
+        return True
 
-class f:
 
-    def __init__(self, arg):
-        """Mathematical function. Enter argument as string."""
-        self.formula = arg
-        self.arg_scope = _scope
+class Function:
+    """Mathematical function. Enter argument as string."""
+
+    def __init__(self, arg: str):
+        self.term = arg
+        self._arg_scope = _scope
 
     def __repr__(self):
-        return "f(x) = "+self.formula
+        """Returns string representation"""
+        return f"f(x) = {self.term}"
 
-    def __add__(self, other):
-        ret_formula = self.formula + " + " + other.formula
-        return f(ret_formula)
+    def __add__(self, other: 'Function') -> 'Function':
+        """Adds two functions"""
+        ret_formula = f"{self.term} + ({other.term})"
+        return Function(ret_formula)
 
-    def __neg__(self):
-        return f("-(" + self.formula + ")")
+    def __sub__(self, other: 'Function') -> 'Function':
+        """Subtracts two functions"""
+        ret_formula = f"{self.term} - ({other.term})"
+        return Function(ret_formula)
 
-    def __replace(self):
+    def __mul__(self, other: 'Function') -> 'Function':
+        """Multiplies two functions"""
+        ret_formula = f"({self.term}) * ({other.term})"
+        return Function(ret_formula)
+
+    def __truediv__(self, other: 'Function') -> 'Function':
+        """Divide two functions"""
+        ret_formula = f"({self.term}) / ({other.term})"
+        return Function(ret_formula)
+
+    def __neg__(self) -> 'Function':
+        """Returns negative function"""
+        return Function(f"-({self.term})")
+
+    def replace(self, value: real) -> str:
         """Replaces intuitive elements with correct ones."""
-        self.formula.replace("^", " ** ")
+        return_string = self.term.replace("^", "**")
+        x_positions = [return_string.find("x")]
+        while return_string.find("x", x_positions[-1]+1) != -1:
+            x_positions.append(return_string.find("x", x_positions[-1]+1))
+        for index, e in enumerate(x_positions):
+            coefficient_position = e - 1 + index
+            if coefficient_position == -1:
+                continue
+            try:
+                _ = float(return_string[coefficient_position])
+                return_string = return_string[:coefficient_position+1] + "*" + return_string[e+index:]
+            except ValueError:
+                break
+        return return_string.replace("x", "("+str(value)+")")
 
-    def set_scope(self, scope):
+    def set_scope(self, scope: dict):
         """Sets a new dict as scope."""
-        self.arg_scope = scope
+        self._arg_scope = scope
 
-    def append_scope(self, scope):
+    def append_scope(self, scope: dict):
         """Appends dict to eval() scope. If appended scope contains elements
         that are already defined the appended elements are preferred.
         """
-        self.arg_scope = {**self.arg_scope, **scope}
+        self._arg_scope = {**self._arg_scope, **scope}
 
-    def at(self, value):
+    def at(self, value: real) -> real:
         """Get function value at specific x value."""
-        formula_at = self.formula.replace("x", "("+str(value)+")")
-        return eval(formula_at, self.arg_scope)
+        formula_at = self.replace(value)
+        return eval(formula_at, self._arg_scope)
 
-    def max(self, xmin, xmax, step=None):
+    def max(self,
+            xmin: real,
+            xmax: real,
+            steps: int = 100000) -> _Union[list, float]:
         """Finds maxima of a function in a given space"""
-        if not step:
-            step = (xmax - xmin) * 1e-4
-        maxima = []
-        position = xmin
-        last_position = xmin
-        b_last_position = xmin
-        while position <= xmax:
-            b_last_position = last_position
-            last_position = position
-            position += step
-            digits = 12 #round(log(1/step, 10))
-            if round(self.at(b_last_position), digits) < round(self.at(last_position), digits) and round(self.at(last_position), digits) > round(self.at(position), digits):
-                print(self.at(last_position), step)
-                if step < 1e-14:
-                    maxima.append(Point(last_position, self.at(last_position)))
-                else:
-                    maxima.append(*tuple(self.max(b_last_position, position)))
-        return maxima
+        x_pos = xmin
+        if abs(self.numdif(x_pos)) < 1e-3:
+            return x_pos
+        step = (xmax - xmin) / steps
+        x_list = []
+        for _ in range(steps):
+            if sgn(self.numdif(x_pos)) != sgn(self.numdif(x_pos + step)):
+                x_list.append((x_pos, x_pos + step))
+            x_pos += step
+        ret_list = []
+        for e in x_list:
+            ret_list.append(self.max(*e))
+        return_list = []
+        for e in ret_list:
+            if self.scnd_numdif(e) < 0:
+                return_list.append(Point(e, self.at(e)))
+        return return_list
 
-    def min(self, xmin, xmax, step=None):
+    def min(self,
+            xmin: real,
+            xmax: real,
+            steps: int = 100000) -> list:
         """Finds minima of a function in a given spqce"""
-        if not step:
-            step = (xmax - xmin) * 1e-5
         neg_func = -self
-        neg_maxima = neg_func.max(xmin, xmax, step)
-        minima = []
-        for e in neg_maxima:
-            minima.append(Point(e[0], self.at(e[0])))
-        return minima
+        return neg_func.max(xmin, xmax, steps=steps)
 
-    def numdif(self, x, h=None):
-        """Returns numerical differentiation of function at a given x value"""
-        if not h:
-            h = 1e-10
-        res = (self.at(x+h) - self.at(x)) / h
-        return res
+    def root(self,
+             xmin: real,
+             xmax: real,
+             step: int = 1000) -> list:
+        """Find roots of functions with f(x) = 0.
+        Returns only x-coordinate.
+        """
+        sgn_step = (xmax - xmin) / step
+        x_pos = xmin
+        candidates = []
+        for i in range(step):
+            if sgn(self.at(x_pos)) != sgn(self.at(x_pos+sgn_step)):
+                candidates.append(x_pos)
+            x_pos += sgn_step
+        return_list = []
+        for element in candidates:
+            if not self.newton_method(element) in return_list:
+                return_list.append(self.newton_method(element))
+        return return_list
 
-    def numint(self, a, b, n=None):
-        """Returns the numerical integral of a function in a given space"""
-        if not n:
-            n = 1000
+    def newton_method(self,
+                      x_n: real,
+                      step: int = 50) -> float:
+        """Newton's method to find root of function from given point x_n.
+        x_{n+1} = x_n - f(x_n) / f'(x_n)
+        """
+        for _ in range(step):
+            x_np1 = x_n - self.at(x_n) / self.numdif(x_n)
+            x_n = x_np1
+        return x_n
+
+    def numdif(self,
+               x: real,
+               h: real = 1e-5) -> float:
+        """Returns numerical differentiation of function at a given x value."""
+        return (self.at(x+h) - self.at(x-h)) / (2*h)
+
+    def scnd_numdif(self,
+                    x: real,
+                    h: real = 1e-5):
+        """Returns numerical second order differentiation of function at x value."""
+        x1 = self.numdif(x-h)
+        x2 = self.numdif(x+h)
+        return (x2 - x1) / (2*h)
+
+    def numint(self,
+               a: real,
+               b: real,
+               n: int = 1000):
+        """Returns the numerical integral of a function in a given space."""
         res = (b - a) / n
         term = 0
         for i in range(n):
