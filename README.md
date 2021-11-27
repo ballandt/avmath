@@ -1,6 +1,5 @@
 # AdVanced Math
 
----
 _Avmath_ is a python library for mathematics.
 
 ## Contents
@@ -11,6 +10,7 @@ _Avmath_ is a python library for mathematics.
 * [Features](#features)
 * [Changelog](CHANGELOG.md)
 * [Developments](DEVELOPMENTS.md)
+* [Documentation](DOC.md)
 * [Releases](https://www.github.com/ballandt/avmath/releases)
 ---
 
@@ -41,18 +41,54 @@ the avmath project started on 22nd of March 2021.
 ## Features
 
 * [Basic features](https://www.github.com/ballandt/avmath/blob/master/scr/avmath/__init__.py)
-  * trigonometry
-  * faculties
-  * constants
+  * __fractions__
+    * Basic operations
+    * reducing
+  * __primes__
+    * detection of primes
+    * primes < 100
+  * __trigonometry__
+    * trigonometrical functions (sine, cosine, tangent)
+    * inverse trigonometrical functions (arc sine, arc cosine, arc tangent)
+    * hyperbolic functions (hyperbolic sine, hyp. cosine, hyp. tangent)
+    * inverted hyperbolic functions (inverse hyp. sine, inv. hyp. cosine, inv. hyp. tangent)
+  * __faculties__
+    * simple and double faculties
+  * __constants__
+    * pi
+    * e
+    * phi
+    * gamma
 
 * [Linear algebra](https://www.github.com/ballandt/avmath/blob/master/src/evmath/algebra.py)
-  * vectors
-  * matrices
-  * point structures
-  * systems of linear equations
+  * __tuples__
+    * Basic iterable operations
+    * basic mathematical operations
+    * parent class for vector and matrix
+  * __vectors__
+    * basic operations
+    * vector product, spat product
+    * angle between vectors
+  * __matrices__
+    * matrix visual representation
+    * basic operations
+    * determinant
+    * transposed matrix
+    * cofactor matrix
+    * adjunct of matrix
+    * inverse matrix
+    * row echelon form, reduced row echelon form
+    * rank of a matrix
+  * __point structures__
+    * circumference
+    * area
+  * __systems of linear equations__
 
 * [Analysis](https://www.github.com/ballandt/avmath/blob/master/src/evmath/analysis.py)
-  * mathematical functions
-  * maxima / minima
-  * roots
-  * numerical differentiation and integral
+  * __functions__
+    * usual input possibility
+    * basic calculations
+    * maxima / minima
+    * roots
+    * numerical first and second differentiation
+    * numerical integral

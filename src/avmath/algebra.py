@@ -712,7 +712,7 @@ class Matrix(Tuple):
         return ret_mat.cof().transpose()
 
     def inverse(self) -> 'Matrix':
-        """Returns inverted matrix."""
+        """Returns inverse matrix."""
         if self.size()[0] != self.size()[1]:
             raise MatrixSizeError("Matrix must be quadratic.")
         if self.det() == 0:

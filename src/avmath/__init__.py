@@ -120,6 +120,8 @@ class Fraction:
     def __sub__(self, other: _Union['Fraction', int, float]) -> 'Fraction':
         return self + -other
 
+    __rsub__ = __sub__
+
     def __mul__(self, other: _Union['Fraction', int, float]) -> 'Fraction':
         if type(other) in (int, float):
             return Fraction(self.a * other, self.b)
@@ -177,6 +179,7 @@ def is_even(x):
 
 
 def is_prime(x):
+    """Checks if integer is prime."""
     int_root = int(x ** 0.5)
     for i in range(2, int_root):
         if x / i == x // i:
@@ -185,6 +188,7 @@ def is_prime(x):
 
 
 def gcd(x, y):
+    """Greatest common divisor."""
     while x % y != 0:
         r = x % y
         x = y
@@ -193,6 +197,7 @@ def gcd(x, y):
 
 
 def lcm(x, y):
+    """Least common multiply."""
     return int(abs(x * y) / gcd(x, y))
 
 
@@ -289,7 +294,7 @@ def tan(x):
 
 
 def arcsin(x):
-    """Arcus sine"""
+    """Arc sine"""
     if x > 1:
         raise ArgumentError("x > 1", "x <= 1")
     if x == 1:
@@ -306,12 +311,12 @@ def arcsin(x):
 
 
 def arccos(x):
-    """Arcus cosine"""
+    """Arc cosine"""
     return pi/2 - arcsin(x)
 
 
 def arctan(x):
-    """Arcus tangent"""
+    """Arc tangent"""
     res = 0
     k = 0
     if abs(x) <= 1:
@@ -338,7 +343,7 @@ def arctan(x):
 
 
 def sinh(x):
-    """Hyperbolic sin"""
+    """Hyperbolic sine"""
     res = 0
     k = 0
     while True:

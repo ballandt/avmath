@@ -1,7 +1,5 @@
 # Avmath developments
 
----
-
 ## Contents
 
 ---
