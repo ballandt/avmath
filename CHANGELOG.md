@@ -32,6 +32,16 @@
 * new constant `avmath.gamma` for Euler-Mascheroni constant
 * new function `avmath.sgn()` for signum function
 * `__all__` for `__init__.py`, `algebra.py` and `analysis.py`
+* introduction of class `avmath.Fraction` for handling of fractions, particularly in linear algebra
+* `avmath.algebra.Tuple`, `[...].Vector` and `[...].Matrix` classes contain `__truediv__()` functions returning `Fraction`
+* `avmath.algebra.Tuple`, `[...].Vector` and `[...].Matrix` classes contain `no_fractions` functions returning objects with no fractions
+* introduction of `avmath.algebra.Matrix.ref()` row echelon form
+* introduction of `[...].Matrix.rank()` rank of a matrix
+* introduction of `[...].Matrix.rref()` reduced row echelon form of a matrix
+* introduction of `avmath.is_prime()` checking if integer is prime
+* introduction of `avmath.two_digit_primes` list containing all primes < 100
+* introduction of `avmath.gdc()` greatest common divisor
+* introduction of `avmath.lcm()` least common multiply
 
 #### Bug fixes
 * `avmath.fac()` checks if input can be interpreted as integer
@@ -39,6 +49,7 @@
 * trigonometric functions use `while`-loops and `_TAYLOR_DIFFERENCE` to calculate to the best return value possible
 * `avmath.cos()` works properly with negative values
 * `avmath.analysis.Function.max()` does not raise RecursionError
+* `avmath.algebra.Matrix.inverse()` works more accurately due to Fractions
 
 ---
 ## 2.0.0 (2021-10-24)
