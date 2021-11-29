@@ -5,31 +5,17 @@ implementing function features."""
 __all__ = ["Point", "Function"]
 
 from typing import Union as _Union
-from . import scope as _scope, sgn
+from . import scope as _scope, sgn, Tuple, Fraction
 
-real = _Union[int, float]
+real = _Union[int, float, Fraction]
 
 
-class Point:
+class Point(Tuple):
     """Point in coordinate system. (Two dimensions)"""
 
-    def __init__(self, x, y):
-        self.__value = list(args)
-
-    def __getitem__(self, item):
-        return self.__value[item]
-
-    def __repr__(self):
-        return str(tuple(self.__value))
-
-    def __eq__(self, other):
-        """Returns the equality of two points. Uses _FLOAT_EQ to compare."""
-        for i in range(len(self.__value)):
-            if abs(self.__value[i] - other._value[i]) > _FLOAT_EQ:
-                return False
-            else:
-                pass
-        return True
+    def __init__(self, x: real, y: real):
+        """Initializese the point. Give x and y value."""
+        super().__init__(x, y)
 
 
 class Function:

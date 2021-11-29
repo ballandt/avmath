@@ -8,26 +8,9 @@ import copy
 import logging
 from typing import Union, Optional
 
-from . import ArgumentError, Fraction, sin, arccos, _check_types
+from . import ArgumentError, DimensionError, Fraction, Tuple, sin, arccos, _check_types
 
 __all__ = ["Tuple", "Structure", "Matrix", "Vector", "SLE"]
-
-
-class DimensionError(Exception):
-    """Raised if arguments have different amount of dimensions."""
-
-    def __init__(self, got=None, want=None, other=None):
-        if other is None:
-            self.got = got
-            self.want = want
-        else:
-            self.other = other
-
-    def __str__(self):
-        try:
-            return f"Wrong amount of dimensions. Expected {self.want}; got {self.got}"
-        except AttributeError:
-            return self.other
 
 
 class GeometricalError(Exception):
@@ -70,113 +53,15 @@ class GeometricalWarning:
         GeometricalWarning.__warning = False
 
 
-class Tuple:
-    """Algebraic tuple. Can also be interpreted as point in the coordinate system."""
-
-    def __init__(self, *args: Union[int, float, list, Fraction]):
-        _check_types(args, int, float, list, Fraction)
-        if type(args[0]) in (list, tuple) and len(args) == 1:
-            self._value = list(args[0])
-        else:
-            self._value = list(args)
-
-    def __iter__(self):
-        """Returns iterator to convert tuple to iterable object."""
-        for ele in self._value:
-            yield ele
-
-    def __getitem__(self, item):
-        """Returns value of 'item's dimension."""
-        return self._value[item]
-
-    def __repr__(self) -> str:
-        """Returns string representation."""
-        return str(tuple(self._value))
-
-    def __eq__(self, other: 'Tuple') -> bool:
-        """Checks if elements are equal."""
-        return self._value == other._value
-
-    def __len__(self) -> int:
-        """Returns the length or dimension of a tuple"""
-        return len(self._value)
-
-    dim = __len__
-
-    def __neg__(self):
-        """Returns negative tuple."""
-        return self * -1
-
-    def __add__(self, other: 'Tuple') -> 'Tuple':
-        """Adds two tuples:
-        a + b = (a_1 + b_1, a_2 + b_2, ... , a_n + b_n)
-        """
-        if not Tuple.dim_check(self, other):
-            raise DimensionError(other.dim(), self.dim())
-        result = []
-        for i in range(self.dim()):
-            result.append(self[i] + other[i])
-        return Tuple(*tuple(result))
-
-    def __sub__(self, other: 'Tuple') -> 'Tuple':
-        """Reversed addition:
-        a - b = a + (-b)
-        """
-        return self + -other
-
-    def __mul__(self, other: Union[int, float, 'Fraction']):
-        """Scalar multiplication:
-        r * a = (r*a_1, r*a_2, ... , r*a_n)    (a e R^n, r e R)
-        """
-        result = []
-        for ele in self._value:
-            result.append(ele * other)
-        return Tuple(*tuple(result))
-
-    __rmul__ = __mul__
-
-    def __truediv__(self, other: Union[int, float, 'Fraction']):
-        """Division. Tuple by number only.Though mathematically
-        incorrect gives the possibility to return fractions for
-        correct division.
-        """
-        ret_list = []
-        for e in self:
-            if type(e) == Fraction:
-                ret_list.append(e / other)
-            else:
-                ret_list.append(Fraction(e, other))
-        return Tuple(ret_list)
-
-    def append(self, value: Union[int, float, 'Fraction']):
-        """Expands tuple by args dimensions."""
-        ret_value = copy.deepcopy(self._value)
-        ret_value.append(value)
-        return Tuple(ret_value)
-
-    @staticmethod
-    def dim_check(*args) -> bool:
-        """Checks if arguments have the same amount of dimensions."""
-        dimension = args[0].dim()
-        for ele in args:
-            if not ele.dim() == dimension:
-                return False
-        return True
-
-    def no_fractions(self):
-        """Returns Tuple that does not contain Fractions. Converts Fractions to float."""
-        return Tuple([float(e) for e in self])
-
-    @staticmethod
-    def triangulate(p: 'Tuple', q: 'Tuple', r: 'Tuple') -> float:
-        """Returns area between three points."""
-        abv = Vector(begin=p, end=q)
-        acv = Vector(begin=p, end=r)
-        c = abs(abv)
-        b = abs(acv)
-        phi = Vector.angle(abv, acv)
-        area = 0.5 * b * c * (sin(phi))
-        return area
+def triangulate(p: 'Tuple', q: 'Tuple', r: 'Tuple') -> float:
+    """Returns area between three points."""
+    abv = Vector(begin=p, end=q)
+    acv = Vector(begin=p, end=r)
+    c = abs(abv)
+    b = abs(acv)
+    phi = Vector.angle(abv, acv)
+    area = 0.5 * b * c * (sin(phi))
+    return area
 
 
 class Vector(Tuple):
@@ -240,7 +125,7 @@ class Vector(Tuple):
         self.abs = res ** 0.5
         return self.abs
 
-    def __add__(self, other):
+    def __add__(self, other: 'Vector') -> 'Vector':
         """Adds two tuples:
         a + b = (a_1 + b_1, a_2 + b_2, ... , a_n + b_n)
         """
@@ -251,14 +136,15 @@ class Vector(Tuple):
             result.append(self[i] + other[i])
         return Vector(*tuple(result))
 
-    def __sub__(self, other):
+    def __sub__(self, other: 'Vector') -> 'Vector':
         """Reversed addition:
         a - b = a + (-b)
         """
         return self + -other
 
     def __mul__(self, other: Union['Vector', int, float]) -> Union['Vector', int, float]:
-        """Scalar multiplication of two vectors.
+        """Either scalar product of two vectors or
+        scalar multiplication of scalar and vector.
         Insert
         Vector(a_1, a_2, [...], a_n) * Vector(b_1, b_2, [...], b_n)
         For
@@ -275,7 +161,7 @@ class Vector(Tuple):
 
     __rmul__ = __mul__
 
-    def __truediv__(self, other: Union[int, float, Fraction]):
+    def __truediv__(self, other: Union[int, float, 'Fraction']):
         """Division. Vector by number only.Though mathematically
         incorrect gives the possibility to return fractions for
         correct division.
@@ -360,20 +246,6 @@ class Vector(Tuple):
         return (u.cross(v)) * w
 
     @staticmethod
-    def flat(*args: 'Vector') -> bool:
-        """Returns 'True' if area between vectors is flat. Else returns 'False'"""
-        twodims = True
-        for e in args:
-            twodims = twodims and e.dim() == 2
-        if twodims:
-            return True
-        unitvector = args[0].unit()
-        for e in args:
-            if e.unit() != unitvector:
-                return False
-        return True
-
-    @staticmethod
     def angle(u: 'Vector', v: 'Vector') -> float:
         """Returns angle between two vectors.
         Insert
@@ -428,7 +300,7 @@ class Structure:
         if not self.flat():
             GeometricalWarning("Area does not seem to be flat.")
         for i in range(1, len(self.points) - 1):
-            area += Tuple.triangulate(self.points[0], self.points[i], self.points[i + 1])
+            area += triangulate(self.points[0], self.points[i], self.points[i + 1])
         return area
 
 
@@ -443,9 +315,9 @@ class Matrix(Tuple):
                [a_21, a_22, a_23],
                [a_31, a_32, a_33])
         for
-        ┌ a_11  a_12 a_13 ┐
-        | a_21  a_22 a_23 |
-        └ a_31 a_32 a_33  ┘
+        ┌ a_11  a_12  a_13 ┐
+        | a_21  a_22  a_23 |
+        └ a_31  a_32  a_33 ┘
         """
         if type(args[0]) == Vector and len(args) == 1:
             value = []
@@ -499,13 +371,6 @@ class Matrix(Tuple):
                 ret_str += "|"
             ret_str += "\n"
         return ret_str
-
-    def __contains__(self, item: Union[int, float]) -> bool:
-        """Returns if element is in matrix."""
-        ret_val = True
-        for e in self._value:
-            ret_val = ret_val and (item in e)
-        return ret_val
 
     def __round__(self, n: int = None) -> 'Matrix':
         """Returns matrix with rounded values."""
@@ -570,7 +435,7 @@ class Matrix(Tuple):
 
     __rmul__ = __mul__
 
-    def __truediv__(self, other):
+    def __truediv__(self, other: Union[int, float, 'Fraction']) -> 'Matrix':
         """Division. Matrix by number only.Though mathematically
         incorrect gives the possibility to return fractions for
         correct division.
@@ -663,14 +528,14 @@ class Matrix(Tuple):
                 ret_mat._value[i].append(column[i])
         return ret_mat
 
-    def remove(self, rindex: int = None, cindex: int = None) -> 'Matrix':
+    def remove(self, row_index: int = None, column_index: int = None) -> 'Matrix':
         """Returns a matrix with given row or column removed."""
         ret_mat = copy.deepcopy(self)
-        if rindex is not None:
-            del ret_mat._value[rindex]
-        if cindex is not None:
+        if row_index is not None:
+            del ret_mat._value[row_index]
+        if column_index is not None:
             for i in range(len(ret_mat._value)):
-                del ret_mat._value[i][cindex]
+                del ret_mat._value[i][column_index]
         return ret_mat
 
     def transpose(self) -> 'Matrix':
@@ -710,8 +575,7 @@ class Matrix(Tuple):
 
     def adj(self) -> 'Matrix':
         """Returns adjunct of a matrix."""
-        ret_mat = copy.deepcopy(self)
-        return ret_mat.cof().transpose()
+        return self.cof().transpose()
 
     def inverse(self) -> 'Matrix':
         """Returns inverse matrix."""
@@ -779,20 +643,20 @@ class Matrix(Tuple):
         return Matrix(*tuple(args))
 
     @staticmethod
-    def create_identity(rows: int) -> 'Matrix':
+    def create_identity(n: int) -> 'Matrix':
         """Staticmethod to create an identity matrix with any
         amount of rows.
         """
-        ret_mat = Matrix.create(rows, rows)
-        for i in range(rows):
-            for j in range(rows):
+        ret_mat = Matrix.create(n, n)
+        for i in range(n):
+            for j in range(n):
                 ret_mat[i][j] = 1 if i == j else 0
         return ret_mat
 
 
 class SLE(Matrix):
     """System of linear equations"""
-    def __init__(self, *args):
+    def __init__(self, *args: list):
         """Initializes a matrix that contains both, coefficients and results. Insert in the following way:
 
         SLE([a_11, a_12, a_13, b_1],
@@ -806,15 +670,15 @@ class SLE(Matrix):
         super().__init__(*args)
         if self.size()[1] != self.size()[0] + 1:
             raise MatrixError("Matrix for SLE must have the size m x n where n = m +1")
-        self.A = self.remove(cindex=-1)
+        self.A = self.remove(column_index=-1)
         self.b = self.column(-1)
 
-    def solve(self):
+    def solve(self) -> 'Vector':
         """Splits matrix in coefficients and results and uses matrix multiplication to solve
         the system.
         """
         return self.A.inverse() * self.b
 
-    def x(self, index):
+    def x(self, index: int) -> Union[int, float, 'Fraction']:
         """Returns the unknown of given index. Starts at 0"""
         return self.solve()[index]

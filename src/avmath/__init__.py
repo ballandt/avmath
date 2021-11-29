@@ -13,7 +13,8 @@ __author__ = "Camillo Ballandt"
 __version__ = "3.0.0"
 __date__ = "2021/12/01"
 
-__all__ = ["sin", "cos", "tan",
+__all__ = ["Fraction", "Tuple",
+           "sin", "cos", "tan",
            "arcsin", "arccos", "arctan",
            "sinh", "cosh", "tanh",
            "arsinh", "arcosh", "artanh",
@@ -21,6 +22,7 @@ __all__ = ["sin", "cos", "tan",
            "pi", "e", "phi", "gamma"]
 
 import time
+import copy
 from typing import Union as _Union, Iterable as _Iterable
 
 _TAYLOR_DIFFERENCE = 1e-16
@@ -43,6 +45,23 @@ class ArgumentError(Exception):
 
     def __str__(self):
         return f"False argument given. Expected {self.want}, got {self.got}."
+
+
+class DimensionError(Exception):
+    """Raised if arguments have different amount of dimensions."""
+
+    def __init__(self, got=None, want=None, other=None):
+        if other is None:
+            self.got = got
+            self.want = want
+        else:
+            self.other = other
+
+    def __str__(self):
+        try:
+            return f"Wrong amount of dimensions. Expected {self.want}; got {self.got}"
+        except AttributeError:
+            return self.other
 
 
 class Fraction:
@@ -163,6 +182,104 @@ class Fraction:
 
     def int_args(self) -> bool:
         return type(self.a) == int and type(self.b) == int
+
+
+class Tuple:
+    """Algebraic tuple. Can also be interpreted as point in the coordinate system."""
+
+    def __init__(self, *args: _Union[int, float, list, Fraction]):
+        _check_types(args, int, float, list, Fraction)
+        if type(args[0]) in (list, tuple) and len(args) == 1:
+            self._value = list(args[0])
+        else:
+            self._value = list(args)
+
+    def __iter__(self):
+        """Returns iterator to convert tuple to iterable object."""
+        for ele in self._value:
+            yield ele
+
+    def __getitem__(self, item):
+        """Returns value of 'item's dimension."""
+        return self._value[item]
+
+    def __repr__(self) -> str:
+        """Returns string representation."""
+        return str(tuple(self._value))
+
+    def __eq__(self, other: 'Tuple') -> bool:
+        """Checks if elements are equal."""
+        return self._value == other._value
+
+    def __len__(self) -> int:
+        """Returns the length or dimension of a tuple"""
+        return len(self._value)
+
+    dim = __len__
+
+    def __neg__(self):
+        """Returns negative tuple."""
+        return self * -1
+
+    def __add__(self, other: 'Tuple') -> 'Tuple':
+        """Adds two tuples:
+        a + b = (a_1 + b_1, a_2 + b_2, ... , a_n + b_n)
+        """
+        if not Tuple.dim_check(self, other):
+            raise DimensionError(other.dim(), self.dim())
+        result = []
+        for i in range(self.dim()):
+            result.append(self[i] + other[i])
+        return Tuple(*tuple(result))
+
+    def __sub__(self, other: 'Tuple') -> 'Tuple':
+        """Reversed addition:
+        a - b = a + (-b)
+        """
+        return self + -other
+
+    def __mul__(self, other: _Union[int, float, 'Fraction']):
+        """Scalar multiplication:
+        r * a = (r*a_1, r*a_2, ... , r*a_n)    (a e R^n, r e R)
+        """
+        result = []
+        for ele in self._value:
+            result.append(ele * other)
+        return Tuple(*tuple(result))
+
+    __rmul__ = __mul__
+
+    def __truediv__(self, other: _Union[int, float, 'Fraction']):
+        """Division. Tuple by number only.Though mathematically
+        incorrect gives the possibility to return fractions for
+        correct division.
+        """
+        ret_list = []
+        for ele in self:
+            if type(ele) == Fraction:
+                ret_list.append(ele / other)
+            else:
+                ret_list.append(Fraction(ele, other))
+        return Tuple(ret_list)
+
+    def append(self, value: _Union[int, float, 'Fraction']):
+        """Expands tuple by args dimensions."""
+        ret_value = copy.deepcopy(self._value)
+        ret_value.append(value)
+        return Tuple(ret_value)
+
+    @staticmethod
+    def dim_check(*args) -> bool:
+        """Checks if arguments have the same amount of dimensions."""
+        dimension = args[0].dim()
+        for ele in args:
+            if not ele.dim() == dimension:
+                return False
+        return True
+
+    def no_fractions(self):
+        """Returns Tuple that does not contain Fractions. Converts Fractions to float."""
+        return Tuple([float(ele) for ele in self])
 
 
 def _check_types(arg: _Iterable, *types):

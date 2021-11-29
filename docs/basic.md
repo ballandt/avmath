@@ -1,17 +1,12 @@
-# Avmath Documentation
+# Avmath basic math documentation
 
-The following passages document the functionality of  the avmath math module.
-The documentation is currently built and not yet complete. 
----
+The `avmath.__init__.py` file provides basic math features.
+It can be used importing:
+````python
+# pip install avmath
+import avmath
+````
 
-## Contents
-
-* [Constants](#constants)
-* Arithmetics
-  * [Fractions](#fraction)
-  * [Functions](#arithmetic-functions)
-
----
 
 ## Constants
 
@@ -100,7 +95,56 @@ gives the output
 >>> 2
 ````
 ---
+## `Tuple`
 
+The Tuple class is the base class for the algebra submodule classes and the `avmath.analysis.Point` class.
+It defines interaction methods inherited by the other classes.
+The methods of `Tuple` simulate an immutable type.
+
+### Attributes and methods
+
+Attribute | Usage | Implemented in version | Last change
+--- | --- | --- | ---
+`self._value` | Stores the values of the Tuple | v3.0.0 | v3.0.0
+
+Method | Parameters | Usage | Implemented in version | Last change
+--- | --- | --- | --- | ---
+`__init__` | `*args: Union[int, float, list, Fraction]` | Initialisation of the object | v3.0.0 | v3.0.0
+`__iter__` | - | Returns generator to convert Tuple to iterable object. | v3.0.0 | v3.0.0
+`__getitem__` | `item` | Get item method for Tuple. | v3.0.0 | v3.0.0
+`__repr__` | - | Returns string of Tuple in form `(a, b, c)` | v3.0.0 | v3.0.0
+`__eq__` | `other: 'Tuple'` | Equality checker for Tuple | v3.0.0 | v3.0.0
+`__len__` <br> `dim` | - | Returns the length or amount of dimensions of a Tuple | v3.0.0 | v3.0.0
+`__neg__` | - | Returns negative Tuple | v3.0.0 | v3.0.0
+`__add__` | `other: 'Tuple'` | Tuple addition method | v3.0.0 | v3.0.0
+`__sub__` | `other: 'Tuple'` | Negative Tuple addition | v3.0.0 | v3.0.0
+`__mul__` <br> `__rmul__` | `other: Union[int, float, 'Fraction']` | Scalar multiplication | v3.0.0 | v3.0.0
+`__truediv__` | `other: Union[int, float, 'Fraction']` | Division by scalar. Returns fraction to bypass floats. | v3.0.0 | v3.0.0
+`append` | `value: Union[int, float, 'Fraction']` | Returns Tuple with the value appended to `self._value` | v3.0.0 | v3.0.0
+`no_fractions` | - | Returns Tuple that does not contain Fraction members | v3.0.0 | v3.0.0
+
+Static method | Parameters | Usage | Implemented in version | Last change
+--- | --- | --- | --- | ---
+`dim_check` | `*args` | Returns `True` if all given values have the same amount of dimensions. Else returns `False` | v3.0.0 | v3.0.0
+`triangulate` | `p: 'Tuple'`, <br> `q: 'Tuple'`, <br> `r: 'Tuple'` | Calculates the area between three points. | v3.0.0 | v3.0.0
+
+### Initialisation
+
+Tuple can be initialised giving either numbers as parameters or a list.
+```python
+import avmath
+
+# Initialisation via numbers
+a = avmath.Tuple(1, 2, 4)
+
+# Initialisation via iterable object
+b_list = [4, 3, 4.9]
+b = avmath.Tuple(b_list)
+```
+Tuples are printed like built-in `tuple`s.
+
+
+---
 ## Arithmetic functions
 
 ### `is_prime(x)`
@@ -152,9 +196,8 @@ Parameters for `opt`:
 * `'double'`: Returns double faculty [^1]
 
 
-[^1]: Double faculty is an operation that factorizes
-* all odd numbers less equal the value if the value is odd
-* all even numbers less equal the value if it is even
+[^1]: Double faculty is an operation that factorizes all odd numbers less equal the value if the value is odd
+and all even numbers less equal the value if it is even
 
 ---
 ### `ln(x)`
@@ -240,11 +283,11 @@ Function returning the arc sine of a number -1 < x < 1 using
 Calculation time increases when approaching |1|. Function may be stopped
 by `_MAX_CALCULATION_TIME`. Values of -1 and 1 are manually set.
 
-x-domain | precise post comma decimal places
+Difference of x-value to `abs(1)` | precise post comma decimal places
 --- | ---:
-`-0.9` to `0.9` | 15
-`-0.99` to `0.99` | 13
-`-0.999` to `0.999` | 4
+`0.1` to `0.9` | 15
+`0.01` to `0.1` | 13
+`0.001` to `0.01` | 4
 
 ---
 ### `arccos(x)`
@@ -255,11 +298,11 @@ Function returning the arc cosine of a number -1 < x < 1 using
 arccos(x) = &pi; / 2 - arcsin(x). Due to the usage of `arcsin(x)`,
 the accuracy stays the same.
 
-x-domain | precise post comma decimal places
+Difference of x-value to `abs(1)` | precise post comma decimal places
 --- | ---:
-`-0.9` to `0.9` | 15
-`-0.99` to `0.99` | 13
-`-0.999` to `0.999` | 4
+`0.1` to `0.9` | 15
+`0.01` to `0.1` | 13
+`0.001` to `0.01` | 4
 
 ---
 ### `arctan(x)`
@@ -354,80 +397,3 @@ of a number -1 < x < 1. Therefore, uses Artanh(x) = 0.5 ln((1 + x) / (1 - x)).
 x-domain | precise post comma decimal places
 --- | ---:
 entire domain | 12-14
-
----
-## Algebra
-The `avmath.algebra` submodule provides functionalities for
-linear algebra. It contains the classes
-
-Class | Usage | Implemented in version | Last change
---- | --- | --- | ---
-[`Tuple`](#tuple) | Mathematical tuple. May also be interpreted as point | v3.0.0 | v3.0.0
-`Vector` | Vector | v1.0.0 | v3.0.0
-`Matrix` | Matrix | v1.0.0 | v3.0.0
-
-### `Tuple`
-
-The Tuple class is the base class of the algebra submodule.
-It defines interaction methods inherited by the other classes.
-
-#### Attributes and methods
-
-Attribute | Usage | Implemented in version | Last change
---- | --- | --- | ---
-`self._value` | Stores the values of the Tuple | v3.0.0 | v3.0.0
-
-Method | Parameters | Usage | Implemented in version | Last change
---- | --- | --- | --- | ---
-`__init__` | `*args: Union[int, float, list, Fraction]` | Initialisation of the object | v3.0.0 | v3.0.0
-`__iter__` | - | Returns generator to convert Tuple to iterable object. | v3.0.0 | v3.0.0
-`__getitem__` | `item` | Get item method for Tuple. | v3.0.0 | v3.0.0
-`__repr__` | - | Returns string of Tuple in form `(a, b, c)` | v3.0.0 | v3.0.0
-`__eq__` | `other: 'Tuple'` | Equality checker for Tuple | v3.0.0 | v3.0.0
-`__len__` <br> `dim` | - | Returns the length or amount of dimensions of a Tuple | v3.0.0 | v3.0.0
-`__neg__` | - | Returns negative Tuple | v3.0.0 | v3.0.0
-`__add__` | `other: 'Tuple'` | Tuple addition method | v3.0.0 | v3.0.0
-`__sub__` | `other: 'Tuple'` | Negative Tuple addition | v3.0.0 | v3.0.0
-`__mul__` <br> `__rmul__` | `other: Union[int, float, 'Fraction']` | Scalar multiplication | v3.0.0 | v3.0.0
-`__truediv__` | `other: Union[int, float, 'Fraction']` | Division by scalar. Returns fraction to bypass floats. | v3.0.0 | v3.0.0
-`append` | `value: Union[int, float, 'Fraction']` | Returns Tuple with the value appended to `self._value` | v3.0.0 | v3.0.0
-`no_fractions` | - | Returns Tuple that does not contain Fraction members | v3.0.0 | v3.0.0
-
-Static method | Parameters | Usage | Implemented in version | Last change
---- | --- | --- | --- | ---
-`dim_check` | `*args` | Returns `True` if all given values have the same amount of dimensions. Else returns `False` | v3.0.0 | v3.0.0
-`triangulate` | `p: 'Tuple'`, <br> `q: 'Tuple'`, <br> `r: 'Tuple'` | Calculates the area between three points. | v3.0.0 | v3.0.0
-
-#### Initialisation
-
-Tuple can be initialised giving either numbers as parameters or a list.
-```python
-from avmath import algebra
-
-a = algebra.Tuple(1, 2, 4)
-
-b_list = [4, 3, 4.9]
-b = algebra.Tuple(b_list)
-```
-Tuples are printed like built-in `tuple`s.
-
----
-## Errors
-
-Avmath provides its own errors representing specific issues in the usage.
-
-Error | Cause | Implemented in version | Last change
---- | --- | --- | ---
-`ArgumentError` | The argument given to a function or method is wrong. | v1.0.0 | v3.0.0
-`algebra.DimensionError` | The arguments of an operation have a different amount of dimensions and therefore cannot be combined | v1.0.0 | v3.0.0
-`algebra.GeometricalError` | A geometrical construction cannot be done due to false arguments | v1.0.0 | v3.0.0
-`algebra.MatrixError` | Matrix-argument to an operation is inappropriate. Often handles size issues. | v1.0.0 | v3.0.0
-
-### Warnings
-
-Avmath also contains warnings using the logging module.
-
-Warning | Cause | Implemented in version | Last change
---- | --- | --- | ---
-`algebra.GeometricalWarning` | A geometrical instruction is possible yet there may be unwanted conditions. Can be disabled running the `GeometricalWarning.disable()` method. | v1.0.0 | v3.0.0
-
