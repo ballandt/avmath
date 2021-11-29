@@ -40,8 +40,8 @@ class GeometricalError(Exception):
         return self.arg
 
 
-class MatrixSizeError(Exception):
-    """Raised if operations require matrix with wrong size."""
+class MatrixError(Exception):
+    """Raised if matrix operations fail due to inappropriate matrices."""
 
     def __init__(self, issue):
         self.arg = issue
@@ -64,7 +64,7 @@ class GeometricalWarning:
             pass
 
     @classmethod
-    def disable_warning(cls):
+    def disable(cls):
         """Function to allow to permanently disable GeometricalWarning
         in case the calculation are too inexact."""
         GeometricalWarning.__warning = False
@@ -84,10 +84,6 @@ class Tuple:
         """Returns iterator to convert tuple to iterable object."""
         for ele in self._value:
             yield ele
-
-    def no_fractions(self):
-        """Returns Tuple that does not contain Fractions. Converts Fractions to float."""
-        return Tuple([float(e) for e in self])
 
     def __getitem__(self, item):
         """Returns value of 'item's dimension."""
@@ -111,18 +107,18 @@ class Tuple:
         """Returns negative tuple."""
         return self * -1
 
-    def __add__(self, other):
+    def __add__(self, other: 'Tuple') -> 'Tuple':
         """Adds two tuples:
         a + b = (a_1 + b_1, a_2 + b_2, ... , a_n + b_n)
         """
-        if not Tuple.dimcheck(self, other):
+        if not Tuple.dim_check(self, other):
             raise DimensionError(other.dim(), self.dim())
         result = []
         for i in range(self.dim()):
             result.append(self[i] + other[i])
         return Tuple(*tuple(result))
 
-    def __sub__(self, other):
+    def __sub__(self, other: 'Tuple') -> 'Tuple':
         """Reversed addition:
         a - b = a + (-b)
         """
@@ -152,18 +148,24 @@ class Tuple:
                 ret_list.append(Fraction(e, other))
         return Tuple(ret_list)
 
-    def append(self, value: Union[int, float]):
+    def append(self, value: Union[int, float, 'Fraction']):
         """Expands tuple by args dimensions."""
-        self._value.append(value)
+        ret_value = copy.deepcopy(self._value)
+        ret_value.append(value)
+        return Tuple(ret_value)
 
     @staticmethod
-    def dimcheck(*args) -> bool:
+    def dim_check(*args) -> bool:
         """Checks if arguments have the same amount of dimensions."""
         dimension = args[0].dim()
         for ele in args:
             if not ele.dim() == dimension:
                 return False
         return True
+
+    def no_fractions(self):
+        """Returns Tuple that does not contain Fractions. Converts Fractions to float."""
+        return Tuple([float(e) for e in self])
 
     @staticmethod
     def triangulate(p: 'Tuple', q: 'Tuple', r: 'Tuple') -> float:
@@ -178,7 +180,7 @@ class Tuple:
 
 
 class Vector(Tuple):
-    """Vector with any amount of dimensions."""
+    """Vector."""
 
     def __init__(self, *args: Union[int, float, 'Fraction', 'Tuple'],
                  begin: Optional['Tuple'] = None,
@@ -242,7 +244,7 @@ class Vector(Tuple):
         """Adds two tuples:
         a + b = (a_1 + b_1, a_2 + b_2, ... , a_n + b_n)
         """
-        if not Vector.dimcheck(self, other):
+        if not Vector.dim_check(self, other):
             raise DimensionError(other.dim(), self.dim())
         result = []
         for i in range(self.dim()):
@@ -264,7 +266,7 @@ class Vector(Tuple):
         """
         if type(other) != Vector:
             return Vector(Tuple(*tuple(self)) * other)
-        if not Vector.dimcheck(self, other):
+        if not Vector.dim_check(self, other):
             raise DimensionError(self.dim(), other.dim())
         res = 0
         for i in range(self.dim()):
@@ -381,7 +383,7 @@ class Vector(Tuple):
         arccos(-------------------------------) = phi    (1 < n < 4)
                           |a| * |b|
         """
-        if not Vector.dimcheck(u, v):
+        if not Vector.dim_check(u, v):
             raise DimensionError(v.dim(), u.dim())
         if u.dim() not in (2, 3):
             raise DimensionError(u.dim(), "2 or 3")
@@ -395,7 +397,7 @@ class Structure:
     def __init__(self, *args: 'Tuple'):
         """Insert the edges of the structure."""
         _check_types(args, Tuple)
-        if not Tuple.dimcheck(*args):
+        if not Tuple.dim_check(*args):
             raise DimensionError(other="Tuples have different amount of dimensions.")
         self.points = args
         self.vectors = [Vector(begin=self.points[-1], end=self.points[0])]
@@ -547,7 +549,7 @@ class Matrix(Tuple):
 
         elif type(other) == Vector:
             if self.size()[1] != other.dim():
-                raise MatrixSizeError(f"Vector with size {other.dim()} cannot be multiplied"
+                raise MatrixError(f"Vector with size {other.dim()} cannot be multiplied"
                                       f" by matrix with size {self.size()}")
             v_matrix = Matrix(other)
             ret_mat = self * v_matrix
@@ -558,7 +560,7 @@ class Matrix(Tuple):
 
         elif type(other) == Matrix:
             if self.size()[1] != other.size()[0]:
-                raise MatrixSizeError(f"Matrix with {other.size()[0]} rows cannot be multiplied"
+                raise MatrixError(f"Matrix with {other.size()[0]} rows cannot be multiplied"
                                       f" by {self.size()[1]} column matrix.")
             ret_mat = Matrix.create(self.size()[0], other.size()[1])
             for i in range(self.size()[0]):
@@ -582,7 +584,7 @@ class Matrix(Tuple):
     def __pow__(self, power: int) -> 'Matrix':
         """Power operation for matrix^scalar."""
         if self.size()[0] == self.size()[1]:
-            raise MatrixSizeError("Matrix must be quadratic.")
+            raise MatrixError("Matrix must be quadratic.")
         if type(power) is not int:
             raise ArgumentError("Power od type"+str(type(power)), int)
         ret_mat = self
@@ -652,11 +654,11 @@ class Matrix(Tuple):
         ret_mat = self
         if row:
             if len(row) != self.size()[1]:
-                raise MatrixSizeError(f"Cannot append {len(row)} element row to matrix with size {self.size()}.")
+                raise MatrixError(f"Cannot append {len(row)} element row to matrix with size {self.size()}.")
             ret_mat._value.append(list(row))
         elif column:
             if len(column) != self.size()[0]:
-                raise MatrixSizeError(f"Cannot append {len(column)} element row to matrix with size{self.size()}")
+                raise MatrixError(f"Cannot append {len(column)} element row to matrix with size{self.size()}")
             for i in range(ret_mat.size()[1]):
                 ret_mat._value[i].append(column[i])
         return ret_mat
@@ -681,9 +683,9 @@ class Matrix(Tuple):
     def det(self) -> Union[int, float]:
         """Returns determinant of a matrix."""
         if self.size()[0] != self.size()[1]:
-            raise MatrixSizeError("Matrix must be quadratic.")
-        if self.size() == [2, 2]:
-            return self[0][0] * self[1][1] - self[1][0] * self[0][1]
+            raise MatrixError("Matrix must be quadratic.")
+        if self.size() == [1, 1]:
+            return self[0][0]
         else:
             answer = 0
             for i in range(self.size()[1]):
@@ -714,7 +716,7 @@ class Matrix(Tuple):
     def inverse(self) -> 'Matrix':
         """Returns inverse matrix."""
         if self.size()[0] != self.size()[1]:
-            raise MatrixSizeError("Matrix must be quadratic.")
+            raise MatrixError("Matrix must be quadratic.")
         if self.det() == 0:
             raise ZeroDivisionError("Determinant must not be 0.")
         ret_mat = copy.deepcopy(self).adj()
@@ -803,7 +805,7 @@ class SLE(Matrix):
          """
         super().__init__(*args)
         if self.size()[1] != self.size()[0] + 1:
-            raise MatrixSizeError("Matrix for SLE must have the size m x n where n = m +1")
+            raise MatrixError("Matrix for SLE must have the size m x n where n = m +1")
         self.A = self.remove(cindex=-1)
         self.b = self.column(-1)
 

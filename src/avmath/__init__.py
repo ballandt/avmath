@@ -23,7 +23,6 @@ __all__ = ["sin", "cos", "tan",
 import time
 from typing import Union as _Union, Iterable as _Iterable
 
-_FLOAT_EQ = 1e-16
 _TAYLOR_DIFFERENCE = 1e-16
 _MAX_CALCULATION_TIME = 5
 
@@ -153,7 +152,8 @@ class Fraction:
     def __float__(self) -> float:
         return self.a / self.b
 
-    __abs__ = __float__
+    def __abs__(self):
+        return Fraction(abs(self.a), self.b)
 
     def reduce(self) -> 'Fraction':
         if not self.int_args():
@@ -175,7 +175,7 @@ def _check_types(arg: _Iterable, *types):
 
 def is_even(x):
     """Checks if x is an even number"""
-    return x/2 == round(x/2)
+    return x/2 == x // 2
 
 
 def is_prime(x):
@@ -202,7 +202,7 @@ def lcm(x, y):
 
 
 def sgn(x):
-    """Returns signum of x"""
+    """Returns signum of x."""
     if x < 0:
         return -1
     elif x == 0:
@@ -236,9 +236,9 @@ def fac(x, opt=None):
 
 
 def ln(x):
-    """Natural logarithm"""
-    if x < 0:
-        raise ArgumentError(x, "x > 0")
+    """Natural logarithm."""
+    if x <= 0:
+        raise ArgumentError(x, "x >= 0")
     summand = 0
     while x > e:
         x /= e
@@ -258,12 +258,12 @@ def ln(x):
 
 
 def log(x, base):
-    """Logarithm"""
+    """Logarithm."""
     return ln(x) / ln(base)
 
 
 def sin(x):
-    """Sine"""
+    """Sine."""
     x %= 2 * pi
     res = 0
     k = 0
@@ -276,7 +276,7 @@ def sin(x):
 
 
 def cos(x):
-    """Cosine"""
+    """Cosine."""
     x %= 2 * pi
     res = 0
     k = 0
@@ -289,21 +289,23 @@ def cos(x):
 
 
 def tan(x):
-    """Tangent"""
+    """Tangent."""
     return sin(x) / cos(x)
 
 
 def arcsin(x):
-    """Arc sine"""
+    """Arc sine."""
     if x > 1:
         raise ArgumentError("x > 1", "x <= 1")
-    if x == 1:
-        return pi / 2
+    if abs(x) == 1:
+        return sgn(x) * pi / 2
     res = x
     k = 1
-    while k < 150:
+    start_time = time.time()
+    while (time.time() - start_time) < _MAX_CALCULATION_TIME:
         mem_res = res
-        res += fac(2 * k - 1, opt="double") * x ** (2 * k + 1) / (fac(2 * k, opt="double") * (2 * k + 1))
+        res += fac(2 * k - 1, opt="double") /\
+               (fac(2 * k, opt="double") * (2 * k + 1)) * x ** (2 * k + 1)
         if abs(mem_res - res) < _TAYLOR_DIFFERENCE:
             break
         k += 1
@@ -311,12 +313,12 @@ def arcsin(x):
 
 
 def arccos(x):
-    """Arc cosine"""
+    """Arc cosine."""
     return pi/2 - arcsin(x)
 
 
 def arctan(x):
-    """Arc tangent"""
+    """Arc tangent."""
     res = 0
     k = 0
     if abs(x) <= 1:
@@ -343,7 +345,7 @@ def arctan(x):
 
 
 def sinh(x):
-    """Hyperbolic sine"""
+    """Hyperbolic sine."""
     res = 0
     k = 0
     while True:
@@ -355,7 +357,7 @@ def sinh(x):
 
 
 def cosh(x):
-    """Hyperbolic cosine"""
+    """Hyperbolic cosine."""
     res = 0
     k = 0
     while True:
@@ -367,17 +369,17 @@ def cosh(x):
 
 
 def tanh(x):
-    """Hyperbolic tangent"""
-    return sinh(x) / cosh(x)
+    """Hyperbolic tangent."""
+    return sinh(x) / cosh(x) if abs(x) <= 20 else sgn(x) * 1.0
 
 
 def arsinh(x):
-    """Area sine hyperbolicus"""
-    return ln(x + (x**2 + 1)**0.5)
+    """Inverse hyperbolic sine."""
+    return sgn(x) * ln(abs(x) + (x**2 + 1)**0.5)
 
 
 def arcosh(x):
-    """Area cosine hyperbolicus"""
+    """Inverse hyperbolic cosine."""
     if x < 1:
         raise ArgumentError(x, "x >= 1")
     return ln(x + (x**2 - 1)**0.5)
@@ -385,9 +387,9 @@ def arcosh(x):
 
 def artanh(x):
     """Area tangent hyperbolicus"""
-    if abs(x) > 1:
+    if abs(x) >= 1:
         raise ArgumentError(x, "|x| < 1")
-    return 0.5 * ln((x + 1) / (x - 1))
+    return 0.5 * ln((1 + x) / (1 - x))
 
 
 scope = {

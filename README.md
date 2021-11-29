@@ -7,6 +7,7 @@ _Avmath_ is a python library for mathematics.
 * [Description](#description)
   * [General information](#information)
   * [Extended description](#extended-description)
+* [Installation]
 * [Features](#features)
 * [Changelog](CHANGELOG.md)
 * [Developments](DEVELOPMENTS.md)
@@ -36,6 +37,25 @@ implementation was made. The Taylor-functions sometimes lack of speed and
 accuracy.
 
 the avmath project started on 22nd of March 2021.
+
+---
+## Installation
+
+The avmath module can be installed via the pip command
+```
+pip install avmath
+```
+
+After that, the module can be imported as follows:
+```python
+import avmath
+from avmath import analysis, algebra
+```
+
+
+Also, the current release can be downloaded on GitHub (see 
+[releases](https://www.github.com/ballandt/avmath/releases)) and manually
+been installed.
 
 ---
 ## Features
