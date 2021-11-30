@@ -1,17 +1,17 @@
-# AdVanced Math
+![avmath](https://1drv.ms/u/s!AqVffxG6w5dqhB6oWiV8yxDPag3e?e=RMhIl9)
+---
 
 _Avmath_ is a python library for mathematics.
 
+---
 ## Contents
 
 * [Description](#description)
-  * [General information](#information)
-  * [Extended description](#extended-description)
-* [Installation](docs/README.md#installation)
 * [Features](#features)
-* [Changelog](CHANGELOG.md)
-* [Developments](DEVELOPMENTS.md)
-* [Documentation](docs/basic.md)
+* [Installation](https://github.com/ballandt/avmath/blob/master/docs/README.md#installation)
+* [Documentation](https://github.com/ballandt/avmath/tree/master/docs)
+* [Changelog](https://github.com/ballandt/avmath/blob/master/CHANGELOG.md)
+* [Developments](https://github.com/ballandt/avmath/blob/master/DEVELOPMENTS.md)
 * [Releases](https://www.github.com/ballandt/avmath/releases)
 ---
 
@@ -20,9 +20,12 @@ _Avmath_ is a python library for mathematics.
 
 Category | Data
 ------------ | -------------
+Name | avmath
+PyPi name  | [avmath](https://pypi.org/project/avmath/)
 Author | Camillo Ballandt
 Release version | [2.0.0](https://www.github.com/ballandt/avmath/releases/tag/v2.0.0)
 Developing version | [3.0.0](https://github.com/ballandt/avmath/blob/master/DEVELOPMENTS.md)
+
 ### Extended description
 
 Avmath is a library project that uses python algorithms to numerically solve
@@ -36,7 +39,7 @@ names and parameters because of necessary syntax changes. Also, a function
 implementation was made. The Taylor-functions sometimes lack of speed and
 accuracy.
 
-the avmath project started on 22nd of March 2021.
+The first drafts of avmath are dated on the 22nd of March 2021.
 
 ---
 ## Features
