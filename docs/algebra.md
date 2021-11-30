@@ -215,7 +215,7 @@ Attribute | Usage | Implemented in version | Last Change
 
 ---
 
-### Methods
+### Methods {#structure-methodes}
 
 #### `__init__(self, *args: 'Tuple')`
 
