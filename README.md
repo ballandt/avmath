@@ -2,7 +2,7 @@
 
 ---
 
-_Avmath_ is a python library for mathematics.
+_Avmath_ is a python library for mathematics. 
 
 ---
 ## Contents
