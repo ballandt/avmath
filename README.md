@@ -61,7 +61,7 @@ the avmath project started on 22nd of March 2021.
     * phi
     * gamma
 
-* [Linear algebra](https://www.github.com/ballandt/avmath/blob/master/src/evmath/algebra.py)
+* [Linear algebra](https://www.github.com/ballandt/avmath/blob/master/src/avmath/algebra.py)
   * __tuples__
     * Basic iterable operations
     * basic mathematical operations
@@ -85,7 +85,7 @@ the avmath project started on 22nd of March 2021.
     * area
   * __systems of linear equations__
 
-* [Analysis](https://www.github.com/ballandt/avmath/blob/master/src/evmath/analysis.py)
+* [Analysis](https://www.github.com/ballandt/avmath/blob/master/src/avmath/analysis.py)
   * __functions__
     * usual input possibility
     * basic calculations

@@ -6,7 +6,22 @@ It can be used importing:
 # pip install avmath
 import avmath
 ````
+---
+## Contents
 
+* [Constants](#constants)
+  * [Mathematical Constants](#backend-constants)
+  * [Backend constants](#working-constants)
+* [`Fraction`](#fraction)
+  * [Attributes](#attributes)
+  * [Methods](#methods)
+  * [Static methods](#static-methods)
+* [`Tuple`](#tuple)
+  * [Attributes](#attributes)
+  * [Methods](#methods)
+  * [Static methods](#static-methods)
+* [Arithmetic functions](#arithmetic-functions)
+* [Backend functions](#backend-functions)
 
 ## Constants
 
@@ -17,56 +32,45 @@ Avmath includes the following constants:
 Constant name | accessible name in module | accurate post comma decimal digits digits | Implemented in version | Last change
 --- | --- | ---: | --- | ---
 Pi  (&pi;)| `avmath.pi` | 21 | v1.0.0 | v3.0.0
-Euler`s number (_e_) | `avmath.e` | 21 | v1.0.0 | v3.0.0
+<span style="font-variant:small-caps;">Euler</span>`s number (_e_) | `avmath.e` | 21 | v1.0.0 | v3.0.0
 Golden ratio (&phi;) | `avmath.phi` | 21 | v3.0.0 | v3.0.0
-Euler-Mascheroni constant (&gamma;)| `avmath.gamma` | 21 | v3.0.0 | v3.0.0
+<span style="font-variant:small-caps;">Euler</span>-<span style="font-variant:small-caps;">Mascheroni</span> constant (&gamma;)| `avmath.gamma` | 21 | v3.0.0 | v3.0.0
+Two digit prime numbers | `avmath.two_digit_primes` | - | v3.0.0 | v3.0.0
 
 ---
-### Working constants
+### Backend constants
 
 Constant name | Default value | usage | Implemented in version | Last change
 --- | ---: | --- | --- | ---
 `_TAYLOR_DIFFERENCE` | `1e-16` | Loops of functions using <span style="font-variant:small-caps;">Taylor</span>-series calculate until the difference of the values is less equal this value | v3.0.0 | v3.0.0
 `_MAX_CALCULATION_TIME` | `5` | Some loops may need a long time for calculation. These loops may not calculate longer as this time (in seconds) | v3.0.0 | v3.0.0
+`REAL` | `typing.Union[int, float, 'Fraction']` | Real numbers for type hints | v3.0.0 | v3.0.0
+`scope` | - all functions for `REAL`s and `Fraction`- | scope for `analysis.Function` | v2.0.0 | v3.0.0
 
 ---
-## Fraction
+---
+## `Fraction`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
 
 Avmath's fractions are used to bypass the float inaccuracies.
 
-### Attributes and methods
+### Attributes
 
-The `Fraction` class contains following attributes:
+Attribute | Usage | Implemented in version | Last Change
+--- | --- | --- | ---
+`self.a` | numerator | v3.0.0 | v3.0.0
+`self.b` | denominator | v3.0.0 | v3.0.0
 
-Attribute | Usage | Last Change
---- | --- | ---
-`self.a` | numerator | v3.0.0
-`self.b` | denominator | v3.0.0
-
-and the following methods
+### Methods 
 
 All methods simulate an immutable type.
 
-Method | Parameters | Usage | implemented in version | Last Change
---- | --- | --- | --- | ---
-`__init__` | `numerator` <br> `denominator` | Initialises Fraction with given numerator and denominator. Can contain float values too. | v3.0.0 | v3.0.0
-`__repr__` | - | String representation of Fraction in the manner `a/b`. Always gets printed reduced. | v3.0.0 | v3.0.0
-`__neg__` | - | Negation of Fraction | v3.0.0 | v3.0.0
-`__eq__` | `other` | Checks equality of fractions (in case of two fractions prefers to compare reduced fraction| v3.0.0 | v3.0.0
-`__lt__` | `other` | Checks which element is greater using float values | v3.0.0 | v3.0.0
-`__gt__` | `other` | Checks which element is less | v3.0.0 | v3.0.0
-`__add__` <br> `__radd__` | `other` | Adds either two fractions or a fraction and another number value | v3.0.0 | v3.0.0
-`__sub__` <br> `__rsub__` | `other` | Subtracts either two fractions or a fractions and a number value| v3.0.0 | v3.0.0
-`__mul__` <br> `__rmul__` | `other` | Multiplies fractions with another or with number values | v3.0.0 | v3.0.0
-`__truediv__` <br> `__rtruediv__` | `other` | Divides fractions from another or from number values | v3.0.0 | v3.0.0
-`__pow__` | `other` | Power operation for fractions. Power -1 changes numerator and denominator | v3.0.0 | v3.0.0
-`__float__` <br> `__abs__` | - | Returns fraction's result as float | v3.0.0 | v3.0.0
-`reduce` | - | Returns reduced fraction. Always stays Fraction. Can only be executed with integer values, else raises `ArgumentError`. | v3.0.0 | v3.0.0
-`int_args` | - | Returns True if both numerator and denominator are integers | v3.0.0 | v3.0.0
+#### `__init__(self, numerator: REAL, denominator: REAL)`
 
----
+__Implemented in v3.0.0 | Last change v3.0.0__
 
-### Initialisation
+Initialises Fraction with given numerator and denominator. Can contain float values too. | v3.0.0 | v3.0.0
 
 A fraction can be initialised by giving numerator and denominator as parameters
 to the constructor.
@@ -78,8 +82,16 @@ my_fraction = avmath.Fraction(3, 7)
 ````
 
 Now the fraction is initialised and is ready to be used. It is not 
-automatically reduced and never reduced to int, but when printed, it
-takes the most reduced shape
+automatically reduced and never reduced to int.
+
+---
+
+#### `__repr__(self) -> str`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns string representation of `Fraction`. Gets always
+printed in reduced shape.
 
 ````python
 import avmath
@@ -90,46 +102,150 @@ print(a)
 print(b)
 ````
 gives the output
-````commandline
->>> 1/2
->>> 2
 ````
+1/2
+
+2
+````
+
 ---
+#### `__neg__(self) -> 'Fraction'`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns negative fraction.
+
+---
+#### `__eq__(self, other: REAL) -> bool`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns whether `Fraction` is equal to given `REAL`.
+
+---
+#### `__lt__(self, other: REAL) -> bool`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns whether `Fraction` is less than given `REAL`.
+
+---
+#### `__gt__(self, other: REAL) -> bool`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns whether `Fraction` is greater than given `REAL`.
+
+---
+#### `__add__(self, other: REAL) -> 'Fraction'` / `__radd__`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Adds a `Fraction` with a `REAL`.
+
+---
+#### `__sub__(self, other: REAL) -> 'Fraction'` / `__rsub__`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Subtracts a `REAL` from a `Fraction`
+
+---
+#### `__mul__(self, other: REAL) -> 'Fraction'` / `__rmul__`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Multiplies a `Fraction` with a `REAL`
+
+---
+#### `__truediv__(self, other: REAL) -> 'Fraction'` / `__rtruediv__`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Divides a `Fraction` by a `REAL`
+
+---
+#### `__pow__(self, power: REAL) -> 'Fraction'`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Power operation for `Fraction` and `REAL`. If `power`=-1;
+switches numerator and denominator.
+
+---
+#### `__rpow__(self, other: REAL) -> float`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Power operation with `Fraction` as exponent.
+
+---
+#### `__mod__(self, other: REAL) -> float` / `__rmod__`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Modulo operation for `Fraction` and `REAL`.
+
+---
+#### `__int__(self) -> int`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns integer representation of `Fraction`.
+
+---
+#### `__float__(self) -> float`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns float representation of `Fraction`.
+
+---
+#### `__abs__(self) -> 'Fraction'`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns absolute of the `Fraction`.
+
+---
+#### `reduce(self) -> 'Fraction'`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns reduced fraction.
+
+---
+#### `int_args(self) -> bool`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns whether the numerator and denominator are integers
+or integer-like.
+
+---
+---
+
 ## `Tuple`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
 
 The Tuple class is the base class for the algebra submodule classes and the `avmath.analysis.Point` class.
 It defines interaction methods inherited by the other classes.
 The methods of `Tuple` simulate an immutable type.
 
-### Attributes and methods
+### Attributes
 
 Attribute | Usage | Implemented in version | Last change
 --- | --- | --- | ---
 `self._value` | Stores the values of the Tuple | v3.0.0 | v3.0.0
 
-Method | Parameters | Usage | Implemented in version | Last change
---- | --- | --- | --- | ---
-`__init__` | `*args: Union[int, float, list, Fraction]` | Initialisation of the object | v3.0.0 | v3.0.0
-`__iter__` | - | Returns generator to convert Tuple to iterable object. | v3.0.0 | v3.0.0
-`__getitem__` | `item` | Get item method for Tuple. | v3.0.0 | v3.0.0
-`__repr__` | - | Returns string of Tuple in form `(a, b, c)` | v3.0.0 | v3.0.0
-`__eq__` | `other: 'Tuple'` | Equality checker for Tuple | v3.0.0 | v3.0.0
-`__len__` <br> `dim` | - | Returns the length or amount of dimensions of a Tuple | v3.0.0 | v3.0.0
-`__neg__` | - | Returns negative Tuple | v3.0.0 | v3.0.0
-`__add__` | `other: 'Tuple'` | Tuple addition method | v3.0.0 | v3.0.0
-`__sub__` | `other: 'Tuple'` | Negative Tuple addition | v3.0.0 | v3.0.0
-`__mul__` <br> `__rmul__` | `other: Union[int, float, 'Fraction']` | Scalar multiplication | v3.0.0 | v3.0.0
-`__truediv__` | `other: Union[int, float, 'Fraction']` | Division by scalar. Returns fraction to bypass floats. | v3.0.0 | v3.0.0
-`append` | `value: Union[int, float, 'Fraction']` | Returns Tuple with the value appended to `self._value` | v3.0.0 | v3.0.0
-`no_fractions` | - | Returns Tuple that does not contain Fraction members | v3.0.0 | v3.0.0
+### Methods
 
-Static method | Parameters | Usage | Implemented in version | Last change
---- | --- | --- | --- | ---
-`dim_check` | `*args` | Returns `True` if all given values have the same amount of dimensions. Else returns `False` | v3.0.0 | v3.0.0
-`triangulate` | `p: 'Tuple'`, <br> `q: 'Tuple'`, <br> `r: 'Tuple'` | Calculates the area between three points. | v3.0.0 | v3.0.0
+#### `__init__(self, *args: REAL | list)`
 
-### Initialisation
+__Implemented in v3.0.0 | Last change v3.0.0__
 
+Initialises the `Tuple`.
 Tuple can be initialised giving either numbers as parameters or a list.
 ```python
 import avmath
@@ -141,13 +257,108 @@ a = avmath.Tuple(1, 2, 4)
 b_list = [4, 3, 4.9]
 b = avmath.Tuple(b_list)
 ```
-Tuples are printed like built-in `tuple`s.
-
 
 ---
-## Arithmetic functions
+#### `__iter__(self)`
 
-### `is_prime(x)`
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns generator to convert `Tuple` to another iterable 
+object.
+
+---
+#### `__getitem__(self, item)`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Gives access to the items of a `Tuple`.
+
+---
+#### `__repr__(self) -> str`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns string representation of the `Tuple`. String has the
+form of built-in `tuple` representation.
+
+---
+#### `__eq__(self, other: 'Tuple') -> bool`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns whether two `Tuple`s are equal.
+
+---
+#### `__len__(self) -> int` / `dim`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns the length of the `Tuple`. Is equal to the dimension.
+
+---
+#### `__neg__(self)`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns negative `Tuple`.
+
+---
+#### `__add__(self, other: 'Tuple') -> 'Tuple'`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Adds two `Tuple`s.
+
+---
+#### `__sub__(self, other: 'Tuple') -> 'Tuple'`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Subtracts two tuples.
+
+---
+#### `__mul__(self, other: REAL)` / `__rmul__`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns scalar multiplied`Tuple`.
+
+---
+#### `__truediv__(self, other: REAL) -> 'Tuple`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+`Tuple` divided by a scalar. Returns `Tuple` with Fraction values.
+
+---
+#### `append(self, value: REAL)`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Appends value to `Tuple`.
+
+---
+#### `no_fractions(self) -> 'Tuple'`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns `Tuple` that does not contain `Fraction` members.
+
+---
+### Static Methods
+
+#### `dim_check(*args) -> bool`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Checks if arguments have the same amount of dimensions.
+
+---
+---
+
+# Arithmetic functions
+
+### `is_prime(x: int) -> bool`
 
 __Implemented in: v3.0.0 | Last change: v3.0.0__
 
@@ -157,28 +368,28 @@ the argument is divisible by any number.
 
 ---
 
-### `is_even(x)`
+### `is_even(x: int) -> bool`
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
 Function returning True if the integer `x` is an even number. Used by `avmath.fac`.
 
 ---
-### `gcd(x, y)`
+### `gcd(x: int, y: int) -> int`
 
 __Implemented in: v3.0.0 | Last change: v3.0.0__
 
 Function returning the greatest common divisor of two integers `x` and `y`.
 
 ---
-### `lcm(x, y)`
+### `lcm(x: int, y: int) -> int`
 
 __Implemented in: v3.0.0 | Last change: v3.0.0__
 
 Function that returns the least common multiply of two integers `x` and `y`.
 
 ---
-### `sgn(x)`
+### `sgn(x: REAL) -> int`
 
 __Implemented in: v3.0.0 | Last change: v3.0.0__
 
@@ -186,7 +397,7 @@ Function that returns the signum of a number. For values <0 returns
 -1 for 0 returns 0 and for values >0 returns 1
 
 ---
-### `fac(x, opt=None)`
+### `fac(x: REAL, opt: str = None)`
 
 __Implemented in: v1.0.0 | Last change: v3.0.0__
 
@@ -200,7 +411,7 @@ Parameters for `opt`:
 and all even numbers less equal the value if it is even
 
 ---
-### `ln(x)`
+### `ln(x: REAL) -> float`
 
 __Implemented in: v1.0.0 | Last change: v3.0.0__
 
@@ -215,7 +426,7 @@ x domain | precise post comma decimal places
 `1e-3` to `1e3` | 14
 
 ---
-### `log(x, base)`
+### `log(x: REAL, base: REAL) -> float`
 
 __Implemented in: v1.0.0 | Last change: v1.0.0__
 
@@ -226,7 +437,7 @@ the natural logarithm.
 _See [Natural logarithm](#lnx)_
 
 ---
-### `sin(x)`
+### `sin(x: REAL) -> float`
 
 __Implemented in: v1.0.0 | Last change: v3.0.0__
 
@@ -242,7 +453,7 @@ x-domain | precise post comma decimal places
 `-1e6` to `1e6` | 9-10
 
 ---
-### `cos(x)`
+### `cos(x: REAL) -> float`
 
 __Implemented in: v1.0.0 | Last change: v3.0.0__
 
@@ -257,7 +468,7 @@ x-domain | precise post comma decimal places
 `-1e6` to `1e6` | 9-10
 
 ---
-### `tan(x)`
+### `tan(x: REAL) -> float`
 
 __Implemented in: v1.0.0 | Last change: v3.0.0__
 
@@ -274,7 +485,7 @@ x-domain | precise post comma decimal places
 `1e-3` difference to asymptote | 7
 
 ---
-### `arcsin(x)`
+### `arcsin(x: REAL) -> float`
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -290,7 +501,7 @@ Difference of x-value to `abs(1)` | precise post comma decimal places
 `0.001` to `0.01` | 4
 
 ---
-### `arccos(x)`
+### `arccos(x: REAL) -> float`
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -305,7 +516,7 @@ Difference of x-value to `abs(1)` | precise post comma decimal places
 `0.001` to `0.01` | 4
 
 ---
-### `arctan(x)`
+### `arctan(x: REAL) -> float`
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -321,7 +532,7 @@ at least 0.001 difference to 1 | 13
 `1` | 6
 
 ---
-### `sinh(x)`
+### `sinh(x: REAL) -> float`
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -334,7 +545,7 @@ x-domain | precise decimal places
 `-710` to `710` | 14-15
 
 ---
-### `cosh(x)`
+### `cosh(x: REAL) -> float`
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -347,7 +558,7 @@ x-domain | precise decimal places
 `-710` to `710` | 14-15
 
 ---
-### `tanh(x)`
+### `tanh(x: REAL) -> float`
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -361,7 +572,7 @@ x-domain | precise post comma decimal places
 `abs(x) > 20` | (returns 1.0)
 
 ---
-### `arsinh(x)`
+### `arsinh(x: REAL) -> float`
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -374,7 +585,7 @@ x-domain | precise post comma decimal places
 `-1e150` to `1e150` | 13-14
 
 ---
-### `arcosh(x)`
+### `arcosh(x: REAL) -> float`
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -387,7 +598,7 @@ x-domain | precise post comma decimal places
 `-1e150` to `1e150` | 13-14
 
 ---
-### `artanh(x)`
+### `artanh(x: REAL) -> float`
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -397,3 +608,14 @@ of a number -1 < x < 1. Therefore, uses Artanh(x) = 0.5 ln((1 + x) / (1 - x)).
 x-domain | precise post comma decimal places
 --- | ---:
 entire domain | 12-14
+
+---
+---
+### Backend functions
+
+#### `_check_types(arg: _Iterable, *types)`
+
+__Implemented in: v3.0.0 | Last change: v3.0.0__
+
+Checks whether all items of the iterable object are of the
+given types.

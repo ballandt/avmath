@@ -5,6 +5,8 @@ Avmath uses python algorithms to numerically calculate mathematical
 problems. It mainly concentrates on the concepts of functions, vec-
 tors and matrices.
 
+Documentation: https://github.com/ballandt/avmath/tree/master/docs
+
 Github: https://www.github.com/ballandt/avmath
 PyPi: https://www.pypi.org/project/avmath
 """
@@ -27,6 +29,7 @@ from typing import Union as _Union, Iterable as _Iterable
 
 _TAYLOR_DIFFERENCE = 1e-16
 _MAX_CALCULATION_TIME = 5
+REAL = _Union[int, float, 'Fraction']
 
 e = 2.718_281_828_459_045_235_360
 pi = 3.141_592_653_589_793_238_463
@@ -67,7 +70,7 @@ class DimensionError(Exception):
 class Fraction:
     """Mathematical fraction"""
 
-    def __init__(self, numerator: _Union[int, float], denominator: _Union[int, float, 'Fraction']):
+    def __init__(self, numerator: REAL, denominator: REAL):
         """Initializes fraction. Denominator will always be positive.
         Insert
         Fraction(a, b)
@@ -79,10 +82,12 @@ class Fraction:
         for
         a/(b/c)
         """
-        self.a = numerator * sgn(denominator)
-        self.b = abs(denominator)
-        if type(denominator) == Fraction:
-            self.a, self.b = self.a * denominator.b, denominator.a
+        if type(numerator) == Fraction or type(denominator) == Fraction:
+            self.a = (numerator / denominator).a
+            self.b = (numerator / denominator).b
+        else:
+            self.a = numerator * sgn(denominator)
+            self.b = abs(denominator)
         if self.b == 0:
             raise ZeroDivisionError
 
@@ -102,22 +107,22 @@ class Fraction:
         """Returns negative fraction."""
         return Fraction(-self.a, self.b)
 
-    def __eq__(self, other: _Union['Fraction', int, float]) -> bool:
+    def __eq__(self, other: REAL) -> bool:
         """Verifies the equality of two fractions."""
         if type(other) == Fraction and self.int_args() and other.int_args():
             return self.reduce().a == other.reduce().a and self.reduce().b == other.reduce().b
         else:
             return float(self) == float(other)
 
-    def __lt__(self, other: _Union['Fraction', int, float]) -> bool:
+    def __lt__(self, other: REAL) -> bool:
         """Less than."""
         return float(self) < float(other)
 
-    def __gt__(self, other: _Union['Fraction', int, float]) -> bool:
+    def __gt__(self, other: REAL) -> bool:
         """Greater than."""
         return float(other) < float(self)
 
-    def __add__(self, other: _Union['Fraction', int, float]) -> 'Fraction':
+    def __add__(self, other: REAL) -> 'Fraction':
         """Adds either two fractions or fractions and numbers."""
         if type(other) in (int, float, complex):
             a = self.a + other * self.b
@@ -135,12 +140,14 @@ class Fraction:
 
     __radd__ = __add__
 
-    def __sub__(self, other: _Union['Fraction', int, float]) -> 'Fraction':
+    def __sub__(self, other: REAL) -> 'Fraction':
+        """Subtracts either real from Fraction or Fraction from Fraction."""
         return self + -other
 
     __rsub__ = __sub__
 
-    def __mul__(self, other: _Union['Fraction', int, float]) -> 'Fraction':
+    def __mul__(self, other: REAL) -> 'Fraction':
+        """Multiplies REALS"""
         if type(other) in (int, float):
             return Fraction(self.a * other, self.b)
         if type(other) == Fraction:
@@ -151,7 +158,7 @@ class Fraction:
 
     __rmul__ = __mul__
 
-    def __truediv__(self, other: _Union['Fraction', int, float]) -> 'Fraction':
+    def __truediv__(self, other: REAL) -> 'Fraction':
         if type(other) == Fraction:
             res = self * other ** -1
         else:
@@ -162,16 +169,27 @@ class Fraction:
 
     __rtruediv__ = __truediv__
 
-    def __pow__(self, power: _Union['Fraction', int, float]) -> 'Fraction':
+    def __pow__(self, power: REAL) -> 'Fraction':
         if power == -1:
             return Fraction(self.b, self.a)
         else:
             return Fraction(self.a ** float(power), self.b ** float(power))
 
+    def __rpow__(self, other: REAL) -> float:
+        return (other ** self.a) ** (1 / self.b)
+
+    def __mod__(self, other: REAL) -> float:
+        return float(self) % float(other)
+
+    __rmod__ = __mod__
+
+    def __int__(self) -> int:
+        return int(float(self))
+
     def __float__(self) -> float:
         return self.a / self.b
 
-    def __abs__(self):
+    def __abs__(self) -> 'Fraction':
         return Fraction(abs(self.a), self.b)
 
     def reduce(self) -> 'Fraction':
@@ -187,7 +205,7 @@ class Fraction:
 class Tuple:
     """Algebraic tuple. Can also be interpreted as point in the coordinate system."""
 
-    def __init__(self, *args: _Union[int, float, list, Fraction]):
+    def __init__(self, *args: REAL | list):
         _check_types(args, int, float, list, Fraction)
         if type(args[0]) in (list, tuple) and len(args) == 1:
             self._value = list(args[0])
@@ -238,7 +256,7 @@ class Tuple:
         """
         return self + -other
 
-    def __mul__(self, other: _Union[int, float, 'Fraction']):
+    def __mul__(self, other: REAL):
         """Scalar multiplication:
         r * a = (r*a_1, r*a_2, ... , r*a_n)    (a e R^n, r e R)
         """
@@ -249,7 +267,7 @@ class Tuple:
 
     __rmul__ = __mul__
 
-    def __truediv__(self, other: _Union[int, float, 'Fraction']):
+    def __truediv__(self, other: REAL) -> 'Tuple':
         """Division. Tuple by number only.Though mathematically
         incorrect gives the possibility to return fractions for
         correct division.
@@ -262,11 +280,15 @@ class Tuple:
                 ret_list.append(Fraction(ele, other))
         return Tuple(ret_list)
 
-    def append(self, value: _Union[int, float, 'Fraction']):
-        """Expands tuple by args dimensions."""
+    def append(self, value: REAL):
+        """Adds value to Tuple."""
         ret_value = copy.deepcopy(self._value)
         ret_value.append(value)
         return Tuple(ret_value)
+
+    def no_fractions(self) -> 'Tuple':
+        """Returns Tuple that does not contain Fractions. Converts Fractions to float."""
+        return Tuple([float(ele) for ele in self])
 
     @staticmethod
     def dim_check(*args) -> bool:
@@ -277,10 +299,6 @@ class Tuple:
                 return False
         return True
 
-    def no_fractions(self):
-        """Returns Tuple that does not contain Fractions. Converts Fractions to float."""
-        return Tuple([float(ele) for ele in self])
-
 
 def _check_types(arg: _Iterable, *types):
     """Checks if the elements of the argument belong to the given types."""
@@ -290,12 +308,12 @@ def _check_types(arg: _Iterable, *types):
     return True
 
 
-def is_even(x):
+def is_even(x: int) -> bool:
     """Checks if x is an even number"""
     return x/2 == x // 2
 
 
-def is_prime(x):
+def is_prime(x: int) -> bool:
     """Checks if integer is prime."""
     int_root = int(x ** 0.5)
     for i in range(2, int_root):
@@ -304,7 +322,7 @@ def is_prime(x):
     return True
 
 
-def gcd(x, y):
+def gcd(x: int, y: int) -> int:
     """Greatest common divisor."""
     while x % y != 0:
         r = x % y
@@ -313,12 +331,12 @@ def gcd(x, y):
     return abs(y)
 
 
-def lcm(x, y):
+def lcm(x: int, y: int) -> int:
     """Least common multiply."""
     return int(abs(x * y) / gcd(x, y))
 
 
-def sgn(x):
+def sgn(x: REAL) -> int:
     """Returns signum of x."""
     if x < 0:
         return -1
@@ -328,7 +346,7 @@ def sgn(x):
         return 1
 
 
-def fac(x, opt=None):
+def fac(x: REAL, opt: str = None):
     """Returns faculty of x.
     fac(x)               is x!
     fac(x, opt="double") is x!!
@@ -352,7 +370,7 @@ def fac(x, opt=None):
     return res
 
 
-def ln(x):
+def ln(x: REAL) -> float:
     """Natural logarithm."""
     if x <= 0:
         raise ArgumentError(x, "x >= 0")
@@ -374,12 +392,12 @@ def ln(x):
     return 2 * res + summand
 
 
-def log(x, base):
+def log(x: REAL, base: REAL) -> float:
     """Logarithm."""
     return ln(x) / ln(base)
 
 
-def sin(x):
+def sin(x: REAL) -> float:
     """Sine."""
     x %= 2 * pi
     res = 0
@@ -392,7 +410,7 @@ def sin(x):
         k += 1
 
 
-def cos(x):
+def cos(x: REAL) -> float:
     """Cosine."""
     x %= 2 * pi
     res = 0
@@ -405,12 +423,12 @@ def cos(x):
         k += 1
 
 
-def tan(x):
+def tan(x: REAL) -> float:
     """Tangent."""
     return sin(x) / cos(x)
 
 
-def arcsin(x):
+def arcsin(x: REAL) -> float:
     """Arc sine."""
     if x > 1:
         raise ArgumentError("x > 1", "x <= 1")
@@ -429,12 +447,12 @@ def arcsin(x):
     return res
 
 
-def arccos(x):
+def arccos(x: REAL) -> float:
     """Arc cosine."""
     return pi/2 - arcsin(x)
 
 
-def arctan(x):
+def arctan(x: REAL) -> float:
     """Arc tangent."""
     res = 0
     k = 0
@@ -461,7 +479,7 @@ def arctan(x):
     return res
 
 
-def sinh(x):
+def sinh(x: REAL) -> float:
     """Hyperbolic sine."""
     res = 0
     k = 0
@@ -473,7 +491,7 @@ def sinh(x):
         k += 1
 
 
-def cosh(x):
+def cosh(x: REAL) -> float:
     """Hyperbolic cosine."""
     res = 0
     k = 0
@@ -485,24 +503,24 @@ def cosh(x):
         k += 1
 
 
-def tanh(x):
+def tanh(x: REAL) -> float:
     """Hyperbolic tangent."""
     return sinh(x) / cosh(x) if abs(x) <= 20 else sgn(x) * 1.0
 
 
-def arsinh(x):
+def arsinh(x: REAL) -> float:
     """Inverse hyperbolic sine."""
     return sgn(x) * ln(abs(x) + (x**2 + 1)**0.5)
 
 
-def arcosh(x):
+def arcosh(x: REAL) -> float:
     """Inverse hyperbolic cosine."""
     if x < 1:
         raise ArgumentError(x, "x >= 1")
     return ln(x + (x**2 - 1)**0.5)
 
 
-def artanh(x):
+def artanh(x: REAL) -> float:
     """Area tangent hyperbolicus"""
     if abs(x) >= 1:
         raise ArgumentError(x, "|x| < 1")
@@ -510,6 +528,7 @@ def artanh(x):
 
 
 scope = {
+    "Fraction": Fraction,
     "sin": sin, "arcsin": arcsin,
     "cos": cos, "arccos": arccos,
     "tan": tan, "arctan": arctan,

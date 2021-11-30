@@ -5,16 +5,14 @@ implementing function features."""
 __all__ = ["Point", "Function"]
 
 from typing import Union as _Union
-from . import scope as _scope, sgn, Tuple, Fraction
-
-real = _Union[int, float, Fraction]
+from . import scope as _scope, REAL, sgn, Tuple
 
 
 class Point(Tuple):
     """Point in coordinate system. (Two dimensions)"""
 
-    def __init__(self, x: real, y: real):
-        """Initializese the point. Give x and y value."""
+    def __init__(self, x: REAL, y: REAL):
+        """Initialises the point. Give x and y value."""
         super().__init__(x, y)
 
 
@@ -25,7 +23,7 @@ class Function:
         self.term = arg
         self._arg_scope = _scope
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Returns string representation"""
         return f"f(x) = {self.term}"
 
@@ -39,10 +37,12 @@ class Function:
         ret_formula = f"{self.term} - ({other.term})"
         return Function(ret_formula)
 
-    def __mul__(self, other: 'Function') -> 'Function':
+    def __mul__(self, other: REAL | 'Function') -> 'Function':
         """Multiplies two functions"""
         ret_formula = f"({self.term}) * ({other.term})"
         return Function(ret_formula)
+
+    __rmul__ = __mul__
 
     def __truediv__(self, other: 'Function') -> 'Function':
         """Divide two functions"""
@@ -53,7 +53,7 @@ class Function:
         """Returns negative function"""
         return Function(f"-({self.term})")
 
-    def replace(self, value: real) -> str:
+    def replace(self, value: REAL) -> str:
         """Replaces intuitive elements with correct ones."""
         return_string = self.term.replace("^", "**")
         x_positions = [return_string.find("x")]
@@ -80,16 +80,16 @@ class Function:
         """
         self._arg_scope = {**self._arg_scope, **scope}
 
-    def at(self, value: real) -> real:
+    def at(self, value: REAL) -> REAL:
         """Get function value at specific x value."""
         formula_at = self.replace(value)
         return eval(formula_at, self._arg_scope)
 
     def max(self,
-            xmin: real,
-            xmax: real,
+            xmin: REAL,
+            xmax: REAL,
             steps: int = 100000) -> _Union[list, float]:
-        """Finds maxima of a function in a given space"""
+        """Finds maxima of a function in a given domain."""
         x_pos = xmin
         if abs(self.numdif(x_pos)) < 1e-3:
             return x_pos
@@ -109,16 +109,16 @@ class Function:
         return return_list
 
     def min(self,
-            xmin: real,
-            xmax: real,
+            xmin: REAL,
+            xmax: REAL,
             steps: int = 100000) -> list:
-        """Finds minima of a function in a given spqce"""
+        """Finds minima of a function in a given domain."""
         neg_func = -self
         return neg_func.max(xmin, xmax, steps=steps)
 
     def root(self,
-             xmin: real,
-             xmax: real,
+             xmin: REAL,
+             xmax: REAL,
              step: int = 1000) -> list:
         """Find roots of functions with f(x) = 0.
         Returns only x-coordinate.
@@ -137,33 +137,33 @@ class Function:
         return return_list
 
     def newton_method(self,
-                      x_n: real,
-                      step: int = 50) -> float:
+                      x_n: REAL,
+                      steps: int = 50) -> float:
         """Newton's method to find root of function from given point x_n.
         x_{n+1} = x_n - f(x_n) / f'(x_n)
         """
-        for _ in range(step):
+        for _ in range(steps):
             x_np1 = x_n - self.at(x_n) / self.numdif(x_n)
             x_n = x_np1
         return x_n
 
     def numdif(self,
-               x: real,
-               h: real = 1e-5) -> float:
+               x: REAL,
+               h: REAL = 1e-5) -> float:
         """Returns numerical differentiation of function at a given x value."""
         return (self.at(x+h) - self.at(x-h)) / (2*h)
 
     def scnd_numdif(self,
-                    x: real,
-                    h: real = 1e-5):
+                    x: REAL,
+                    h: REAL = 1e-5):
         """Returns numerical second order differentiation of function at x value."""
         x1 = self.numdif(x-h)
         x2 = self.numdif(x+h)
         return (x2 - x1) / (2*h)
 
     def numint(self,
-               a: real,
-               b: real,
+               a: REAL,
+               b: REAL,
                n: int = 1000):
         """Returns the numerical integral of a function in a given space."""
         res = (b - a) / n

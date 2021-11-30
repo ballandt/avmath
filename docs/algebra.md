@@ -9,42 +9,90 @@ from avmath import algebra
 ---
 ## Contents
 
-Class | Usage | Implemented in version | Last change
---- | --- | --- | ---
-[`Vector`](#vector) | Vector | v1.0.0 | v3.0.0
-[`Matrix`](#matrix) | Matrix | v1.0.0 | v3.0.0
-[`SLE`](#sle) | System of linear equations | v2.0.0 | v3.0.0
+* [`Vector`](#vector)
+  * [Methods](#methods)
+    * [`__init__`](#__init__self-args-real--tuple-begin-optionaltuple--none-end-optionaltuple--none)
+    * [`__abs__`](#__abs__self---float)
+    * [`__add__`](#__add__self-other-vector---vector)
+    * [`__sub__`](#__sub__self-other-vector---vector)
+    * [`__mul__`/`__rmul__`](#__mul__self-other-real--vector---real--vector--br-__rmul__)
+    * [`__truediv__`](#__truediv__self-other-real)
+    * [`__pow__`](#__pow__self-power-int---real--vector)
+    * [`cross`](#crossself-other-vector---vector)
+    * [`unit`](#unitself---vector)
+    * [`leading_zeroes`](#leading_zerosself---int)
+    * [`no_fractions`](#no_fractionsself---vector)
+  * [Static methods](#static-methods)
+    * [`spat`](#spatu-vector-v-vector-w-vector---float)
+    * [`anlge`](#angleu-vector-v-vector---float)
+
+
+* [`Structure`](#structure)
+  * [Attributes](#attributes)
+  * [Methods](#methods)
+    * [`__init__`](#__init__self-args-tuple)
+    * [`flat`](#flatself---bool)
+    * [`circumference`](#circumferenceself---float)
+    * [`area`](#areaself-opt-str--none)
+  * [Static methods](#static-methods)
+    * [`triangulate`](#triangulatep-tuple-q-tuple-r-tuple---float)
+
+
+* [`Matrix`](#matrix)
+  * [Methods](#methods)
+    * [`__init__`](#__init__self-args-listreal--vector)
+    * [`__repr__`](#__repr__self---str)
+    * [`__round__`](#__round__self-n-int--none---matrix)
+    * [`__neg__`](#__neg__self---matrix)
+    * [`__add__`](#__add__self-other-matrix---matrix)
+    * [`__sub__`](#__sub__self-other-matrix---matrix)
+    * [`__mul__`/`__rmul__`](#__mul__self-other-real--vector--matrix---unionmatrix-vector--br-__rmul__)
+    * [`__truediv__`](#__truediv__self-other-real---matrix)
+    * [`__pow__`](#__pow__self-power-int---matrix)
+    * [`size`](#sizeself-option-str--none---list)
+    * [`dim`](#dimself---int)
+    * [`index`](#indexself-element-real---list)
+    * [`no_fractions`](#no_fractionsself---matrix)
+    * [`column`](#columnself-column_index-int---vector)
+    * [`row`](#rowself-row_index-int---vector)
+    * [`append`](#appendself-rownone-columnnone---matrix)
+    * [`remove`](#removeself-row_index-int--none-column_index-int--none---matrix)
+    * [`transpose`](#transposeself---matrix)
+    * [`det`](#detself---real--br-__abs__)
+    * [`cof`](#cofself---matrix)
+    * [`adj`](#adjself---matrix)
+    * [`inverse`](#inverseself---matrix)
+    * [`ref`](#refself---matrix)
+    * [`rank`](#rankself---int)
+    * [`rref`](#rrefself---matrix)
+  * [Static methods](#static-methods)
+    * [`create`](#createm-int-n-int---matrix)
+    * [`create_identity`](#create_identityn-int---matrix)
+
+
+* [`SLE`](#sle)
+  * [`__init__`](#__init__self-args-listreal)
+  * [`solve`](#solveself---vector)
+  * [`x`](#xself-index-int---real)
 
 ---
+---
 ## `Vector`
+
+__Implemented in v1.0.0 | Last change v3.0.0__
 
 The Vector-class is an inherited class of `Tuple`.
 The methods of `Vector` simulate an immutable type.
 It also defines the following methods:
 
-Method | Parameters | Usage | Implemented in version | Last change
---- | --- | --- | --- | ---
-`__init__` | `*args: Union[int, float, 'Fraction', 'Tuple]`, <br> `begin: Optional['Tuple'] = None`, <br> `end: Optional[Tuple] = None` | Initialisation of Vector object | v1.0.0 | v3.0.0
-`__abs__` | - | Returns the absolute of the vector | v1.0.0 | v3.0.0 | v3.0.0
-`__add__` | `other: 'Vector'` | Adds two vectors | v1.0.0 | v3.0.0
-`__sub__` | `other: 'Vector'` | Subtracts a vector from another | v1.0.0 | v3.0.0
-`__mul__` <br> `__rmul__` | `other: Union['Vector', int, float]` | Either calculates scalar product of two vectors or returns the scalar multiplication of a scalar and a vector | v1.0.0 | v3.0.0
-`__truediv__` | `other: Union[int, float, 'Fraction']`| Vector divided by a scalar. Returns vector with Fraction values | v3.0.0 | v3.0.0
-`__pow__` | `power: int` | Returns _p_ times scalar multiplied vector. p=0 returns unit vector | v3.0.0 | v3.0.0
-`cross` | `other: 'Vector'` | Returns vector product of two three dimensional vectors | v1.0.0 | v3.0.0
-`unit` | - | Returns specific unit vector | v1.0.0 | v3.0.0
-`leading_zeroes` | - | Returns the number of leading zeroes of a vector | v3.0.0 | v3.0.0
-`no_fractions` | - | Returns a copied vector that does not contain `Fraction` members | v3.0.0 | v3.0.0
+### Methods
 
-Static method | Parameters | Usage | Implemented in version | Last change
---- | --- | --- | --- | ---
-`spat` | `u: 'Vector`, <br> `v: 'Vector'`, <br> `w: 'Vector` | Returns the spat product of three vectors | v1.0.0 | v3.0.0
-`angle` | `u: 'Vector'`, <br> `v: 'Vector'` | Calculates the angle (in radiant) between two vectors | v1.0.0 | v3.0.0
+#### `__init__(self, *args: REAL | 'Tuple', begin: Optional['Tuple'] = None, end: Optional['Tuple'] = None)`
 
-### Initialisation
+__Implemented in v1.0.0 | Last Change in v3.0.0__
 
-Vector can be initialised giving either number values, vectorizing
-a `Tuple` or by two `Tuple`s giving begin and end of the vector.
+Initialisation of Vector object. Takes either number arguments, vectorizes
+a `Tuple` or is initialised by giving a beginning and end as `Tuple`s.
 
 ````python
 from avmath import algebra
@@ -63,46 +111,172 @@ w = algebra.Vector(begin=b, end=c)
 ````
 
 ---
+#### `__abs__(self) -> float`
+
+__Implemented in v1.0.0 | Last Change in v3.0.0__
+
+Returns the absolute of the vector using pythagorean formula. Use 
+````python
+u = algebra.Vector(1, 2, 4)
+print(abs(u))
+````
+
+---
+#### `__add__(self, other: 'Vector') -> 'Vector'`
+
+__Implemented in v1.0.0 | Last Change in v3.0.0__
+
+Adds two vectors.
+
+---
+#### `__sub__(self, other: 'Vector') -> 'Vector'`
+
+__Implemented in v1.0.0 | Last Change in v3.0.0__
+
+Subtracts two vectors.
+
+---
+#### `__mul__(self, other: REAL | 'Vector') -> REAL | 'Vector'` / <br> `__rmul__`
+
+__Implemented in v1.0.0 | Last Change in v3.0.0__
+
+Either calculates scalar product of two vectors or
+returns the scalar multiplication of a scalar and a vector.
+
+---
+#### `__truediv__(self, other: REAL)`
+
+__Implemented in v3.0.0 | Last Change in v3.0.0__
+
+Vector divided by a scalar. Returns vector with Fraction values.
+
+---
+#### `__pow__(self, power: int) -> REAL | 'Vector'`
+
+__Implemented in v1.0.0 | Last Change in v3.0.0__
+
+Returns `power` times scalar multiplied vector. `power`= 0 returns unit vector.
+
+---
+#### `cross(self, other: 'Vector') -> 'Vector'`
+
+__Implemented in v3.0.0 | Last Change in v3.0.0__
+
+Returns vector product of two three-dimensional vectors.
+
+---
+#### `unit(self) -> 'Vector'`
+
+__Implemented in v3.0.0 | Last Change in v3.0.0__
+
+Returns specific unit vector.
+
+---
+#### `leading_zeros(self) -> int`
+
+__Implemented in v3.0.0 | Last Change in v3.0.0__
+
+Returns the number of leading zeroes of a vector.
+
+#### `no_fractions(self) -> 'Vector'`
+
+__Implemented in v3.0.0 | Last Change in v3.0.0__
+
+Returns a copied vector that does not contain `Fraction` members.
+
+---
+### Static methods
+
+#### `spat(u: 'Vector', v: 'Vector', w: 'Vector') -> float`
+
+__Implemented in v1.0.0 | Last Change in v3.0.0__
+
+Returns the spat product of three vectors.
+
+---
+#### `angle(u: 'Vector', v: 'Vector') -> float`
+
+__Implemented in v1.0.0 | Last Change in v3.0.0__
+
+Calculates the angle (in radiant) between two vectors.
+
+---
+---
+## `Structure`
+
+The structure class provides features for calculation with many points.
+
+### Attributes
+
+Attribute | Usage | Implemented in version | Last Change
+--- | --- | --- | ---
+`self.points` | The edges of the structure | v2.0.0 | v2.0.0
+`self.vectors` | The links of the points| v2.0.0 | v2.0.0
+
+---
+
+### Methods
+
+#### `__init__(self, *args: 'Tuple')`
+
+__Implemented in v1.0.0 | Last Change in v3.0.0__
+
+Initialises the `Structure` with `Tuple`s.
+
+---
+#### `flat(self) -> bool`
+
+__Implemented in v2.0.0 | Last Change in v3.0.0__
+
+
+Returns `True` if there is a flat area in which all points
+lie.
+
+---
+#### `circumference(self) -> float`
+
+__Implemented in v1.0.0 | Last Change in v3.0.0__
+
+Returns the circumference of the structure.
+
+---
+#### `area(self, opt: str = None)`
+
+__Implemented in v1.0.0 | Last Change in v3.0.0__
+
+Returns the area of the structure. `opt` can be `'flat'`,
+in this case `GeometricalError` is thrown if the area is not flat.
+Is not recommended because the algorithm is not very accurate.
+With no option specified `GeometricalWarning` is caused if
+the area is not flat.
+
+---
+
+### Static methods
+
+#### `triangulate(p: 'Tuple', q: 'Tuple', r: 'Tuple') -> float`
+
+__Implemented in v1.0.0 | Last Change in v3.0.0__
+
+Calculates the area between three points. Used for `area`.
+
+---
+---
+
 ## `Matrix`
+
+__Implemented in v1.0.0 | Last change v3.0.0__
 
 The matrix class inherits from `Tuple` and also simulates
 an immutable type. It defines following methods
 
-Method | Parameters | Usage | Implemented in version | Last change
---- | --- | --- | --- | ---
-`__init__` | `*args: Union[int, float, 'Fraction', 'Tuple]`, <br> `begin: Optional['Tuple'] = None`, <br> `end: Optional[Tuple] = None` | Initialisation of Vector object | v1.0.0 | v3.0.0
-`__repr__` | - | Returns string of Matrix | v1.0.0 | v3.0.0
-`__round__` | `n: int = None` | Returns matrix rounded to n digits | 1.0.0 | 2.0.0
-`__neg__` | - | Returns negative matrix | v1.0.0 | v3.0.0
-`__add__` | `other: 'Matrix'` | Adds two matrices | v1.0.0 | v2.0.0
-`__sub__` | `other: 'Matrix'` | Subtracts a matrix from another | v1.0.0 | v2.0.0
-`__mul__` <br> `__rmul__` | `other: Union['Matrix', 'Vector', int, float]` | Either multiplies two matrices, returns product of vector and matrix or returns the scalar multiplication of a scalar and a matrix | v1.0.0 | v3.0.0
-`__truediv__` | `other: Union[int, float, 'Fracition']`|  Matrix divided by a scalar. Returns matrix with Fraction values | v3.0.0 | v3.0.0
-`__pow__` | `power: int` | Returns _p_ times multiplied quadratic matrix. p=0 returns identity. p=-1 returns inverse matrix | v1.0.0 | v3.0.0
-`no_fractions` | - | Returns a copied matrix that does not contain `Fraction` members | v3.0.0 | v3.0.0
-`size` | - | Returns list with the number of rows in 0th place and the number of columns in the 1st place | v2.0.0 | v2.0.0
-`dim` | - | Returns the dimension of the matrix (=m * n) | v1.0.0 | v2.0.0
-`index` | `element: Union[int, float]` | Returns position of element in a matrix. If There are multiple, all get returned in a list | v1.0.0 | v1.0.0
-`column` | `column_index: int` | Returns the column vector of given index | v1.0.0 | v3.0.0
-`row` | `row_index: int` | Returns the row vector of given index | v1.0.0 | v3.0.0
-`append` | `row=None`, <br> `column=None` | Returns a matrix with appended iterable | v1.0.0 | v3.0.0
-`remove` | `row_index: int = None`, <br> `column_index: int = None` | Returns matrix without row or column specified | v1.0.0 | v3.0.0
-`transpose` | - | Returns transposed matrix | v1.0.0 | v3.0.0
-`det` <br> `__abs__` | - | Returns determinant of a matrix | v2.0.0 | v2.0.0
-`cof` | - | Returns cofactor matrix | v2.0.0 | v2.0.0
-`adj` | - | Returns adjunct of a matrix | v2.0.0 | v3.0.0
-`inverse` | - | Returns inverse matrix| v2.0.0 | v3.0.0
-`ref` | - | Returns row echelon form of a matrix | v3.0.0 | v3.0.0
-`rank` | - | Returns rank of a matrix | v3.0.0 | v3.0.0
-`rref` | - | Returns reduced row echelon form of a matrix | v3.0.0 | v3.0.0
+### Methods
 
-Static method | Parameters | Usage | Implemented in version | Last change
---- | --- | --- | --- | ---
-`create` | `m: int`, <br> `n: int` | Returns a matrix of size (m, n) with zeros only | v1.0.0 | v3.0.0
-`create_identity` | `n: int` | Returns an identity matrix with n rows | v1.0.0 | v3.0.0
+#### `__init__(self, *args: List[REAL] | 'Vector')`
 
-### Initialisation
+__Implemented in v1.0.0 | Last change v3.0.0__
 
+Initialises the matrix. 
 The matrix can be initialised by lists or a vector.
 
 ````python
@@ -123,13 +297,246 @@ D = algebra.Matrix(list(u)) # Vector gets row vector
 ````
 
 ---
+#### `__repr__(self) -> str`
+
+__Implemented in v1.0.0 | Last change v3.0.0__
+
+Returns string of matrix.
+
+````python
+A = algebra.Matrix([1, 2, 4],
+                   [4, avmath.Fraction(2, 3), 2],
+                   [5, 2, 9])
+````
+gives the output:
+
+````
+┌  1  2    4  ┐
+|  4  2/3  2  |
+└  5  2    9  ┘
+````
+
+---
+#### `__round__(self, n: int = None) -> 'Matrix'`
+
+__Implemented in v2.0.0 | Last change v3.0.0__
+
+Returns matrix rounded to n digits.
+
+---
+#### `__neg__(self) -> 'Matrix'`
+
+__Implemented in v1.0.0 | Last change v2.0.0__
+
+Returns negative matrix.
+
+---
+#### `__add__(self, other: 'Matrix') -> 'Matrix'`
+
+Adds two matrices.
+
+---
+#### `__sub__(self, other: 'Matrix') -> 'Matrix'`
+
+__Implemented in v1.0.0 | Last change v2.0.0__
+
+Subtracts two matrices.
+
+---
+#### `__mul__(self, other: REAL | 'Vector' | 'Matrix') -> Union['Matrix', 'Vector']` / <br> `__rmul__`
+
+__Implemented in v1.0.0 | Last change v3.0.0__
+
+Either multiplies two matrices, returns product of vector and matrix or returns the
+scalar multiplication of a scalar and a matrix.
+
+---
+#### `__truediv__(self, other: REAL) -> 'Matrix'`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Matrix divided by a scalar. Returns matrix with Fraction values.
+
+---
+#### `__pow__(self, power: int) -> 'Matrix'`
+
+__Implemented in v1.0.0 | Last change v3.0.0__
+
+Returns `power` times multiplied quadratic matrix.
+`power`=0 returns identity. `power`=-1 returns
+inverse matrix.
+
+--- 
+#### `size(self, option: str = None) -> list`
+
+__Implemented in v2.0.0 | Last change v2.0.0__
+
+Returns the size of a matrix in a list. Normally in order
+(m, n) with m is number of rows and n is the number of
+columns. If `opt="xy"` is specified, the order is reversed.
+
+---
+#### `dim(self) -> int`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns the dimension of the matrix (=m * n).
+
+---
+#### `index(self, element: REAL) -> list`
+
+__Implemented in v1.0.0 | Last change v1.0.0__
+
+Returns position of element in a matrix.
+If There are multiple, all get returned in a list.
+
+---
+#### `no_fractions(self) -> 'Matrix'`
+
+__Implemented in v1.0.0 | Last change v3.0.0__
+
+Returns a copied matrix that
+does not contain `Fraction` members.
+
+---
+#### `column(self, column_index: int) -> 'Vector'`
+
+__Implemented in v1.0.0 | Last change v3.0.0__
+
+Returns the column vector of given index.
+
+---
+#### `row(self, row_index: int) -> 'Vector'`
+
+__Implemented in v1.0.0 | Last change v3.0.0__
+
+Returns the row vector of given index.
+
+---
+#### `append(self, row=None, column=None) -> 'Matrix'`
+
+__Implemented in v1.0.0 | Last change v3.0.0__
+
+Returns a matrix with appended iterable.
+
+---
+#### `remove(self, row_index: int = None, column_index: int = None) -> 'Matrix'`
+
+__Implemented in v1.0.0 | Last change v3.0.0__
+
+Returns matrix without row or column specified.
+
+#### `transpose(self) -> 'Matrix'`
+
+__Implemented in v1.0.0 | Last change v3.0.0__
+
+Returns transposed matrix.
+
+---
+#### `det(self) -> REAL` / <br> `__abs__`
+
+__Implemented in v2.0.0 | Last change v2.0.0__
+
+Returns determinant of a matrix.
+
+---
+#### `cof(self) -> 'Matrix'`
+
+__Implemented in v2.0.0 | Last change v2.0.0__
+
+Returns cofactor matrix.
+
+---
+#### `adj(self) -> 'Matrix'`
+
+__Implemented in v2.0.0 | Last change v2.0.0__
+
+Returns adjunct of a matrix.
+
+---
+#### `inverse(self) -> 'Matrix'`
+
+__Implemented in v2.0.0 | Last change v3.0.0__
+
+Returns inverse matrix.
+
+---
+#### `ref(self) -> 'Matrix'`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns a row echelon form of a matrix.
+
+---
+#### `rank(self) -> int`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns rank of a matrix.
+
+---
+#### `rref(self) -> 'Matrix'`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Returns a reduced row echelon form of a matrix.
+
+---
+### Static methods
+
+#### `create(m: int, n: int) -> 'Matrix'`
+
+__Implemented in v1.0.0 | Last change v1.0.0__
+
+Returns a matrix of size (m, n) with zeros only.
+
+---
+#### `create_identity(n: int) -> 'Matrix'`
+
+__Implemented in v1.0.0 | Last change v1.0.0__
+
+Returns an identity matrix with n rows.
+
+---
+---
+
 ## `SLE`
+
+__Implemented in v2.0.0 | Last change v3.0.0__
 
 The **s**ystem of **l**inear **e**quations takes coefficients
 and solves the system using inverse matrix. It inherits from `Matrix`.
 
-Method | Parameters | Usage | Implemented in version | Last change
---- | --- | --- | --- | ---
-`__init__` | `*args: list` |Initialises SLE | v2.0.0 | v3.0.0
-`solve` | - | Returns a vector with all unknown variables | v2.0.0 | v3.0.0
-`x` | `index: int` | Returns the unknown variable of given index | v2.0.0 | v2.0.0
+### Methodes
+
+#### `__init__(self, *args: List[REAL])`
+
+__Implemented in v2.0.0 | Last change v3.0.0__
+
+Initialises SLE.
+
+Type
+````python
+a = algebra.SLE([a_11, a_12, a_13, b_1],
+                [a_21, a_22, a_23, b_2],
+                [a_31, a_32, a_33, b_3])
+````
+for
+
+| a_11 x_1 + a_12 x_2 + a_13 x_3 = b_1 | <br>
+| a_21 x_1 + a_22 x_2 + a_23 x_3 = b_2 | <br>
+| a_31 x_1 + a_32 x_2 + a_33 x_3 = b_3 | <br>
+
+---
+#### `solve(self) -> 'Vector'`
+
+__Implemented in v2.0.0 | Last change v3.0.0__
+
+Returns a vector with all unknown variables.
+
+---
+#### `x(self, index: int) -> REAL`
+
+__Implemented in v2.0.0 | Last change v3.0.0__
+
+Returns the unknown variable of given index.
