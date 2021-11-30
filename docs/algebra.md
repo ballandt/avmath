@@ -10,7 +10,7 @@ from avmath import algebra
 ## Contents
 
 * [`Vector`](#vector)
-  * [Methods](#methods)
+  * [Methods](#vector-methods)
     * [`__init__`](#__init__self-args-real--tuple-begin-optionaltuple--none-end-optionaltuple--none)
     * [`__abs__`](#__abs__self---float)
     * [`__add__`](#__add__self-other-vector---vector)
@@ -22,24 +22,24 @@ from avmath import algebra
     * [`unit`](#unitself---vector)
     * [`leading_zeroes`](#leading_zerosself---int)
     * [`no_fractions`](#no_fractionsself---vector)
-  * [Static methods](#static-methods)
+  * [Static methods](#vector-static-methods)
     * [`spat`](#spatu-vector-v-vector-w-vector---float)
     * [`anlge`](#angleu-vector-v-vector---float)
 
 
 * [`Structure`](#structure)
-  * [Attributes](#attributes)
-  * [Methods](#methods)
+  * [Attributes](#structure-attributes)
+  * [Methods](#structure-methods)
     * [`__init__`](#__init__self-args-tuple)
     * [`flat`](#flatself---bool)
     * [`circumference`](#circumferenceself---float)
     * [`area`](#areaself-opt-str--none)
-  * [Static methods](#static-methods)
+  * [Static methods](#structure-static-methods)
     * [`triangulate`](#triangulatep-tuple-q-tuple-r-tuple---float)
 
 
 * [`Matrix`](#matrix)
-  * [Methods](#methods)
+  * [Methods](#matrix-methods)
     * [`__init__`](#__init__self-args-listreal--vector)
     * [`__repr__`](#__repr__self---str)
     * [`__round__`](#__round__self-n-int--none---matrix)
@@ -65,15 +65,16 @@ from avmath import algebra
     * [`ref`](#refself---matrix)
     * [`rank`](#rankself---int)
     * [`rref`](#rrefself---matrix)
-  * [Static methods](#static-methods)
+  * [Static methods](#matrix-static-methods)
     * [`create`](#createm-int-n-int---matrix)
     * [`create_identity`](#create_identityn-int---matrix)
 
 
 * [`SLE`](#sle)
-  * [`__init__`](#__init__self-args-listreal)
-  * [`solve`](#solveself---vector)
-  * [`x`](#xself-index-int---real)
+  * [Methods](#sle-methods)
+    * [`__init__`](#__init__self-args-listreal)
+    * [`solve`](#solveself---vector)
+    * [`x`](#xself-index-int---real)
 
 ---
 ---
@@ -85,7 +86,7 @@ The Vector-class is an inherited class of `Tuple`.
 The methods of `Vector` simulate an immutable type.
 It also defines the following methods:
 
-### Methods
+### Vector methods
 
 #### `__init__(self, *args: REAL | 'Tuple', begin: Optional['Tuple'] = None, end: Optional['Tuple'] = None)`
 
@@ -185,7 +186,7 @@ __Implemented in v3.0.0 | Last Change in v3.0.0__
 Returns a copied vector that does not contain `Fraction` members.
 
 ---
-### Static methods
+### Vector static methods
 
 #### `spat(u: 'Vector', v: 'Vector', w: 'Vector') -> float`
 
@@ -206,7 +207,7 @@ Calculates the angle (in radiant) between two vectors.
 
 The structure class provides features for calculation with many points.
 
-### Attributes
+### Structure attributes
 
 Attribute | Usage | Implemented in version | Last Change
 --- | --- | --- | ---
@@ -215,7 +216,7 @@ Attribute | Usage | Implemented in version | Last Change
 
 ---
 
-### Methods {#structure-methodes}
+### Structure methods
 
 #### `__init__(self, *args: 'Tuple')`
 
@@ -252,7 +253,7 @@ the area is not flat.
 
 ---
 
-### Static methods
+### Structure static methods
 
 #### `triangulate(p: 'Tuple', q: 'Tuple', r: 'Tuple') -> float`
 
@@ -270,7 +271,7 @@ __Implemented in v1.0.0 | Last change v3.0.0__
 The matrix class inherits from `Tuple` and also simulates
 an immutable type. It defines following methods
 
-### Methods
+### Matrix methods
 
 #### `__init__(self, *args: List[REAL] | 'Vector')`
 
@@ -482,7 +483,7 @@ __Implemented in v3.0.0 | Last change v3.0.0__
 Returns a reduced row echelon form of a matrix.
 
 ---
-### Static methods
+### Matrix static methods
 
 #### `create(m: int, n: int) -> 'Matrix'`
 
@@ -507,7 +508,7 @@ __Implemented in v2.0.0 | Last change v3.0.0__
 The **s**ystem of **l**inear **e**quations takes coefficients
 and solves the system using inverse matrix. It inherits from `Matrix`.
 
-### Methodes
+### SLE methods
 
 #### `__init__(self, *args: List[REAL])`
 
