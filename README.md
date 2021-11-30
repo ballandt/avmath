@@ -1,4 +1,5 @@
-![avmath](https://1drv.ms/u/s!AqVffxG6w5dqhB6oWiV8yxDPag3e?e=RMhIl9)
+![avmath](docs/avmath.svg)
+
 ---
 
 _Avmath_ is a python library for mathematics.
