@@ -1,4 +1,4 @@
-<img src="docs/avmath.svg" width="400" title="avmath" class="center">
+<img src="docs/avmath.svg" width="400" title="avmath">
 
 ---
 
@@ -24,8 +24,8 @@ Category | Data
 Name | avmath
 PyPi name  | [avmath](https://pypi.org/project/avmath/)
 Author | Camillo Ballandt
-Release version | [2.0.0](https://www.github.com/ballandt/avmath/releases/tag/v2.0.0)
-Developing version | [3.0.0](https://github.com/ballandt/avmath/blob/master/DEVELOPMENTS.md)
+Release version | [3.0.0](https://www.github.com/ballandt/avmath/releases/tag/v3.0.0)
+Developing version | [Developments](https://github.com/ballandt/avmath/blob/master/DEVELOPMENTS.md)
 Requirements | Python 3.10
 
 ### Extended description
@@ -46,7 +46,7 @@ The first drafts of avmath are dated on the 22nd of March 2021.
 ---
 ## Features
 
-* [Basic features](https://www.github.com/ballandt/avmath/blob/master/scr/avmath/__init__.py)
+* [Basic features](https://github.com/ballandt/avmath/blob/master/docs/basic.md)
   * __fractions__
     * Basic operations
     * reducing
@@ -66,7 +66,7 @@ The first drafts of avmath are dated on the 22nd of March 2021.
     * phi
     * gamma
 
-* [Linear algebra](https://www.github.com/ballandt/avmath/blob/master/src/avmath/algebra.py)
+* [Linear algebra](https://github.com/ballandt/avmath/blob/master/docs/algebra.md)
   * __tuples__
     * Basic iterable operations
     * basic mathematical operations
@@ -90,7 +90,7 @@ The first drafts of avmath are dated on the 22nd of March 2021.
     * area
   * __systems of linear equations__
 
-* [Analysis](https://www.github.com/ballandt/avmath/blob/master/src/avmath/analysis.py)
+* [Analysis](https://github.com/ballandt/avmath/blob/master/docs/analysis.md)
   * __functions__
     * usual input possibility
     * basic calculations

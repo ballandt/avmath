@@ -24,7 +24,6 @@ __all__ = ["Fraction",
            "pi", "e", "phi", "gamma"]
 
 import time
-import copy
 from typing import Union as _Union, Iterable as _Iterable
 
 _TAYLOR_DIFFERENCE = 1e-16
@@ -206,7 +205,7 @@ def _check_types(arg: _Iterable, *types):
     """Checks if the elements of the argument belong to the given types."""
     for ele in arg:
         if not type(ele) in types:
-            raise ArgumentError(ele, "int or float")
+            raise ArgumentError(type(ele), types)
     return True
 
 

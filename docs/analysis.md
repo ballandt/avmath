@@ -41,7 +41,7 @@ from avmath import analysis
 ## `Point`
 
 The Point class is the return type of some `Function` methods. It inherites from
-`Tuple` and defines this extra method:
+`algebra.Tuple` and defines this extra method:
 
 ---
 ### Method
@@ -218,21 +218,21 @@ __Implemented in v3.0.0 | Last change in v3.0.0__
 Returns result of `steps` times executed <span style="font-variant:small-caps;">Newton</span>-method.
 
 ---
-#### `numdif(self, x: real, h: real = 1e-5) -> float`
+#### `num_dif(self, x: REAL, h: REAL = 1e-5) -> float`
 
 __Implemented in v1.0.0 | Last change in v3.0.0__
 
 Returns numeric differentiation of the function at given x.
 
 ---
-#### `scnd_numdif(self, x: real, h: real = 1e-5)`
+#### `second_num_dif(self, x: REAL, h: REAL = 1e-5) -> float`
 
 __Implemented in v3.0.0 | Last change in v3.0.0__
 
 Returns numerically calculated second differentiation at given x.
 
 ---
-#### `numint(self, a: real, b: real, n: int = 1000)`
+#### `num_int(self, a: REAL, b: REAL, n: int = 1000) -> float`
 
 __Implemented in v1.0.0 | Last change in v3.0.0__
 

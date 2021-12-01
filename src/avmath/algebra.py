@@ -682,17 +682,21 @@ class Matrix(Tuple):
 
     def ref(self) -> 'Matrix':
         """Row echelon form of a matrix."""
-        arg_list = list(self)
-        longest_row = []
-        for index, element in enumerate(arg_list):
-            longest_row.append([Vector(Tuple(element)).leading_zeros(), index])
-        sorted_longest_row = sorted(longest_row)
-        sorted_arg_list = []
-        for i in range(len(arg_list)):
-            sorted_arg_list.append(Vector(Tuple(arg_list[sorted_longest_row[i][1]])))
+        # arg_list = list(self)
+        # longest_row = []
+        # for index, element in enumerate(arg_list):
+        #     longest_row.append([Vector(Tuple(element)).leading_zeros(), index])
+        # sorted_longest_row = sorted(longest_row)
+        # sorted_arg_list = []
+        # for i in range(len(arg_list)):
+        #     sorted_arg_list.append(Vector(Tuple(arg_list[sorted_longest_row[i][1]])))
 
+        sorted_arg_list = Matrix.__leading_zero_sort(list(self))
         for i in range(len(sorted_arg_list)):
+            sorted_arg_list = Matrix.__leading_zero_sort(sorted_arg_list)
             element = sorted_arg_list[i]
+            if element.leading_zeros() == len(element):
+                continue
             sorted_arg_list[i] = element / element[element.leading_zeros()]
             if i == len(sorted_arg_list):
                 break
@@ -745,6 +749,18 @@ class Matrix(Tuple):
             for j in range(n):
                 ret_mat[i][j] = 1 if i == j else 0
         return ret_mat
+
+    @staticmethod
+    def __leading_zero_sort(arg_list: list) -> 'list':
+        """Sorts value list of matrix for ref."""
+        longest_row = []
+        for index, element in enumerate(arg_list):
+            longest_row.append([Vector(Tuple(list(element))).leading_zeros(), index])
+        sorted_longest_row = sorted(longest_row)
+        sorted_arg_list = []
+        for i in range(len(arg_list)):
+            sorted_arg_list.append(Vector(Tuple(list(arg_list[sorted_longest_row[i][1]]))))
+        return sorted_arg_list
 
 
 class SLE(Matrix):

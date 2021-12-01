@@ -4,7 +4,6 @@ implementing function features."""
 
 __all__ = ["Point", "Function"]
 
-from typing import Union as _Union
 from . import scope as _scope, REAL, sgn
 from .algebra import Tuple
 
@@ -21,6 +20,12 @@ class Function:
     """Mathematical function. Enter argument as string."""
 
     def __init__(self, arg: str):
+        """Initialisation of function. Enter function
+        as string. Coefficient writing and ^ for power
+        is allowed.
+        See:
+        https://github.com/ballandt/avmath/blob/master/docs/analysis.md#__init__self-arg-str
+        """
         self.term = arg
         self._arg_scope = _scope
 
@@ -86,41 +91,35 @@ class Function:
         formula_at = self.replace(value)
         return eval(formula_at, self._arg_scope)
 
-    def max(self,
-            xmin: REAL,
-            xmax: REAL,
-            steps: int = 100000) -> _Union[list, float]:
+    def max(self, xmin: REAL, xmax: REAL, steps: int = 100000) -> list:
         """Finds maxima of a function in a given domain."""
         x_pos = xmin
-        if abs(self.numdif(x_pos)) < 1e-3:
-            return x_pos
+        if abs(self.num_dif(x_pos)) < 1e-3:
+            return [Point(x_pos, self.at(x_pos))]
         step = (xmax - xmin) / steps
         x_list = []
         for _ in range(steps):
-            if sgn(self.numdif(x_pos)) != sgn(self.numdif(x_pos + step)):
+            if sgn(self.num_dif(x_pos)) != sgn(self.num_dif(x_pos + step)):
                 x_list.append((x_pos, x_pos + step))
             x_pos += step
         ret_list = []
         for e in x_list:
-            ret_list.append(self.max(*e))
+            if self.max(*e):
+                ret_list.append(*tuple(self.max(*e)))
+            else:
+                continue
         return_list = []
-        for e in ret_list:
-            if self.scnd_numdif(e) < 0:
-                return_list.append(Point(e, self.at(e)))
+        for index, e in enumerate(ret_list):
+            if (self.second_num_dif(e[0]) < 0 and abs(e[0] - ret_list[-1][0]) > step) or index == 0:
+                return_list.append(e)
         return return_list
 
-    def min(self,
-            xmin: REAL,
-            xmax: REAL,
-            steps: int = 100000) -> list:
+    def min(self, xmin: REAL, xmax: REAL, steps: int = 100000) -> list:
         """Finds minima of a function in a given domain."""
         neg_func = -self
         return neg_func.max(xmin, xmax, steps=steps)
 
-    def root(self,
-             xmin: REAL,
-             xmax: REAL,
-             step: int = 1000) -> list:
+    def root(self, xmin: REAL, xmax: REAL, step: int = 1000) -> list:
         """Find roots of functions with f(x) = 0.
         Returns only x-coordinate.
         """
@@ -137,35 +136,26 @@ class Function:
                 return_list.append(self.newton_method(element))
         return return_list
 
-    def newton_method(self,
-                      x_n: REAL,
-                      steps: int = 50) -> float:
+    def newton_method(self, x_n: REAL, steps: int = 50) -> float:
         """Newton's method to find root of function from given point x_n.
         x_{n+1} = x_n - f(x_n) / f'(x_n)
         """
         for _ in range(steps):
-            x_np1 = x_n - self.at(x_n) / self.numdif(x_n)
+            x_np1 = x_n - self.at(x_n) / self.num_dif(x_n)
             x_n = x_np1
         return x_n
 
-    def numdif(self,
-               x: REAL,
-               h: REAL = 1e-5) -> float:
+    def num_dif(self, x: REAL, h: REAL = 1e-5) -> float:
         """Returns numerical differentiation of function at a given x value."""
         return (self.at(x+h) - self.at(x-h)) / (2*h)
 
-    def scnd_numdif(self,
-                    x: REAL,
-                    h: REAL = 1e-5):
+    def second_num_dif(self, x: REAL, h: REAL = 1e-5) -> float:
         """Returns numerical second order differentiation of function at x value."""
-        x1 = self.numdif(x-h)
-        x2 = self.numdif(x+h)
+        x1 = self.num_dif(x-h)
+        x2 = self.num_dif(x+h)
         return (x2 - x1) / (2*h)
 
-    def numint(self,
-               a: REAL,
-               b: REAL,
-               n: int = 1000):
+    def num_int(self, a: REAL, b: REAL, n: int = 1000) -> float:
         """Returns the numerical integral of a function in a given space."""
         res = (b - a) / n
         term = 0

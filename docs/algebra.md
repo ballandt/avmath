@@ -652,6 +652,14 @@ __Implemented in v1.0.0 | Last change v1.0.0__
 Returns an identity matrix with n rows.
 
 ---
+#### `__leading_zero_sort(arg_list: list) -> 'list'`
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Sorts the given matrix value list so that elements are ordered
+by the numbers of leading zeroes they have.
+
+---
 ---
 
 ## `SLE`

@@ -1,15 +1,21 @@
 # Avmath Documentation
 
-The following passages document the functionality of  the avmath math module.
-The documentation is currently built and not yet complete. 
----
+The following passages document the
+functionality of  the avmath math module.
 
+Functions and methods are given with
+Typehints to show the wanted input- and return
+values. Some features are followed by code
+examples.
+
+---
 ## Contents
 
+* [Installation](#installation)
 * [Constants](basic.md#constants)
-* [Arithmetics](basic.md#arithmetic-functions)
+* [Basic](basic.md)
   * [Fractions](basic.md#fraction)
-  * [Functions](basic.md#arithmetic-functions)
+  * [Arithmetic functions](basic.md#arithmetic-functions)
 * [Algebra](algebra.md#avmath-algebra-documentation)
   * [Tuples](algebra.md#tuple)
   * [Vectors](algebra.md#vector)
@@ -18,10 +24,11 @@ The documentation is currently built and not yet complete.
 * [Errors](#errors)
 
 ---
+---
 ## Installation
 
 The avmath module is registered as a _PyPi_ project and
-therefore, can be downloaded via pip command:
+ can be downloaded via pip command:
 ```
 pip install avmath
 ```
@@ -38,7 +45,7 @@ or as archive of the actual code using the `code` button.
 Then unpack the downloaded files and open command prompt in
 the unpacked file:
 ````
-$ pip install .
+pip install .
 ````
 
 ---
@@ -51,8 +58,8 @@ Avmath provides its own errors representing specific issues in the usage.
 Error | Cause | Implemented in version | Last change
 --- | --- | --- | ---
 `ArgumentError` | The argument given to a function or method is wrong. | v1.0.0 | v3.0.0
-`DimensionError` | The arguments of an operation have a different amount of dimensions and therefore cannot be combined | v1.0.0 | v3.0.0
-`algebra.GeometricalError` | A geometrical construction cannot be done due to false arguments | v1.0.0 | v3.0.0
+`DimensionError` | The arguments of an operation have a different amount of dimensions and therefore cannot be combined. | v1.0.0 | v3.0.0
+`algebra.GeometricalError` | A geometrical construction cannot be done due to false arguments. | v1.0.0 | v3.0.0
 `algebra.MatrixError` | Matrix-argument to an operation is inappropriate. Often handles size issues. | v1.0.0 | v3.0.0
 
 ### Warnings

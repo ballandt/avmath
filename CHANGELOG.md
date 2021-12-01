@@ -1,6 +1,8 @@
 # AdVanced Math Changelog
 
-## 3.0.0 (2021-11-25) - in development
+## 3.0.0 (2021-12-01)
+
+Not all changes are listed yet.
 #### API Changes
 * redesigned function `avmath.pi()` to constant `avmath.pi`
 * redesigned function `avmath.e()` to constant `avmath.e`
