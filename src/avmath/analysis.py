@@ -5,7 +5,8 @@ implementing function features."""
 __all__ = ["Point", "Function"]
 
 from typing import Union as _Union
-from . import scope as _scope, REAL, sgn, Tuple
+from . import scope as _scope, REAL, sgn
+from .algebra import Tuple
 
 
 class Point(Tuple):

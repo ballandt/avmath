@@ -1,4 +1,4 @@
-![avmath](docs/avmath.svg)
+<img src="docs/avmath.svg" width="200" title="avmath">
 
 ---
 
@@ -26,6 +26,7 @@ PyPi name  | [avmath](https://pypi.org/project/avmath/)
 Author | Camillo Ballandt
 Release version | [2.0.0](https://www.github.com/ballandt/avmath/releases/tag/v2.0.0)
 Developing version | [3.0.0](https://github.com/ballandt/avmath/blob/master/DEVELOPMENTS.md)
+Requirements | Python 3.10
 
 ### Extended description
 
