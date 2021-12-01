@@ -54,6 +54,13 @@ Not all changes are listed yet.
 
 ---
 ## 2.0.0 (2021-10-24)
+
+Avmath 2.0 ended the former dependency to the math module. All mathematical
+problems are now solved independently. There have been changes in function
+names and parameters because of necessary syntax changes. Also, a function
+implementation was made. The Taylor-functions sometimes lack of speed and
+accuracy.
+
 #### API Changes
 * `avmath.sin()` takes only x argument
 * `avmath.pi()` takes no arguments

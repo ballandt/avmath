@@ -1,4 +1,6 @@
-<img src="docs/avmath.svg" width="400" title="avmath">
+<a href="https://github.com/ballandt/avmath#readme">
+  <img src="docs/avmath.svg" width="400" title="avmath">
+</a>
 
 ---
 
@@ -35,11 +37,18 @@ math problems. Its interface is based on mathematical habits of
 writing. It particularly concentrates on the concepts of linear algebra
 and analysis, but also generates its own functions based on Taylor-series.
 
-Avmath 2.0 ended the former dependency to the math module. All mathematical
-problems are now solved independently. There have been changes in function
-names and parameters because of necessary syntax changes. Also, a function
-implementation was made. The Taylor-functions sometimes lack of speed and
-accuracy.
+The module tries always to use the most math-like
+syntax possible. Therefore, the function names
+are influenced by the mathematical manners of writing.
+Also, the methods of the mathematical objects,
+especially mathematical operations are oriented on
+the most common mathematical usage of the operation.
+
+Avmath 3 introduced the possibility to accurately
+calculate linear algebra using fractions. The
+numerical methods of the analysis part are improved
+as possible. Yet some calculations need a large
+time and are not very accurate.
 
 The first drafts of avmath are dated on the 22nd of March 2021.
 
