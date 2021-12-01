@@ -1,4 +1,4 @@
-<img src="docs/avmath.svg" width="400" title="avmath">
+<img src="docs/avmath.svg" width="400" title="avmath" class="center">
 
 ---
 
