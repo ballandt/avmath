@@ -12,7 +12,7 @@ PyPi: https://www.pypi.org/project/avmath
 """
 
 __author__ = "Camillo Ballandt"
-__version__ = "3.0.0"
+__version__ = "3.0.1"
 __date__ = "2021/12/01"
 
 __all__ = ["Fraction",

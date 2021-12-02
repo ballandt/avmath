@@ -62,18 +62,14 @@ class Function:
     def replace(self, value: REAL) -> str:
         """Replaces intuitive elements with correct ones."""
         return_string = self.term.replace("^", "**")
-        x_positions = [return_string.find("x")]
-        while return_string.find("x", x_positions[-1]+1) != -1:
-            x_positions.append(return_string.find("x", x_positions[-1]+1))
-        for index, e in enumerate(x_positions):
-            coefficient_position = e - 1 + index
-            if coefficient_position == -1:
-                continue
-            try:
-                _ = float(return_string[coefficient_position])
-                return_string = return_string[:coefficient_position+1] + "*" + return_string[e+index:]
-            except ValueError:
+        i = 0
+        while True:
+            i = return_string.find("x", i)
+            if i == -1:
                 break
+            if return_string[i-1] in "0123456789":
+                return_string = f"{return_string[:i]}*{return_string[i:]}"
+            i += 1
         return return_string.replace("x", "("+str(value)+")")
 
     def set_scope(self, scope: dict):
@@ -91,27 +87,22 @@ class Function:
         formula_at = self.replace(value)
         return eval(formula_at, self._arg_scope)
 
-    def max(self, xmin: REAL, xmax: REAL, steps: int = 100000) -> list:
-        """Finds maxima of a function in a given domain."""
+    def max(self, xmin: REAL, xmax: REAL, steps: int = 1000):
+        """Finds maxima of a function using changed newton method:
+        x_{n+1} = x_n - f'(x_n) / f''(x_n)
+        """
+        sgn_step = (xmax - xmin) / steps
         x_pos = xmin
-        if abs(self.num_dif(x_pos)) < 1e-3:
-            return [Point(x_pos, self.at(x_pos))]
-        step = (xmax - xmin) / steps
-        x_list = []
-        for _ in range(steps):
-            if sgn(self.num_dif(x_pos)) != sgn(self.num_dif(x_pos + step)):
-                x_list.append((x_pos, x_pos + step))
-            x_pos += step
-        ret_list = []
-        for e in x_list:
-            if self.max(*e):
-                ret_list.append(*tuple(self.max(*e)))
-            else:
-                continue
+        candidates = []
+        for i in range(steps):
+            if sgn(self.num_dif(x_pos)) != sgn(self.num_dif(x_pos+sgn_step)):
+                candidates.append(x_pos)
+            x_pos += sgn_step
         return_list = []
-        for index, e in enumerate(ret_list):
-            if (self.second_num_dif(e[0]) < 0 and abs(e[0] - ret_list[-1][0]) > step) or index == 0:
-                return_list.append(e)
+        for ele in candidates:
+            value = Point(self.newton_method_extrema(ele), self.at(self.newton_method_extrema(ele)))
+            if value not in return_list and self.second_num_dif(ele) < 0:
+                return_list.append(value)
         return return_list
 
     def min(self, xmin: REAL, xmax: REAL, steps: int = 100000) -> list:
@@ -141,8 +132,12 @@ class Function:
         x_{n+1} = x_n - f(x_n) / f'(x_n)
         """
         for _ in range(steps):
-            x_np1 = x_n - self.at(x_n) / self.num_dif(x_n)
-            x_n = x_np1
+            x_n = x_n - self.at(x_n) / self.num_dif(x_n)
+        return x_n
+
+    def newton_method_extrema(self, x_n):
+        for _ in range(50):
+            x_n = x_n - self.num_dif(x_n) / self.second_num_dif(x_n)
         return x_n
 
     def num_dif(self, x: REAL, h: REAL = 1e-5) -> float:

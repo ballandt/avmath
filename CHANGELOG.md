@@ -1,56 +1,160 @@
 # AdVanced Math Changelog
 
-## 3.0.0 (2021-12-01)
+## Contents
 
-Not all changes are listed yet.
-#### API Changes
-* redesigned function `avmath.pi()` to constant `avmath.pi`
-* redesigned function `avmath.e()` to constant `avmath.e`
-* deletion of class `avmath.algebra.Angle`
-* `avmath.algebra.Vector.angle()` returns float
-* deletion of class `avmath.algebra.Straight`
-* renamed `avmath.algebra.Point` to `avmath.algebra.Tuple`
-* changed location of vector product from `avmath.algebra.Vector.__pow__()` to `avmath.algebra.Vector.cross()`
-* `avmath.algebra.Vector.pow()` returns vector multiplied n times by itself
-* deletion of `avmath._Point` class
-* renamed `avmath.analysis.f` to `avmath.analysis.Function`
-* Deletion of `avmath.algebra.AmountOfDimensionsError`. `avmath.algebra.DimensionError`gets called instead.
-* Deletion of `avmath.algebra.MatrixMultiplicationError`. `avmath.algebra.MatrixSizeError` gets called instead.
-* `avmath.algebra.Matrix.row()` and `[...].Matrix.column()` return vectors
-* renamed `avmath.algebra.Structure.circ()` to `[...].Structure.circumference`
+* avmath 3
+  * [3.0.1](#301-planned-for-2021-12-18)
+  * [3.0.0](#300-2021-12-01)
+* avmath 2
+  * [2.0.0](#200-2021-10-24)
+  * [2.0.0-b2](#200-beta2-2021-09-19)
+* avmath 1
+  * [1.2.0](#120-2021-09-10)
+  * [1.1.0](#110-2021-09-01)
+  * [1.0.0](#100-2021-09-01)
+
+---
+## 3.0.1 (Planned for 2021-12-18)
 
 #### Minor changes
-* imports `time`-module for taylor-loops
-* `_FLOAT_EQ` changed to value `1e-16`
-* new constant `_TAYLOR_DIFFERENCE` as minimal difference between results for taylor-loops with value `1e-16`
-* new constant `_MAX_CALCULATION_TIME` for maximum calculation time in taylor-loops with value 5 seconds
-* `avmath.fac()` has parameter `opt` for double faculty
-* `avmath._check_types()` checks if all members of tuple are of specified types
-* `avmath.analysis.Function.newton_method()` for Newton's method from given x_n
-* `avmath.analysis.Function.root()` returns all roots of the function in given domain
-* `avmath.analysis.Function` allows `^` as power and coefficients
-* new constant `avmath.phi` for golden ratio
-* new constant `avmath.gamma` for Euler-Mascheroni constant
-* new function `avmath.sgn()` for signum function
+
+* `analysis`
+  * `Function`
+    * new method `newton_method_extrema`
+      * uses newton method with differentiations for the calculation of extrema
+
+#### Patch level changes
+
+* `analysis`
+  * `Function`
+    * `max`-method uses newton method and is much faster and more accurate
+
+---
+## 3.0.0 (2021-12-01)
+
+There may be some changes missing.
+#### API Changes
+
+* `__init__`
+  * redesigned function `avmath.pi()` to constant `avmath.pi`
+  * redesigned function `avmath.e()` to constant `avmath.e`
+  * `_FLOAT_EQ`
+    * __Deletion__
+  * `_Point`
+    * __Deletion__
+  * `DimensionError`
+    * moved from `algebra`
+* `algebra`
+  * `Angle`
+    * __Deletion__
+  * `Vector`
+    * `avmath.algebra.Vector.angle()` returns float
+    * changed location of vector product from `__pow__` to `cross`
+    * `pow` returns vector multiplied n times by itself
+  * `Straight`
+    * __Deletion__
+  * `Point` -> `Tuple`
+    * renamed `Point` to `Tuple`
+  * `AmountOfDimensionsError`
+    * __Deletion__
+    * `DimensionError`gets called instead.
+  * `MatrixMultiplicationError`
+    * __Deletion__
+    * `MatrixError` gets called instead
+  * `Matrix`
+    * `row`
+      * returns `Vector` type
+    * `column`
+      * returns `Vector` type
+  * `Structure`
+    * `circ` -> `circumference`
+      * renamed `circ` to `circumference`
+* `analysis`
+  * `f` -> `Function`
+    * renamed `f` to `Function`
+
+#### Minor changes
+
 * `__all__` for `__init__.py`, `algebra.py` and `analysis.py`
-* introduction of class `avmath.Fraction` for handling of fractions, particularly in linear algebra
-* `avmath.algebra.Tuple`, `[...].Vector` and `[...].Matrix` classes contain `__truediv__()` functions returning `Fraction`
-* `avmath.algebra.Tuple`, `[...].Vector` and `[...].Matrix` classes contain `no_fractions` functions returning objects with no fractions
-* introduction of `avmath.algebra.Matrix.ref()` row echelon form
-* introduction of `[...].Matrix.rank()` rank of a matrix
-* introduction of `[...].Matrix.rref()` reduced row echelon form of a matrix
-* introduction of `avmath.is_prime()` checking if integer is prime
-* introduction of `avmath.two_digit_primes` list containing all primes < 100
-* introduction of `avmath.gdc()` greatest common divisor
-* introduction of `avmath.lcm()` least common multiply
+* `__init__`
+  * imports time module
+  * new constant `_TAYLOR_DIFFERENCE` as minimal difference between results for taylor-loops with value `1e-16`
+  * new constant `_MAX_CALCULATION_TIME` for maximum calculation time in taylor-loops with value 5 seconds
+  * `fac` 
+    * parameter `opt` for double faculty
+  * new function `_check_types`
+    * checks if all members of tuple are of specified types
+  * new constant `phi`
+    * for golden ratio
+  * new constant `gamma`
+    * for Euler-Mascheroni constant
+  * new function `sgn`
+    * for signum function
+  * new function `is_prime`
+    * checks whether integer is a prime
+  * new constant `two_digit_primes`
+    * contains all two digit primes
+  * new function `gcd`
+    * returns the greatest common divisor of two integers
+  * new function `lcm`
+    * returns the least common multiply of two integers
+  * new class `Fraction`
+    * handling of fractions, particularly in linear algebra
+    * see [Documentation](https://github.com/ballandt/avmath/wiki/Avmath-root#fraction) for all methods
+* `analysis`
+  * `Function`
+    * new function `newton_method`
+      * for Newton's method from given x_n
+    * new function `root`
+      * returns all roots of the function in given domain
+    * new function `replace`
+      * allows `^` as power and coefficients
+    * new method `second_num_dif`
+      * numerical second differentiation
+* `algebra`
+  * `Tuple`
+    * new method `truediv`
+      * returns tuple divided by scalar for less float inaccuracies
+    * new method `no_fractions`
+      * returns copy of `Tuple` with no fractions
+  * `Vector`
+    * new method `truediv`
+      * see `Tuple`
+    * new method `no_fractions`
+      * see `Tuple`
+  * `Matrix`
+    * new method `truediv`
+      * see `Tuple`
+    * new method `no_fractions`
+      * see `Tuple`
+    * new method `ref`
+      * returns row echelon form
+    * new method `rank`
+      * returns rank of the matrix
+    * new method `rref`
+      * returns reduced row echelon form of the matrix
 
 #### Bug fixes
-* `avmath.fac()` checks if input can be interpreted as integer
-* `avmath.ln()` works properly in entire domain
-* trigonometric functions use `while`-loops and `_TAYLOR_DIFFERENCE` to calculate to the best return value possible
-* `avmath.cos()` works properly with negative values
-* `avmath.analysis.Function.max()` does not raise RecursionError
-* `avmath.algebra.Matrix.inverse()` works more accurately due to Fractions
+
+* `__init__`
+  * `fac`
+    * checks if input _can be interpreted_ as integer
+  * `ln` works properly and much faster
+  * trigonometric functions use `while`-loops and `_TAYLOR_DIFFERENCE` to calculate to the best return value possible
+  * `cos` works properly with negative values
+* `algebra`
+  * `Matrix`
+    * `inverse`
+      * works more accurately due to fractions
+  * `arsinh`
+    * works in negative domain due to correct spelling of formula
+  * `artanh`
+    * does not allow value 1 only to crash afterwards
+  * `tanh`
+    * surpassing a value of 20 simply returns 1 instead of calculating (and crashing)
+  * `arcsin`
+    * new structure for formula
+    * does not crash at 710, but is stopped by the maximal time control
 
 ---
 ## 2.0.0 (2021-10-24)
