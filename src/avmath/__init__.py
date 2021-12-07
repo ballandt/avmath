@@ -81,14 +81,17 @@ class Fraction:
         for
         a/(b/c)
         """
-        if type(numerator) == Fraction or type(denominator) == Fraction:
+        if numerator == 0 and type(denominator) == Fraction:
+            self.a = 0
+            self.b = denominator.b
+        elif (type(numerator) == Fraction or type(denominator) == Fraction) and numerator != 0:
             self.a = (numerator / denominator).a
             self.b = (numerator / denominator).b
         else:
             self.a = numerator * sgn(denominator)
             self.b = abs(denominator)
         if self.b == 0:
-            raise ZeroDivisionError
+            raise ZeroDivisionError("Fraction cannot contain 0 as denominator.")
 
     def __repr__(self) -> str:
         """Returns string representation. Always reduced."""
@@ -161,7 +164,7 @@ class Fraction:
         if type(other) == Fraction:
             res = self * other ** -1
         else:
-            res = Fraction(self.a, self.b * other)
+            res = Fraction(self.a, self.b * other) ** -1
         if type(res) == Fraction and res.int_args():
             res = res.reduce()
         return res

@@ -56,8 +56,8 @@ class GeometricalWarning:
 class Tuple:
     """Algebraic tuple. Can also be interpreted as point in the coordinate system."""
 
-    def __init__(self, *args: REAL | list):
-        _check_types(args, int, float, list, Fraction)
+    def __init__(self, *args: REAL | list | tuple | 'Vector'):
+        _check_types(args, int, float, list, tuple, Fraction, Vector)
         if type(args[0]) in (list, tuple) and len(args) == 1:
             self._value = list(args[0])
         else:
@@ -358,13 +358,19 @@ class Structure:
         _check_types(args, Tuple)
         if not Tuple.dim_check(*args):
             raise DimensionError(other="Tuples have different amount of dimensions.")
+        if args[0].dim() > 3:
+            raise DimensionError(other="Tuples must have 2 or 3 dimensions.")
         self.points = args
+        if self.points[0].dim() == 2:
+            self.points = [e.append(0) for e in self.points]
         self.vectors = [Vector(begin=self.points[-1], end=self.points[0])]
         for i in range(1, len(self.points)):
             self.vectors.append(Vector(begin=self.points[i - 1], end=self.points[i]))
 
     def flat(self) -> bool:
         """Returns 'True' if the points are in a three-dimensional area."""
+        if Tuple.dim_check(*self.points) and self.points[1].dim() == 2:
+            return True
         unitvector = (self.vectors[0].cross(self.vectors[-1])).unit()
         for i in range(len(self.vectors) - 1):
             if (self.vectors[i].cross(self.vectors[i+1])).unit() != unitvector:
@@ -380,15 +386,17 @@ class Structure:
 
     def area(self, opt: str = None):
         """Returns area opened by any amount of vectors."""
-        area = 0
+        area = Vector(0, 0, 0)
         if opt == "flat":
             if not self.flat():
                 raise GeometricalError("No flat area found.")
         if not self.flat():
             GeometricalWarning("Area does not seem to be flat.")
-        for i in range(1, len(self.points) - 1):
-            area += Structure.triangulate(self.points[0], self.points[i], self.points[i + 1])
-        return area
+        for i in range(len(self.points) - 1):
+            abv = Vector(self.points[i] - self.points[0])
+            acv = Vector(self.points[i+1] - self.points[0])
+            area += abv.cross(acv) * 0.5
+        return abs(area)
 
     @staticmethod
     def triangulate(p: 'Tuple', q: 'Tuple', r: 'Tuple') -> float:
@@ -405,7 +413,7 @@ class Structure:
 class Matrix(Tuple):
     """Mathematical matrix"""
 
-    def __init__(self, *args: List[REAL] | 'Vector'):
+    def __init__(self, *args: tuple | list | Vector):
         """Initializes the matrix. Enter a list for each row.
 
         insert
@@ -426,7 +434,7 @@ class Matrix(Tuple):
             value = list(args)
             for e in value:
                 if not len(value[0]) == len(e):
-                    raise ArgumentError(e, "row with " + str(len(args[0])) + " members")
+                    raise ArgumentError(e, f"row with {len(args[0])} members")
                 _check_types(e, int, float, Fraction)
             super().__init__(*tuple(args))
 
@@ -543,9 +551,9 @@ class Matrix(Tuple):
         correct division.
         """
         ret_mat = Matrix.create(*tuple(self.size()))
-        for index, ele1 in enumerate(self):
-            for jindex, ele2 in enumerate(ele1):
-                ret_mat[index][jindex] = Fraction(ele2, other) if type(other) != Fraction else ele2 / other
+        for index, ele in enumerate(self):
+            for j_index, j_ele in enumerate(ele):
+                ret_mat[index][j_index] = Fraction(j_ele, other)
         return ret_mat
 
     def __pow__(self, power: int) -> 'Matrix':
@@ -676,21 +684,11 @@ class Matrix(Tuple):
             raise MatrixError("Matrix must be quadratic.")
         if self.det() == 0:
             raise ZeroDivisionError("Determinant must not be 0.")
-        ret_mat = copy.deepcopy(self).adj()
-        ret_mat /= self.det()
+        ret_mat = self.adj() / self.det()
         return ret_mat
 
     def ref(self) -> 'Matrix':
         """Row echelon form of a matrix."""
-        # arg_list = list(self)
-        # longest_row = []
-        # for index, element in enumerate(arg_list):
-        #     longest_row.append([Vector(Tuple(element)).leading_zeros(), index])
-        # sorted_longest_row = sorted(longest_row)
-        # sorted_arg_list = []
-        # for i in range(len(arg_list)):
-        #     sorted_arg_list.append(Vector(Tuple(arg_list[sorted_longest_row[i][1]])))
-
         sorted_arg_list = Matrix.__leading_zero_sort(list(self))
         for i in range(len(sorted_arg_list)):
             sorted_arg_list = Matrix.__leading_zero_sort(sorted_arg_list)

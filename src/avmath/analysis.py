@@ -4,7 +4,7 @@ implementing function features."""
 
 __all__ = ["Point", "Function"]
 
-from . import scope as _scope, REAL, sgn
+from . import scope as _scope, REAL, sgn, Fraction
 from .algebra import Tuple
 
 
@@ -14,6 +14,58 @@ class Point(Tuple):
     def __init__(self, x: REAL, y: REAL):
         """Initialises the point. Give x and y value."""
         super().__init__(x, y)
+
+
+class Polynom:
+    def __init__(self, *args):
+        self.factors = list(args)
+
+    def __len__(self):
+        return len(self.factors)
+
+    def __repr__(self):
+        ret_string = ""
+        for i, e in enumerate(self.factors):
+            power = self.grade() - i
+            ret_string += f"{e}x^({power}) + " if i < self.grade() else f"{e}"
+        return ret_string
+
+    def grade(self):
+        return len(self) - 1
+
+    def append(self, value):
+        ret_list = []
+        for e in self.factors:
+            ret_list.append(e)
+        ret_list.append(value)
+        return Polynom(*tuple(ret_list))
+
+    def at(self, x):
+        ret_value = 0
+        for i, e in enumerate(self.factors):
+            ret_value += e * x ** (self.grade() - i)
+        return ret_value
+
+    def derivative(self, x=None):
+        derivative = Polynom(*tuple([e * (self.grade() - i) for i, e in enumerate(self.factors[:-1])]))
+        if not x:
+            return derivative
+        elif x:
+            return derivative.at(x)
+
+    def integral(self, a=None, b=None, const=0):
+        integral = Polynom(
+            *tuple([Fraction(e, self.grade() - i + 1) for i, e in enumerate(self.factors)])).append(const)
+        if not a and not b:
+            return integral
+        elif a and b:
+            return integral.at(b) - integral.at(a)
+
+    def root(self, xmin=None, xmax=None):
+        if self.grade() == 2:
+            a, b, c = (e for e in self.factors)
+            roots = [(-b - (b**2 - 4 * a * c) ** 0.5) / (2 * a), (-b + (b**2 - 4 * a * c) ** 0.5) / (2 * a)]
+            return roots
 
 
 class Function:
@@ -105,10 +157,10 @@ class Function:
                 return_list.append(value)
         return return_list
 
-    def min(self, xmin: REAL, xmax: REAL, steps: int = 100000) -> list:
+    def min(self, xmin: REAL, xmax: REAL, steps: int = 1000) -> list:
         """Finds minima of a function in a given domain."""
         neg_func = -self
-        return neg_func.max(xmin, xmax, steps=steps)
+        return [-e for e in neg_func.max(xmin, xmax, steps)]
 
     def root(self, xmin: REAL, xmax: REAL, step: int = 1000) -> list:
         """Find roots of functions with f(x) = 0.
@@ -140,15 +192,29 @@ class Function:
             x_n = x_n - self.num_dif(x_n) / self.second_num_dif(x_n)
         return x_n
 
-    def num_dif(self, x: REAL, h: REAL = 1e-5) -> float:
-        """Returns numerical differentiation of function at a given x value."""
-        return (self.at(x+h) - self.at(x-h)) / (2*h)
+    def derivative(self, x):
+        differences = []
+        cached_derivative = self.num_dif(x, 10**-16)
+        for i in range(-15, 2):
+            try:
+                derivative = self.num_dif(x, 10**i)
+            except Exception:
+                continue
+            dif = abs(cached_derivative - derivative)
+            differences.append(dif)
+            cached_derivative = derivative
+        best = -15 + differences.index(min(*differences))
+        return self.num_dif(x, 10**best)
 
     def second_num_dif(self, x: REAL, h: REAL = 1e-5) -> float:
         """Returns numerical second order differentiation of function at x value."""
         x1 = self.num_dif(x-h)
         x2 = self.num_dif(x+h)
         return (x2 - x1) / (2*h)
+
+    def num_dif(self, x: REAL, h: REAL = 1e-5) -> float:
+        """Returns numerical second order differentiation of function at x value."""
+        return (- self.at(x + 2*h) + 8*self.at(x + h) - 8 * self.at(x - h) + self.at(x - 2*h)) / (12*h)
 
     def num_int(self, a: REAL, b: REAL, n: int = 1000) -> float:
         """Returns the numerical integral of a function in a given space."""
