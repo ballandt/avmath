@@ -4,8 +4,12 @@ implementing function features."""
 
 __all__ = ["Point", "Function"]
 
+import sys
+
 from . import scope as _scope, REAL, sgn, Fraction
 from .algebra import Tuple
+
+eps = sys.float_info.epsilon
 
 
 class Point(Tuple):
@@ -97,15 +101,22 @@ class Function:
 
     def __mul__(self, other: REAL | 'Function') -> 'Function':
         """Multiplies two functions"""
-        ret_formula = f"({self.term}) * ({other.term})"
+        ret_formula = f"({self.term}) * ({other.term})" if type(other) == Function else f"{other} * {self.term}"
         return Function(ret_formula)
 
     __rmul__ = __mul__
 
-    def __truediv__(self, other: 'Function') -> 'Function':
-        """Divide two functions"""
-        ret_formula = f"({self.term}) / ({other.term})"
+    def __truediv__(self, other: REAL | 'Function') -> 'Function':
+        """Divide two functions or a function and a REAL."""
+        if type(other) == Function:
+            ret_formula = f"({self.term}) / ({other.term})"
+        else:
+            ret_formula = f"({self.term}) / {other}"
         return Function(ret_formula)
+
+    def __rtruediv__(self, other):
+        """Divides a REAL by a function."""
+        return Function(f"{other} / ({self.term})")
 
     def __neg__(self) -> 'Function':
         """Returns negative function"""
@@ -119,6 +130,9 @@ class Function:
             i = return_string.find("x", i)
             if i == -1:
                 break
+            elif i == 0:
+                i += 1
+                continue
             if return_string[i-1] in "0123456789":
                 return_string = f"{return_string[:i]}*{return_string[i:]}"
             i += 1
@@ -184,40 +198,49 @@ class Function:
         x_{n+1} = x_n - f(x_n) / f'(x_n)
         """
         for _ in range(steps):
-            x_n = x_n - self.at(x_n) / self.num_dif(x_n)
+            x_n = x_n - self.at(x_n) / self.derivative(x_n) if self.derivative(x_n) != 0 else x_n + 1e-2
         return x_n
 
-    def newton_method_extrema(self, x_n):
-        for _ in range(50):
-            x_n = x_n - self.num_dif(x_n) / self.second_num_dif(x_n)
+    def newton_method_extrema(self, x_n, steps: int = 50) -> float:
+        """Method to find extrema of a function. Derived from Newton's method:
+         x_{n+1} = x_n - f'(x_n) / f''(x_n)"""
+        for _ in range(steps):
+            x_n = x_n - self.derivative(x_n) /\
+                  self.second_derivative(x_n) if self.second_derivative(x_n) != 0 else x_n + 1e-2
         return x_n
 
-    def derivative(self, x):
-        differences = []
-        cached_derivative = self.num_dif(x, 10**-16)
-        for i in range(-15, 2):
-            try:
-                derivative = self.num_dif(x, 10**i)
-            except Exception:
-                continue
-            dif = abs(cached_derivative - derivative)
-            differences.append(dif)
-            cached_derivative = derivative
-        best = -15 + differences.index(min(*differences))
-        return self.num_dif(x, 10**best)
+    def derivative(self, x: REAL, h=None) -> float:
+        """Returns derivative of a function. Uses an algorithm to calculate the best h."""
+        if not h:
+            h = 2 * (eps * abs(self.at(x)) /
+                     abs(self.second_derivative(x))) ** 0.5 if self.second_derivative(x) != 0 else eps ** (1/3)
+        return (4*self.at(x + h/2) - 3*self.at(x) - self.at(x + h)) / h
+
+    def second_derivative(self, x: REAL, h=1e-5) -> float:
+        """Returns the second derivative of a formula. There may be better h than default instruction."""
+        return (self.at(x+2*h) - 2 * self.at(x + h) + self.at(x)) / h**2
 
     def second_num_dif(self, x: REAL, h: REAL = 1e-5) -> float:
-        """Returns numerical second order differentiation of function at x value."""
+        """Returns numerical second order differentiation of function at x value.
+        === INACTIVE ===
+        Use Function.second_derivative instead.
+        """
         x1 = self.num_dif(x-h)
         x2 = self.num_dif(x+h)
         return (x2 - x1) / (2*h)
 
     def num_dif(self, x: REAL, h: REAL = 1e-5) -> float:
-        """Returns numerical second order differentiation of function at x value."""
-        return (- self.at(x + 2*h) + 8*self.at(x + h) - 8 * self.at(x - h) + self.at(x - 2*h)) / (12*h)
+        """Returns numerical second order differentiation of function at x value.
+        === INACTIVE ===
+        Use Function.derivative instead.
+        """
+        return (self.at(x+h) - self.at(x-h)) / 2*h
 
     def num_int(self, a: REAL, b: REAL, n: int = 1000) -> float:
-        """Returns the numerical integral of a function in a given space."""
+        """Returns the numerical integral of a function in a given space.
+        === INACTIVE ===
+        Use Function.integral instead.
+        """
         res = (b - a) / n
         term = 0
         for i in range(n):
@@ -225,3 +248,32 @@ class Function:
             term += self.at(xi)
         res *= term
         return res
+
+    def integral(self, a: REAL, b: REAL, n: int = 1000, option: str = None) -> float:
+        """Returns a numerical calculation of the integral of a function in the domain between a and b.
+        Option `option="trapeze"` uses trapeze formula.
+        """
+        if option == "trapeze":
+            h = (b - a) / n
+            res = (self.at(a) - self.at(b)) / 2
+            for i in range(1, n):
+                res += self.at(a + i*h)
+            res *= h
+        else:
+            res = (b - a) / n
+            term = 0
+            for i in range(n):
+                xi = a + i * (b - a) / n + (b - a) / (2 * n)
+                term += self.at(xi)
+            res *= term
+        return res
+
+    def tangent(self, x: REAL) -> 'Function':
+        a = self.derivative(x)
+        b = a * -x + self.at(x)
+        return Function(f"{a} * x + {b}")
+
+    def normal(self, x: REAL) -> 'Function':
+        a = -self.derivative(x)
+        b = a * -x + self.at(x)
+        return Function(f"{a} * x + {b}")

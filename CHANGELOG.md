@@ -17,12 +17,18 @@
 ---
 ## 3.1.0 (Planned for 2022-01-01)
 
+#### Announcement
+
+* `analysis`
+  * `Function`
+    * The methods `num_dif`, `second_num_dif` and `num_int` are abandoned for `derivative`, `second_derivative` and `integral` yet are still usable
+
 #### Minor changes
 
 * `__init__`
   * `Fraction`
     * fractions can be used for initialisation
-* `analysis
+* `analysis`
   * new class `Polynom`
     * `__init__` with coefficients
     * `__repr__` for string representation
@@ -37,6 +43,24 @@
   * `Function`
     * new method `newton_method_extrema`
       * uses newton method with differentiations for the calculation of extrema
+    * new method `derivative`
+      * new method for function derivatives
+      * preferred over `numd_dif`
+    * new method `second_derivative`
+      * method for second derivative
+      * preferred over `second_num_dif`
+    * new method `integral`
+      * calculates numerical integral
+      * in default case uses rectangular rule
+      * `option="trapeze"` instructs to use trapeze rule
+      * preferred over `num_int`
+    * new method `__rtruediv__` for reversed division
+    * new method `tangent`
+      * constructs a tangent on a function at a given x
+      * returns a linear `Function` (y = a * x + b)
+    * new method `normal`
+      * constructs a normal on a function at a given x
+      * returns a linear `Function` (y = a * x + b)
 
 #### Patch level changes
 
@@ -48,6 +72,11 @@
   * `Function`
     * `max`-method uses newton method and is much faster and more accurate
     * `numdif` developments for accuracy
+    * `replace`-method does not crash while handling x with no parameter
+    * `__mul__` can handle REAL argument
+    * `__truediv__` can handle REAL argument
+    * `__rtruediv__` can handle REAL argument
+    * `newton_method` takes a `1e-2` step if the derivative is 0
 * `algebra`
   * `Structure`
     * `area`

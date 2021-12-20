@@ -525,7 +525,7 @@ class Matrix(Tuple):
         elif type(other) == Vector:
             if self.size()[1] != other.dim():
                 raise MatrixError(f"Vector with size {other.dim()} cannot be multiplied"
-                                      f" by matrix with size {self.size()}")
+                                  f" by matrix with size {self.size()}")
             v_matrix = Matrix(other)
             ret_mat = self * v_matrix
             args = ()
@@ -536,7 +536,7 @@ class Matrix(Tuple):
         elif type(other) == Matrix:
             if self.size()[1] != other.size()[0]:
                 raise MatrixError(f"Matrix with {other.size()[0]} rows cannot be multiplied"
-                                      f" by {self.size()[1]} column matrix.")
+                                  f" by {self.size()[1]} column matrix.")
             ret_mat = Matrix.create(self.size()[0], other.size()[1])
             for i in range(self.size()[0]):
                 for j in range(other.size()[1]):
