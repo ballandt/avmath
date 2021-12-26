@@ -2,17 +2,15 @@
 
 ## Contents
 
-* avmath 3
-  * [3.1.0](#310-planned-for-2021-12-18)
-  * [3.0.0](#300-2021-12-01)
-* avmath 2
-  * [2.0.0](#200-2021-10-24)
-  * [2.0.0-b2](#200-beta2-2021-09-19)
-* avmath 1
-  * [1.2.0](#120-2021-09-10)
-  * [1.1.0](#110-2021-09-01)
-  * [1.0.0](#100-2021-09-01)
-* table of releases
+| Release                              | Name          |       Date | Integral developments                                           |
+|:-------------------------------------|---------------|-----------:|-----------------------------------------------------------------|
+| [3.1.0](#310-planned-for-2022-01-01) | ondes         | 2022-01-01 | Completions in `analysis`                                       |
+| [3.0.0](#300-2021-12-01)             | illumination  | 2021-12-01 | implementation of `Fraction`, Gauss-features for matrices       |
+| [2.0.0](#200-2021-10-24)             | repensé       | 2021-10-24 | independence of math module with Taylor-series, matrix features |
+| [2.0.0-b2](#200-beta2-2021-09-19)    | -             | 2021-09-19 | not yet stable version of 2.0.0                                 |
+| [1.2.0](#120-2021-09-10)             | -             | 2021-09-10 | coordination of elements                                        |
+| [1.1.0](#110-2021-09-01)             | First release | 2021-09-01 | `Angle` class in former `geo`                                   |
+| [1.0.0](#100-2021-09-01)             | -             | 2021-09-01 | Upload to GitHub                                                |
 
 ---
 ## 3.1.0 (Planned for 2022-01-01)
@@ -22,6 +20,7 @@
 * `analysis`
   * `Function`
     * The methods `num_dif`, `second_num_dif` and `num_int` are abandoned for `derivative`, `second_derivative` and `integral` yet are still usable
+  * `Polynom` is cancelled
 
 #### Minor changes
 
@@ -29,17 +28,6 @@
   * `Fraction`
     * fractions can be used for initialisation
 * `analysis`
-  * new class `Polynom`
-    * `__init__` with coefficients
-    * `__repr__` for string representation
-    * `__len__` for the amount of coefficients
-    * `grade` for grade of the polynom. Is `__len__`-1
-    * `at` for function values
-    * `append` returns polynom with appended coefficient
-    * `derivatvive`
-      * returns either differentiated polynom or value if `x` is specified
-    * `integral`
-      * returns either integrated polynom or value if `a` and `b` specified
   * `Function`
     * new method `newton_method_extrema`
       * uses newton method with differentiations for the calculation of extrema
@@ -302,16 +290,3 @@ Upload to github.
 When the evmath project was uploaded to github, its version
 number was reset to 1.0.0 . Previously it was on version number
 1.8.0 , but lacking a valid changelog.
-
----
-## Table of releases
-
-Release | Name | Date | Integral developments
-:--- | --- | ---: | ---
-[3.1.0](#310-planned-for-2022-01-01) | - | 2022-01-01 | Completions in `analysis`
-[3.0.0](#300-2021-12-01) | illumination | 2021-12-01 | implementation of `Fraction`, Gauss-features for matrices
-[2.0.0](#200-2021-10-24) | repensé | 2021-10-24 | independence from math module with Taylor-series, matrix features
-[2.0.0-b2](#200-beta2-2021-09-19) | - | 2021-09-19 | not yet stable version of 2.0.0
-[1.2.0](#120-2021-09-10) | - | 2021-09-10 | coordination of elements
-[1.1.0](#110-2021-09-01) | First release | 2021-09-01 | `Angle` class in former `geo`
-[1.0.0](#100-2021-09-01) | - | 2021-09-01 | Upload to GitHub

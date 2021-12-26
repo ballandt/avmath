@@ -5,15 +5,15 @@ Avmath uses python algorithms to numerically calculate mathematical
 problems. It mainly concentrates on the concepts of functions, vec-
 tors and matrices.
 
-Documentation: https://github.com/ballandt/avmath/tree/master/docs
+Documentation: https://github.com/ballandt/avmath/wiki/documentation
 
 Github: https://www.github.com/ballandt/avmath
 PyPi: https://www.pypi.org/project/avmath
 """
 
 __author__ = "Camillo Ballandt"
-__version__ = "3.0.1"
-__date__ = "2021/12/01"
+__version__ = "3.1.0"
+__date__ = "2022/01/01"
 
 __all__ = ["Fraction",
            "sin", "cos", "tan",
@@ -35,7 +35,8 @@ pi = 3.141_592_653_589_793_238_463
 phi = 1.618_033_988_749_894_848_205
 gamma = 0.577_215_664_901_532_860_607
 
-two_digit_primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+two_digit_primes: list[int] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37,
+                               41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
 
 
 class ArgumentError(Exception):
@@ -344,7 +345,7 @@ def arcsin(x: REAL) -> float:
     while (time.time() - start_time) < _MAX_CALCULATION_TIME:
         mem_res = res
         res += fac(2 * k - 1, opt="double") /\
-               (fac(2 * k, opt="double") * (2 * k + 1)) * x ** (2 * k + 1)
+            (fac(2 * k, opt="double") * (2 * k + 1)) * x ** (2 * k + 1)
         if abs(mem_res - res) < _TAYLOR_DIFFERENCE:
             break
         k += 1
@@ -425,7 +426,7 @@ def arcosh(x: REAL) -> float:
 
 
 def artanh(x: REAL) -> float:
-    """Area tangent hyperbolicus"""
+    """Inverse hyperbolic tangent."""
     if abs(x) >= 1:
         raise ArgumentError(x, "|x| < 1")
     return 0.5 * ln((1 + x) / (1 - x))

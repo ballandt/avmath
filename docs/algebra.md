@@ -9,96 +9,34 @@ from avmath import algebra
 ---
 ## Contents
 
-* [`Tuple`](#tuple)
+* [Tuple](#tuple)
   * [Attributes](#attributes)
   * [Methods](#methods)
-    * [`__init__`](#__init__self-args-real--list)
-    * [`__iter__`](#__iter__self)
-    * [`__getitem__`](#__getitem__self-item)
-    * [`__repr__`](#__repr__self---str-tuple)
-    * [`__eq__`](#__eq__self-other-tuple---bool)
-    * [`__len__`/`dim`](#__len__self---int--dim)
-    * [`__neg__`](#__neg__self)
-    * [`__add__`](#__add__self-other-tuple---tuple)
-    * [`__sub__`](#__sub__self-other-tuple---tuple)
-    * [`__mul__`/`__rmul__`](#__mul__self-other-real--__rmul__)
-    * [`__truediv__`](#__truediv__self-other-real---tuple)
-    * [`append`](#appendself-value-real)
-    * [`no_fractions`](#no_fractionsself---tuple)
   * [Static methods](#static-methods)
-    * [`dim_check`](#dim_checkargs---bool)
 
 
-* [`Vector`](#vector)
+* [Vector](#vector)
   * [Methods](#vector-methods)
-    * [`__init__`](#__init__self-args-real--tuple-begin-optionaltuple--none-end-optionaltuple--none)
-    * [`__abs__`](#__abs__self---float)
-    * [`__add__`](#__add__self-other-vector---vector)
-    * [`__sub__`](#__sub__self-other-vector---vector)
-    * [`__mul__`/`__rmul__`](#__mul__self-other-real--vector---real--vector--br-__rmul__)
-    * [`__truediv__`](#__truediv__self-other-real)
-    * [`__pow__`](#__pow__self-power-int---real--vector)
-    * [`cross`](#crossself-other-vector---vector)
-    * [`unit`](#unitself---vector)
-    * [`leading_zeroes`](#leading_zerosself---int)
-    * [`no_fractions`](#no_fractionsself---vector)
   * [Static methods](#vector-static-methods)
-    * [`spat`](#spatu-vector-v-vector-w-vector---float)
-    * [`anlge`](#angleu-vector-v-vector---float)
 
 
-* [`Structure`](#structure)
+* [Structure](#structure)
   * [Attributes](#structure-attributes)
   * [Methods](#structure-methods)
-    * [`__init__`](#__init__self-args-tuple)
-    * [`flat`](#flatself---bool)
-    * [`circumference`](#circumferenceself---float)
-    * [`area`](#areaself-opt-str--none)
   * [Static methods](#structure-static-methods)
-    * [`triangulate`](#triangulatep-tuple-q-tuple-r-tuple---float)
 
 
-* [`Matrix`](#matrix)
+* [Matrix](#matrix)
   * [Methods](#matrix-methods)
-    * [`__init__`](#__init__self-args-listreal--vector)
-    * [`__repr__`](#__repr__self---str)
-    * [`__round__`](#__round__self-n-int--none---matrix)
-    * [`__neg__`](#__neg__self---matrix)
-    * [`__add__`](#__add__self-other-matrix---matrix)
-    * [`__sub__`](#__sub__self-other-matrix---matrix)
-    * [`__mul__`/`__rmul__`](#__mul__self-other-real--vector--matrix---unionmatrix-vector--br-__rmul__)
-    * [`__truediv__`](#__truediv__self-other-real---matrix)
-    * [`__pow__`](#__pow__self-power-int---matrix)
-    * [`size`](#sizeself-option-str--none---list)
-    * [`dim`](#dimself---int)
-    * [`index`](#indexself-element-real---list)
-    * [`no_fractions`](#no_fractionsself---matrix)
-    * [`column`](#columnself-column_index-int---vector)
-    * [`row`](#rowself-row_index-int---vector)
-    * [`append`](#appendself-rownone-columnnone---matrix)
-    * [`remove`](#removeself-row_index-int--none-column_index-int--none---matrix)
-    * [`transpose`](#transposeself---matrix)
-    * [`det`](#detself---real--br-__abs__)
-    * [`cof`](#cofself---matrix)
-    * [`adj`](#adjself---matrix)
-    * [`inverse`](#inverseself---matrix)
-    * [`ref`](#refself---matrix)
-    * [`rank`](#rankself---int)
-    * [`rref`](#rrefself---matrix)
   * [Static methods](#matrix-static-methods)
-    * [`create`](#createm-int-n-int---matrix)
-    * [`create_identity`](#create_identityn-int---matrix)
 
 
 * [`SLE`](#sle)
   * [Methods](#sle-methods)
-    * [`__init__`](#__init__self-args-listreal)
-    * [`solve`](#solveself---vector)
-    * [`x`](#xself-index-int---real)
 
 ---
 ---
-## `Tuple`
+## Tuple
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
@@ -108,17 +46,19 @@ The methods of `Tuple` simulate an immutable type.
 
 ### Attributes
 
-Attribute | Usage | Implemented in version | Last change
---- | --- | --- | ---
-`self._value` | Stores the values of the Tuple | v3.0.0 | v3.0.0
-
-### Methods
-
-#### `__init__(self, *args: REAL | list)`
+#### Tuple._value
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Initialises the `Tuple`.
+Stores the items of the tuple in a list.
+
+### Methods
+
+#### Tuple.\_\_init__
+
+__Implemented in v3.0.0 | Last change v3.0.0__
+
+Initialises the Tuple.
 Tuple can be initialised giving either numbers as parameters or a list.
 ```python
 import avmath
@@ -132,83 +72,83 @@ b = avmath.Tuple(b_list)
 ```
 
 ---
-#### `__iter__(self)`
+#### Tuple.\_\_iter__
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Returns generator to convert `Tuple` to another iterable 
+Returns generator to convert Tuple to another iterable 
 object.
 
 ---
-#### `__getitem__(self, item)`
+#### Tuple.\_\_getitem__
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Gives access to the items of a `Tuple`.
+Gives access to the items of a Tuple.
 
 ---
-#### `__repr__(self) -> str` (Tuple)
+#### Tuple.\_\_repr__
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Returns string representation of the `Tuple`. String has the
+Returns string representation of the Tuple. String has the
 form of built-in `tuple` representation.
 
 ---
-#### `__eq__(self, other: 'Tuple') -> bool`
+#### Tuple.\_\_eq__
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Returns whether two `Tuple`s are equal.
+Returns whether two Tuples are equal.
 
 ---
-#### `__len__(self) -> int` / `dim`
+#### Tuple.\_\_len__
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Returns the length of the `Tuple`. Is equal to the dimension.
+Returns the length of the Tuple. Is equal to the dimension.
 
 ---
-#### `__neg__(self)`
+#### Tuple.\_\_neg__
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Returns negative `Tuple`.
+Returns negative Tuple.
 
 ---
-#### `__add__(self, other: 'Tuple') -> 'Tuple'`
+#### Tupel.\_\_add__
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Adds two `Tuple`s.
+Adds two Tuples.
 
 ---
-#### `__sub__(self, other: 'Tuple') -> 'Tuple'`
+#### Tuple.\_\_sub__
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
 Subtracts two tuples.
 
 ---
-#### `__mul__(self, other: REAL)` / `__rmul__`
+#### Tuple\_\_mul__
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Returns scalar multiplied`Tuple`.
+Returns scalar multiplied Tuple.
 
 ---
-#### `__truediv__(self, other: REAL) -> 'Tuple`
+#### Tuple.\_\_truediv__
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-`Tuple` divided by a scalar. Returns `Tuple` with Fraction values.
+Tuple divided by a scalar. Returns Tuple with Fraction values.
 
 ---
-#### `append(self, value: REAL)`
+#### Tuple.append
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Appends value to `Tuple`.
+Appends value to Tuple.
 
 ---
 #### `no_fractions(self) -> 'Tuple'`
@@ -225,9 +165,6 @@ Returns `Tuple` that does not contain `Fraction` members.
 __Implemented in v3.0.0 | Last change v3.0.0__
 
 Checks if arguments have the same amount of dimensions.
-
----
----
 
 ---
 ---
