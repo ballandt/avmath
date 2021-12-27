@@ -133,14 +133,14 @@ Returns whether Fraction is greater than given REAL.
 ---
 ### Fraction.\_\_add__(other) / Fraction.\_\_radd__(other)
 
-__Implemented in v3.0.0 | Last change v3.0.0__
+__Implemented in v3.0.0 | Last change v3.1.0__
 
 Adds a Fraction with a REAL. Return value is always a Fraction.
 
 ---
 ### Fraction.\_\_sub__(other) / Fraction.\_\_rsub__(other)
 
-__Implemented in v3.0.0 | Last change v3.0.0__
+__Implemented in v3.0.0 | Last change v3.1.0__
 
 Subtracts a REAL from a Fraction. Returns always Fractions.
 
@@ -174,42 +174,50 @@ __Implemented in v3.0.0 | Last change v3.0.0__
 Power operation with Fraction as exponent.
 
 ---
-#### `__mod__(self, other: REAL) -> float` / `__rmod__`
+### Fraction.\_\_mod__(other) / Fraction.\_\_rmod__(other)
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Modulo operation for `Fraction` and `REAL`.
+Modulo operation for Fraction and REAL.
 
 ---
-#### `__int__(self) -> int`
+### Fraction.\_\_int__()
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Returns integer representation of `Fraction`.
+Returns integer representation of Fraction.
 
 ---
-#### `__float__(self) -> float`
+### Fraction.\_\_float__()
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Returns float representation of `Fraction`.
+Returns float representation of Fraction.
 
 ---
-#### `__abs__(self) -> 'Fraction'`
+
+### Fraction.\_\_complex__()
+
+__Implemented in v3.1.0 | Last change v3.1.0__
+
+Returns float representation of Fraction.
+
+---
+### Fraction.\_\_abs__()
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
-Returns absolute of the `Fraction`.
+Returns absolute of the Fraction.
 
 ---
-#### `reduce(self) -> 'Fraction'`
+### Fraction.reduce()
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
 Returns reduced fraction.
 
 ---
-#### `int_args(self) -> bool`
+### Fraction.int_args()
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
@@ -220,7 +228,7 @@ or integer-like.
 ---
 # Arithmetic functions
 
-### `is_prime(x: int) -> bool`
+### is_prime(x)
 
 __Implemented in: v3.0.0 | Last change: v3.0.0__
 
@@ -230,28 +238,28 @@ the argument is divisible by any number.
 
 ---
 
-### `is_even(x: int) -> bool`
+### is_even(x)
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
 Function returning True if the integer `x` is an even number. Used by `avmath.fac`.
 
 ---
-### `gcd(x: int, y: int) -> int`
+### gcd(x, y)
 
 __Implemented in: v3.0.0 | Last change: v3.0.0__
 
 Function returning the greatest common divisor of two integers `x` and `y`.
 
 ---
-### `lcm(x: int, y: int) -> int`
+### lcm(x, y)
 
 __Implemented in: v3.0.0 | Last change: v3.0.0__
 
 Function that returns the least common multiply of two integers `x` and `y`.
 
 ---
-### `sgn(x: REAL) -> int`
+### sgn(x)
 
 __Implemented in: v3.0.0 | Last change: v3.0.0__
 
@@ -259,7 +267,7 @@ Function that returns the signum of a number. For values <0 returns
 -1 for 0 returns 0 and for values >0 returns 1
 
 ---
-### `fac(x: REAL, opt: str = None)`
+### fac(x \[, opt])
 
 __Implemented in: v1.0.0 | Last change: v3.0.0__
 
@@ -273,7 +281,7 @@ Parameters for `opt`:
 and all even numbers less equal the value if it is even
 
 ---
-### `ln(x: REAL) -> float`
+### ln(x)
 
 __Implemented in: v1.0.0 | Last change: v3.0.0__
 
@@ -282,24 +290,24 @@ Function that returns the natural logarithm of a number using
 only not negative values. Function is recommended to use for values
 between `1e-300` and. `1e300`
 
-x domain | precise post comma decimal places
---- | ---:
-`1e-300` to `1e300` | 12
-`1e-3` to `1e3` | 14
+| x domain            | precise post comma decimal places |
+|---------------------|----------------------------------:|
+| `1e-300` to `1e300` |                                12 |
+| `1e-3` to `1e3`     |                                14 |
 
 ---
-### `log(x: REAL, base: REAL) -> float`
+### log(x, base)
 
 __Implemented in: v1.0.0 | Last change: v1.0.0__
 
 Function that returns the logarithm of any base of a number.
-Returns only `ln(x) / ln(base)` and in this way is dependent to
+Returns only ln(x) / ln(base) and in this way is dependent to
 the natural logarithm.
 
 _See [Natural logarithm](#lnx)_
 
 ---
-### `sin(x: REAL) -> float`
+### sin(x)
 
 __Implemented in: v1.0.0 | Last change: v3.0.0__
 
@@ -308,14 +316,14 @@ Sine function using <span style="font-variant:small-caps;">Taylor</span>
 -100'000 and 100'000 because of inaccuracies of the modulo operator
 that increase with the value.
 
-x-domain | precise post comma decimal places
---- | ---:
-`-1e4` to `1e4` | 12
-`-1e5` to `1e5` | 10
-`-1e6` to `1e6` | 9-10
+| x-domain        | precise post comma decimal places |
+|-----------------|----------------------------------:|
+| `-1e4` to `1e4` |                                12 |
+| `-1e5` to `1e5` |                                10 |
+| `-1e6` to `1e6` |                              9-10 |
 
 ---
-### `cos(x: REAL) -> float`
+### cos(x)
 
 __Implemented in: v1.0.0 | Last change: v3.0.0__
 
@@ -323,14 +331,14 @@ Function returning the cosine of a number using <span style="font-variant:small-
 -series. Shares modulo problem with sine and is also recommended between
 -100'000 and 100'000.
 
-x-domain | precise post comma decimal places
---- | ---:
-`-1e4` to `1e4` | 12
-`-1e5` to `1e5` | 10
-`-1e6` to `1e6` | 9-10
+| x-domain        | precise post comma decimal places |
+|-----------------|----------------------------------:|
+| `-1e4` to `1e4` |                                12 |
+| `-1e5` to `1e5` |                                10 |
+| `-1e6` to `1e6` |                              9-10 |
 
 ---
-### `tan(x: REAL) -> float`
+### tan(x)
 
 __Implemented in: v1.0.0 | Last change: v3.0.0__
 
@@ -338,16 +346,16 @@ Function returning the tangent of a number calculating
 `sin(x) / cos(x)`. Shares modulo problem with sine and cosine
 and is also inaccurate when approaching the asymptotes.
 
-x-domain | precise post comma decimal places
---- | ---:
-`-1e4` to `1e4` (normal case) | 12
-`-1e5` to `1e5` (normal case) | 10
-`-1e6` to `1e6` (normal case) | 9-10
-`1e-3` difference to asymptote | 10
-`1e-3` difference to asymptote | 7
+| x-domain                       | precise post comma decimal places |
+|--------------------------------|----------------------------------:|
+| `-1e4` to `1e4` (normal case)  |                                12 |
+| `-1e5` to `1e5` (normal case)  |                                10 |
+| `-1e6` to `1e6` (normal case)  |                              9-10 |
+| `1e-3` difference to asymptote |                                10 |
+| `1e-3` difference to asymptote |                                 7 |
 
 ---
-### `arcsin(x: REAL) -> float`
+### arcsin(x)
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -356,14 +364,14 @@ Function returning the arc sine of a number -1 < x < 1 using
 Calculation time increases when approaching |1|. Function may be stopped
 by `_MAX_CALCULATION_TIME`. Values of -1 and 1 are manually set.
 
-Difference of x-value to `abs(1)` | precise post comma decimal places
---- | ---:
-`0.1` to `0.9` | 15
-`0.01` to `0.1` | 13
-`0.001` to `0.01` | 4
+| Difference of x-value to `abs(1)` | precise post comma decimal places |
+|-----------------------------------|----------------------------------:|
+| `0.1` to `0.9`                    |                                15 |
+| `0.01` to `0.1`                   |                                13 |
+| `0.001` to `0.01`                 |                                 4 |
 
 ---
-### `arccos(x: REAL) -> float`
+### arccos(x)
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -371,14 +379,14 @@ Function returning the arc cosine of a number -1 < x < 1 using
 arccos(x) = &pi; / 2 - arcsin(x). Due to the usage of `arcsin(x)`,
 the accuracy stays the same.
 
-Difference of x-value to `abs(1)` | precise post comma decimal places
---- | ---:
-`0.1` to `0.9` | 15
-`0.01` to `0.1` | 13
-`0.001` to `0.01` | 4
+| Difference of x-value to `abs(1)` | precise post comma decimal places |
+|-----------------------------------|----------------------------------:|
+| `0.1` to `0.9`                    |                                15 |
+| `0.01` to `0.1`                   |                                13 |
+| `0.001` to `0.01`                 |                                 4 |
 
 ---
-### `arctan(x: REAL) -> float`
+### arctan(x)
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -386,15 +394,15 @@ Function that returns the arc tangent of a number using two
 <span style="font-variant:small-caps;">Taylor</span>-series.
 Calculation time increases when approaching |1|.
 
-absolute of x-domain | precise post comma decimal places
---- | ---:
-`0` to `0.9` | 14-15
-at least 0.01 difference to 1 | 13-14
-at least 0.001 difference to 1 | 13
-`1` | 6
+| absolute of x-domain           | precise post comma decimal places |
+|--------------------------------|----------------------------------:|
+| `0` to `0.9`                   |                             14-15 |
+| at least 0.01 difference to 1  |                             13-14 |
+| at least 0.001 difference to 1 |                                13 |
+| `1`                            |                                 6 |
 
 ---
-### `sinh(x: REAL) -> float`
+### sinh(x)
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -402,12 +410,12 @@ Function returning the hyperbolic sine of a number using
 <span style="font-variant:small-caps;">Taylor</span>-series.
 Does only work for x values < 710 then throws OverflowError.
 
-x-domain | precise decimal places
---- | ---:
-`-710` to `710` | 14-15
+| x-domain        | precise decimal places |
+|-----------------|-----------------------:|
+| `-710` to `710` |                  14-15 |
 
 ---
-### `cosh(x: REAL) -> float`
+### cosh(x)
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -415,12 +423,12 @@ Function returning the hyperbolic cosine of a number using
 <span style="font-variant:small-caps;">Taylor</span>-series.
 Does only work for x values < 710 then throws OverflowError.
 
-x-domain | precise decimal places
---- | ---:
-`-710` to `710` | 14-15
+| x-domain        | precise decimal places |
+|-----------------|-----------------------:|
+| `-710` to `710` |                  14-15 |
 
 ---
-### `tanh(x: REAL) -> float`
+### tanh(x)
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -428,13 +436,13 @@ Function returning the hyperbolic tangent of a number using
 sinh(x) / cosh(x).
 When surpassing x-value 20, returns 1.0
 
-x-domain | precise post comma decimal places
---- | ---:
-`-20` to `20` | 14-15
-`abs(x) > 20` | (returns 1.0)
+| x-domain      | precise post comma decimal places |
+|---------------|----------------------------------:|
+| `-20` to `20` |                             14-15 |
+| `abs(x) > 20` |                     (returns 1.0) |
 
 ---
-### `arsinh(x: REAL) -> float`
+### arsinh(x)
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -442,12 +450,12 @@ Function that returns the inverse hyperbolic sine (_Areasinus hyperbolicus_)
 of a number using Arsinh(x) = sgn(x) ln(|x| + sqrt(x² + 1)). Values
 must lie between `-1e150` and `1e150` else cause OverflowError.
 
-x-domain | precise post comma decimal places
---- | ---:
-`-1e150` to `1e150` | 13-14
+| x-domain            | precise post comma decimal places |
+|---------------------|----------------------------------:|
+| `-1e150` to `1e150` |                             13-14 |
 
 ---
-### `arcosh(x: REAL) -> float`
+### arcosh(x)
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
@@ -455,27 +463,27 @@ Function returning the inverse hyperbolic cosine (_Areacosinus hyperbolicus_)
 of a number x >= 1 using Arcosh(x) = ln(x + sqrt(x² - 1)). Values must lie 
 between `-1e150` and `1e150` else cause OverflowError.
 
-x-domain | precise post comma decimal places
---- | ---:
-`-1e150` to `1e150` | 13-14
+| x-domain            | precise post comma decimal places |
+|---------------------|----------------------------------:|
+| `-1e150` to `1e150` |                             13-14 |
 
 ---
-### `artanh(x: REAL) -> float`
+### artanh(x)
 
 __Implemented in: v2.0.0 | Last change: v3.0.0__
 
 Function returning the inverse hyperbolic tangent (_Areatangens hyperbolicus_)
 of a number -1 < x < 1. Therefore, uses Artanh(x) = 0.5 ln((1 + x) / (1 - x)).
 
-x-domain | precise post comma decimal places
---- | ---:
-entire domain | 12-14
+| x-domain      | precise post comma decimal places |
+|---------------|----------------------------------:|
+| entire domain |                             12-14 |
 
 ---
 ---
-### Backend functions
+## Backend functions
 
-#### `_check_types(arg: _Iterable, *types)`
+### check_types(arg)
 
 __Implemented in: v3.0.0 | Last change: v3.0.0__
 

@@ -10,66 +10,55 @@ from avmath import analysis
 ## Contents
 
 * [`Point`](#point)
-  * [Method](#method)
-    * [`__init__`](#__init__self-x-real-y-real)
+  * [Methods](#point-method)
+
 
 
 * [`Function`](#function)
-  * [Attributes](#attributes)
-  * [Methodes](#methods)
-    * [`__init__`](#__init__self-arg-str)
-    * [`__repr__`](#__repr__self---str)
-    * [`__add__`](#__add__self-other-function---function)
-    * [`__sub__`](#__sub__self-other-function---function)
-    * [`__mul__`/`__rmul__`](#__mul__self-other-function---function)
-    * [`__truediv__`](#__truediv__self-other-function---function)
-    * [`__neg__`](#__neg__self---function)
-    * [`replace`](#replaceself-value-real---str)
-    * [`set_scope`](#set_scopeself-scope-dict)
-    * [`append_scope`](#append_scopeself-scope-dict)
-    * [`at`](#atself-value-real---real)
-    * [`max`](#maxself-xmin-real-xmax-real-steps-int--100000---unionlist-float)
-    * [`min`](#minself-xmin-real-xmax-real-steps-int--100000---unionlist-float)
-    * [`root`](#rootself-xmin-real-xmax-real-step-int--1000---list)
-    * [`newton_method`](#newton_methodself-x_n-real-steps-int--50---float)
-    * [`numdif`](#numdifself-x-real-h-real--1e-5---float)
-    * [`scnd_numdif`](#scnd_numdifself-x-real-h-real--1e-5)
-    * [`numint`](#numintself-a-real-b-real-n-int--1000)
+  * [Attributes](#function-attributes)
+  * [Methods](#function-methods)
 
 ---
 ---
-## `Point`
+# Point
 
 The Point class is the return type of some `Function` methods. It inherites from
 `algebra.Tuple` and defines this extra method:
 
 ---
-### Method
+## Point methods
 
-#### `__init__(self, x: REAL, y: REAL)`
+### Point.\_\_init__(x, y)
 
 __Implemented in v1.0.0 | Last change v3.0.0__
 
 Initialisation of point.
 
 ---
+### Point.negative_y()
+
+__Implemented in v3.1.0 | Last change v3.1.0__
+
+Returns point with negative y coordinate.
+
 ---
-## `Function`
+---
+## Function
 
 The Function class provides functionalities for mathematical functions.
 
 It has got the following attributes and methods:
 
-### Attributes
+### Function attributes
 
-Attribute | Usage | Implemented in | Last change
---- | --- | --- | ---
-`self.term` | Stores the function term as string | v1.0.0 | v3.0.0
-`self._arg_scope` | Stores the scope given to `eval` | v2.0.0 | v2.0.0
+| Attribute         | Usage                              | Implemented in | Last change |
+|-------------------|------------------------------------|----------------|-------------|
+| `self.term`       | Stores the function term as string | v1.0.0         | v3.0.0      |
+| `self._arg_scope` | Stores the scope given to `eval`   | v2.0.0         | v2.0.0      |
 
-### Methods
+### Function methods
 
-#### `__init__(self, arg: str)`
+#### Function.\_\_init__(arg)
 
 __Implemented in v1.0.0 | Last change in v3.0.0__
 
@@ -92,7 +81,7 @@ h = analysis.Function("artanh(x)")
 ````
 
 ---
-#### `__repr__(self) -> str`
+### Function.\_\_repr__()
 
 __Implemented in v1.0.0 | Last change in v3.0.0__
 
@@ -110,46 +99,53 @@ f(x) = 3x^2 + sin(x)
 ````
 
 ---
-#### `__add__(self, other: 'Function') -> 'Function'`
+### Function.\_\_add__(other)
 
-__Implemented in v1.0.0 | Last change in v3.0.0__
+__Implemented in v1.0.0 | Last change in v3.1.0__
 
-
-Adds two formulas. The entire second formula is set in brackets.
+Adds two formulas.
 
 ---
-#### `__sub__(self, other: 'Function') -> 'Function'`
+### Function.\_\_sub__(other)
 
 __Implemented in v1.0.0 | Last change in v3.0.0__
 
 Subtracts two formulas. The entire second formula is set in brackets.
 
 ---
-#### `__mul__(self, other: REAL | 'Function') -> 'Function'` / `__rmul__`
+### Function.\_\_mul__(other) / Function.\_\_rmul__(other)
 
-__Implemented in v1.0.0 | Last change in v3.0.0__
+__Implemented in v1.0.0 | Last change in v3.1.0__
 
-Multiplies two formulas. Both are set in brackets.
-
----
-#### `__truediv__(self, other: 'Function') -> 'Function'`
-
-__Implemented in v1.0.0 | Last change in v3.0.0__
-
-Divides two formulas. Both are set in brackets.
+Multiplies two formulas or Function with REAL. Both are set in brackets.
 
 ---
-#### `__neg__(self) -> 'Function'`
+### Function.\_\_truediv__(other)
+
+__Implemented in v1.0.0 | Last change in v3.1.0__
+
+Divides two formulas or a formula by a REAL. Both are set in brackets.
+
+---
+
+### Function.\_\_rtruediv__(other)
+
+__Implemented in v3.1.0 | Last change in v3.1.0__
+
+Divides a REAL by a formula. Both are set in brackets.
+
+---
+### Function.\_\_neg__()
 
 __Implemented in v1.0.0 | Last change in v3.0.0__
 
 Returns negative formula. Formula is just set in brackets
-and preceeded by a `-` sign.
+and preceded by a `-` sign.
 
 ---
-#### `replace(self, value: real) -> str`
+### Function.replace(value)
 
-__Implemented in v1.0.0 | Last change in v3.0.0__
+__Implemented in v1.0.0 | Last change in v3.1.0__
 
 Function replacing the intuitive elements (shown in `__init__`)
 with the correct syntax and setting given value for x.
@@ -165,28 +161,28 @@ gives the output
 3*(-5)**2 + sin((-5))
 ````
 ---
-#### `set_scope(self, scope: dict)`
+### Function.set_scope(scope)
 
 __Implemented in v2.0.0 | Last change in v3.0.0__
 
 Sets new scope for `eval`.
 
 ---
-#### `append_scope(self, scope: dict)`
+### Function.append_scope(scope)
 
 __Implemented in v2.0.0 | Last change in v3.0.0__
 
 Appends scope dictionary to scope.
 
 ---
-#### `at(self, value: real) -> real`
+### Function.at(value)
 
 __Implemented in v1.0.0 | Last change in v3.0.0__
 
 Returns the y-value of a function at a given x-value.
 
 ---
-#### `max(self, xmin: real, xmax: real, steps: int = 100000) -> Union[list, float]`
+### Function.max(xmin, xmax \[steps=1000])
 
 __Implemented in v2.0.0 | Last change in v3.0.0__
 

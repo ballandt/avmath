@@ -10,9 +10,9 @@ from avmath import algebra
 ## Contents
 
 * [Tuple](#tuple)
-  * [Attributes](#attributes)
-  * [Methods](#methods)
-  * [Static methods](#static-methods)
+  * [Attributes](#tuple-attributes)
+  * [Methods](#tuple-methods)
+  * [Static methods](#tuple-static-methods)
 
 
 * [Vector](#vector)
@@ -44,7 +44,7 @@ The Tuple class is the base class for the algebra submodule classes and the `avm
 It defines interaction methods inherited by the other classes.
 The methods of `Tuple` simulate an immutable type.
 
-## Attributes
+## Tuple attributes
 
 ### Tuple._value
 
@@ -52,7 +52,7 @@ __Implemented in v3.0.0 | Last change v3.0.0__
 
 Stores the items of the tuple in a list.
 
-## Methods
+## Tuple methods
 
 ### Tuple.\_\_init__(*args)
 
@@ -158,7 +158,7 @@ __Implemented in v3.0.0 | Last change v3.0.0__
 Returns Tuple that does not contain Fraction members.
 
 ---
-### Static Methods
+### Tuple static methods
 
 #### Tuple.dim_check(*args)
 

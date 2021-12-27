@@ -43,7 +43,7 @@ class Function:
 
     def __add__(self, other: 'Function') -> 'Function':
         """Adds two functions"""
-        ret_formula = f"{self.term} + ({other.term})"
+        ret_formula = f"{self.term} + {other.term}"
         return Function(ret_formula)
 
     def __sub__(self, other: 'Function') -> 'Function':
@@ -52,14 +52,14 @@ class Function:
         return Function(ret_formula)
 
     def __mul__(self, other: REAL | 'Function') -> 'Function':
-        """Multiplies two functions"""
+        """Multiplies two functions."""
         ret_formula = f"({self.term}) * ({other.term})" if type(other) == Function else f"{other} * {self.term}"
         return Function(ret_formula)
 
     __rmul__ = __mul__
 
     def __truediv__(self, other: REAL | 'Function') -> 'Function':
-        """Divide two functions or a function and a REAL."""
+        """Divides two functions or a function and a REAL."""
         if type(other) == Function:
             ret_formula = f"({self.term}) / ({other.term})"
         else:
