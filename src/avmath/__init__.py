@@ -125,11 +125,14 @@ class Fraction:
         """Greater than."""
         return float(other) < float(self)
 
-    def __add__(self, other: REAL) -> 'Fraction':
+    def __add__(self, other: REAL | complex) -> 'Fraction':
         """Adds either two fractions or fractions and numbers."""
-        if type(other) in (int, float, complex):
+        if type(other) in (int, float):
             a = self.a + other * self.b
             return Fraction(a, self.b)
+
+        elif type(other) == complex:
+            return complex(self) + other
 
         elif type(other) == Fraction and self.int_args() and other.int_args():
             reduced_self = self.reduce()
@@ -150,7 +153,7 @@ class Fraction:
     __rsub__ = __sub__
 
     def __mul__(self, other: REAL) -> 'Fraction':
-        """Multiplies REALS"""
+        """Multiplies REALS."""
         if type(other) in (int, float):
             return Fraction(self.a * other, self.b)
         if type(other) == Fraction:
@@ -191,6 +194,9 @@ class Fraction:
 
     def __float__(self) -> float:
         return self.a / self.b
+
+    def __complex__(self):
+        return float(self) + 0j
 
     def __abs__(self) -> 'Fraction':
         return Fraction(abs(self.a), self.b)

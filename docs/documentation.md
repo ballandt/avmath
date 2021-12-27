@@ -53,17 +53,17 @@ pip install .
 
 Avmath provides its own errors representing specific issues in the usage.
 
-| Error                      | Cause                                                                                                 | Implemented in version | Last change |
-|----------------------------|-------------------------------------------------------------------------------------------------------|------------------------|-------------|
-| `ArgumentError`            | The argument given to a function or method is wrong.                                                  | v1.0.0                 | v3.0.0      |
-| `DimensionError`           | The arguments of an operation have a different amount of dimensions and therefore cannot be combined. | v1.0.0                 | v3.0.0      |
-| `algebra.GeometricalError` | A geometrical construction cannot be done due to false arguments.                                     | v1.0.0                 | v3.0.0      |
-| `algebra.MatrixError`      | Matrix-argument to an operation is inappropriate. Often handles size issues.                          | v1.0.0                 | v3.0.0      |
+| Error                    | Cause                                                                                                 | Implemented in version | Last change |
+|--------------------------|-------------------------------------------------------------------------------------------------------|------------------------|-------------|
+| ArgumentError            | The argument given to a function or method is wrong.                                                  | v1.0.0                 | v3.0.0      |
+| DimensionError           | The arguments of an operation have a different amount of dimensions and therefore cannot be combined. | v1.0.0                 | v3.0.0      |
+| algebra.GeometricalError | A geometrical construction cannot be done due to false arguments.                                     | v1.0.0                 | v3.0.0      |
+| algebra.MatrixError      | Matrix-argument to an operation is inappropriate. Often handles size issues.                          | v1.0.0                 | v3.0.0      |
 
 ### Warnings
 
 Avmath also contains warnings using the logging module.
 
-| Warning                      | Cause                                                                                                                                          | Implemented in version | Last change |
-|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|-------------|
-| `algebra.GeometricalWarning` | A geometrical instruction is possible yet there may be unwanted conditions. Can be disabled running the `GeometricalWarning.disable()` method. | v1.0.0                 | v3.0.0      |
+| Warning                    | Cause                                                                                                                                          | Implemented in version | Last change |
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|-------------|
+| algebra.GeometricalWarning | A geometrical instruction is possible yet there may be unwanted conditions. Can be disabled running the `GeometricalWarning.disable()` method. | v1.0.0                 | v3.0.0      |

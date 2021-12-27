@@ -26,7 +26,9 @@
 
 * `__init__`
   * `Fraction`
-    * fractions can be used for initialisation
+    * `__init__`
+      * fractions can be used for initialisation
+    * `complex` method to convert Fraction to complex
 * `analysis`
   * `Function`
     * new method `newton_method_extrema`
@@ -56,6 +58,8 @@
   * `Fraction`
     * `__truediv__`
       * formula fixes
+    * `__add__` supports complex
+    * `__sub__` supports complex
 * `analysis`
   * `Function`
     * `max`-method uses newton method and is much faster and more accurate
