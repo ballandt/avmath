@@ -1,9 +1,7 @@
 The following passages document the
-functionality of  the avmath math module.
+functionality of  the avmath math module version __v3.1.0__.
 
-Functions and methods are given with
-Typehints to show the wanted input- and return
-values. Some features are followed by code
+Some features are followed by code
 examples.
 
 ---

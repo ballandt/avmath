@@ -341,7 +341,7 @@ def tan(x: REAL) -> float:
 
 def arcsin(x: REAL) -> float:
     """Arc sine."""
-    if x > 1:
+    if abs(x) > 1:
         raise ArgumentError("x > 1", "x <= 1")
     if abs(x) == 1:
         return sgn(x) * pi / 2

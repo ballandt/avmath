@@ -87,7 +87,7 @@ __Implemented in v3.0.0 | Last change v3.0.0__
 Gives access to the items of a Tuple.
 
 ---
-#### Tuple.\_\_repr__()
+### Tuple.\_\_repr__()
 
 __Implemented in v3.0.0 | Last change v3.0.0__
 
@@ -263,7 +263,7 @@ __Implemented in v3.0.0 | Last Change in v3.0.0__
 Returns specific unit vector.
 
 ---
-#### Vector.leading_zeros()
+### Vector.leading_zeros()
 
 __Implemented in v3.0.0 | Last Change in v3.0.0__
 

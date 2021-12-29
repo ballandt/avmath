@@ -51,10 +51,10 @@ It has got the following attributes and methods:
 
 ### Function attributes
 
-| Attribute         | Usage                              | Implemented in | Last change |
-|-------------------|------------------------------------|----------------|-------------|
-| `self.term`       | Stores the function term as string | v1.0.0         | v3.0.0      |
-| `self._arg_scope` | Stores the scope given to `eval`   | v2.0.0         | v2.0.0      |
+| Attribute       | Usage                              | Implemented in | Last change |
+|-----------------|------------------------------------|----------------|-------------|
+| self.term       | Stores the function term as string | v1.0.0         | v3.0.0      |
+| self._arg_scope | Stores the scope given to `eval`   | v2.0.0         | v2.0.0      |
 
 ### Function methods
 
@@ -182,23 +182,24 @@ __Implemented in v1.0.0 | Last change in v3.0.0__
 Returns the y-value of a function at a given x-value.
 
 ---
-### Function.max(xmin, xmax \[steps=1000])
+### Function.max(xmin, xmax \[, steps=1000])
 
-__Implemented in v2.0.0 | Last change in v3.0.0__
+__Implemented in v2.0.0 | Last change in v3.1.0__
 
 Function returning the maxima of a function in a given x domain.
-`steps` are the iterative steps made to find a maximum. Returns list
-of `Point` values.
+`steps` are the iterative steps made to find a change in the signum. Than uses
+Newton-method derivative to find the maxima. Returns list
+of Point values.
 
 ---
-#### `min(self, xmin: real, xmax: real, steps: int = 100000) -> Union[list, float]`
+### Function.min(xmin, xmax \[, steps=1000])
 
-__Implemented in v2.0.0 | Last change in v3.0.0__
+__Implemented in v2.0.0 | Last change in v3.1.0__
 
-Opposite of `max`. Returns minima in a given x domain.
+Opposite of max. Returns minima in a given x domain.
 
 ---
-#### `root(self, xmin: real, xmax: real, step: int = 1000) -> list`
+### Function.root(xmin, xmax \[, step=1000])
 
 __Implemented in v3.0.0 | Last change in v3.0.0__
 
@@ -206,30 +207,90 @@ Returns the roots of function in given x domain. Uses
 <span style="font-variant:small-caps;">Newton</span>-method
 to approach roots. Gives list of x-values back.
 
----
-#### `newton_method(self, x_n: real, steps: int = 50) -> float`
+! WARNING: Due to backward compatibility last parameter remains `step`
+not `steps` like in max and min.
 
-__Implemented in v3.0.0 | Last change in v3.0.0__
+---
+### Function.newton_method(x_n \[, steps=50])
+
+__Implemented in v3.0.0 | Last change in v3.1.0__
 
 Returns result of `steps` times executed <span style="font-variant:small-caps;">Newton</span>-method.
 
 ---
-#### `num_dif(self, x: REAL, h: REAL = 1e-5) -> float`
+
+### Function.newton_method_extrema(x_n \[, steps=50])
+
+__Implemented in v3.1.0 | Last change in v3.1.0__
+
+Executes derivative of Newton method: x_{n+1} = f'(x_n) / f''(x_n).
+
+---
+
+### Function.derivative(x \[, h=None])
+
+__Implemented in v3.1.0 | Last change in v3.1.0__
+
+Returns the derivative of the function at a given x. If no `h` specified,
+calculates a height, but this may not be the optimal one.
+
+---
+
+### Function.second_derivative(x_n \[, h=1e-5])
+
+__Implemented in v3.1.0 | Last change in v3.1.0__
+
+Returns second derivative of the function at given x. `h` is set to 1e-5
+what is mostly a good compromise of arithmetic error and numeric error.
+
+---
+### Function.integral(a, b \[, n=1000]\[, option=None])
+
+__Implemented in v3.1.0 | Last change in v3.1.0__
+
+Calculates the integral of the function between `a` and `b` with `n` steps.
+With no option specified, uses rectangular formula. If `option="trapeze"`, uses 
+trapeze formula.
+
+---
+### Function.num_dif(x \[, h=1e-5])
 
 __Implemented in v1.0.0 | Last change in v3.0.0__
 
 Returns numeric differentiation of the function at given x.
 
+! WARNING: INACTIVE: Use Function.derivative instead.
+
 ---
-#### `second_num_dif(self, x: REAL, h: REAL = 1e-5) -> float`
+### Function.second_num_dif(x \[, h=1e-5])
 
 __Implemented in v3.0.0 | Last change in v3.0.0__
 
 Returns numerically calculated second differentiation at given x.
 
----
-#### `num_int(self, a: REAL, b: REAL, n: int = 1000) -> float`
+! WARNING: INACTIVE: Use Function.second_derivative instead.
 
-__Implemented in v1.0.0 | Last change in v3.0.0__
+---
+### Function.num_int(a, b \[, n=1000])
+
+__Implemented in v1.0.0 | Last change in v3.1.0__
 
 Numerically calculated integral between `a` and `b` with `n` steps.
+
+! WARNING: INACTIVE: Use Function.integral instead.
+
+---
+### Function.tangent(x)
+
+__Implemented in v3.1.0 | Last change in v3.1.0__
+
+Returns a linear function in the form y = ax + b that lies tangent to
+the function graph at a given x.
+
+---
+### Function.normal(x)
+
+__Implemented in v3.1.0 | Last change in v3.1.0__
+
+Returns a linear function in the form y = ax + b that lies normal to
+the function graph at a given x.

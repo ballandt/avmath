@@ -60,6 +60,8 @@
       * formula fixes
     * `__add__` supports complex
     * `__sub__` supports complex
+  * `arcsin`
+    * exception fixed for values < -1
 * `analysis`
   * `Function`
     * `max`-method uses newton method and is much faster and more accurate
