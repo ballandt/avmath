@@ -483,7 +483,7 @@ of a number -1 < x < 1. Therefore, uses Artanh(x) = 0.5 ln((1 + x) / (1 - x)).
 ---
 ## Backend functions
 
-### check_types(arg)
+### _check_types(arg)
 
 __Implemented in: v3.0.0 | Last change: v3.0.0__
 
