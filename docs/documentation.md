@@ -12,7 +12,7 @@ examples.
   * [Constants](Avmath-root#constants)
   * [Fractions](Avmath-root#fraction)
   * [Arithmetic functions](Avmath-root#arithmetic-functions)
-* [Algebra](algebra.#avmath-algebra-documentation)
+* [Algebra](algebra#avmath-algebra-documentation)
   * [Tuples](algebra#tuple)
   * [Vectors](algebra#vector)
   * [Matrices](algebra#matrix)
