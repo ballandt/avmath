@@ -505,14 +505,14 @@ __Implemented in v1.0.0 | Last change v3.0.0__
 Returns the row vector of given index.
 
 ---
-### Matrix.append(\[\[row], \[column]])
+### Matrix.append(\[row] \[, column])
 
 __Implemented in v1.0.0 | Last change v3.0.0__
 
 Returns a matrix with appended iterable. Can be row or column or both.
 
 ---
-### Matrix.remove(\[\[row_index], \[column_index]])
+### Matrix.remove(\[row_index], \[, column_index])
 
 __Implemented in v1.0.0 | Last change v3.0.0__
 
