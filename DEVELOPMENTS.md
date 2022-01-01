@@ -1,26 +1,23 @@
-# Avmath developments
-
-## Contents
+The following developments are planned. It may not be sure whether and where they are finally done.
 
 ---
-[Version 3.0.0](#v300)
+## 3.2.0
+
+Planned for 2022-04-01
+Version 3.2 is planned to implement more advanced linear algebra features and more number objects
+
+* `root` object
+* eigenvalues and eigenvectors
+* *n*th grade differentiation
 
 ---
-## v3.0.0
+## 4.0.0
 
-Planned release: 2021-12-01
+Planned for 2022-08-01 or later
 
-Version 3.x shall be the first long-time stable avmath major version
-so the development concentrates on the validity of the API. For this
-point the following developments are made:
-* CamelCase convention for all classes
-* deletion of useless classes
-* focus on mathematical manner of writing
-
-Furthermore, following developments are planned:
-* Adjustments for hyperbolic functions
-* rank of matrix
-* advanced solving of SLE
-* addition of basic functions
-* Bugfixes of trigonometric functions
-* Improvement of documentation
+* All option parameters are renamed from `opt` to `option`
+* `analysis`
+  * `Function`
+    * deletion of `num_dif` method
+    * deletion of `second_numd_dif` method
+    * deletion of `num_int` method

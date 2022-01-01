@@ -25,7 +25,7 @@ _Avmath_ is a python library for mathematics.
 | Name               | avmath                                                               |
 | PyPi name          | [avmath](https://pypi.org/project/avmath/)                           |
 | Author             | Camillo Ballandt                                                     |
-| Release version    | [3.0.0](https://www.github.com/ballandt/avmath/releases/tag/v3.0.0)  |
+| Release version    | [3.1.0](https://www.github.com/ballandt/avmath/releases/tag/v3.1.0)  |
 | Developing version | [Developments](https://github.com/ballandt/avmath/wiki/Developments) |
 | Requirements       | Python 3.10                                                          |
 
