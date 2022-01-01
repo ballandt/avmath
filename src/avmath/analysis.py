@@ -32,7 +32,7 @@ class Function:
         as string. Coefficient writing and ^ for power
         is allowed.
         See:
-        https://github.com/ballandt/avmath/wiki/analysis#
+        https://github.com/ballandt/avmath/wiki/analysis#function
         """
         self.term = arg
         self._arg_scope = _scope
