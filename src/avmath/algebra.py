@@ -8,7 +8,8 @@ import copy
 import logging
 from typing import Union, Optional, List
 
-from . import ArgumentError, DimensionError, REAL, Fraction, sin, arccos, _check_types
+from . import ArgumentError, DimensionError, REAL, Fraction, sin, arccos,\
+    _check_types
 
 __all__ = ["Tuple", "Structure", "Matrix", "Vector", "SLE"]
 
@@ -54,7 +55,9 @@ class GeometricalWarning:
 
 
 class Tuple:
-    """Algebraic tuple. Can also be interpreted as point in the coordinate system."""
+    """Algebraic tuple. Can also be interpreted as
+    point in the coordinate system.
+    """
 
     def __init__(self, *args: REAL | list | tuple | 'Vector'):
         _check_types(args, int, float, list, tuple, Fraction, Vector)
@@ -138,7 +141,9 @@ class Tuple:
         return Tuple(ret_value)
 
     def no_fractions(self) -> 'Tuple':
-        """Returns Tuple that does not contain Fractions. Converts Fractions to float."""
+        """Returns Tuple that does not contain Fractions.
+        Converts Fractions to float.
+        """
         return Tuple([float(ele) for ele in self])
 
     @staticmethod
@@ -192,7 +197,9 @@ class Vector(Tuple):
             _check_types((begin, end), Tuple)
             if begin.dim() != end.dim():
                 raise DimensionError(end.dim(), begin.dim())
-            super().__init__(*tuple([end[i] - begin[i] for i in range(begin.dim())]))
+            super().__init__(
+                *tuple([end[i] - begin[i] for i in range(begin.dim())])
+            )
 
     def __abs__(self) -> float:
         """Returns absolute of a vector.
@@ -231,7 +238,8 @@ class Vector(Tuple):
         Insert
         Vector(a_1, a_2, [...], a_n) * Vector(b_1, b_2, [...], b_n)
         For
-        (a_1, a_2, ..., a_n) * (b_1, b_2, ..., b_n) = a_1 b_1 + a_2 b_2 + ... + a_n b_n
+        (a_1, a_2, ..., a_n) * (b_1, b_2, ..., b_n)
+        = a_1 b_1 + a_2 b_2 + ... + a_n b_n
         """
         if type(other) != Vector:
             return Vector(Tuple(*tuple(self)) * other)
@@ -258,8 +266,8 @@ class Vector(Tuple):
         return Vector(Tuple(ret_list))
 
     def __pow__(self, power: int) -> REAL | 'Vector':
-        """Returns result of power times scalar multiplied vector. Power 0 returns unit-
-        vector.
+        """Returns result of power times scalar multiplied vector.
+        Power 0 returns unit-vector.
         Insert
         a = Vector(a_1, a_2, [...], a_n)
         a**p
@@ -281,7 +289,8 @@ class Vector(Tuple):
             Insert
             Vector(a_1, a_2, a_3).cross(Vector(b_1, b_2, b_3))
             For
-            (a_1, a_2, a_3) x (b_1, b_2, b_3) = (a_2 b_3 - a_3 b_2, a_1 b_1 - a_1 b_3, a_1 b_2 - a_2 b_1)
+            (a_1, a_2, a_3) x (b_1, b_2, b_3)
+            = (a_2 b_3 - a_3 b_2, a_1 b_1 - a_1 b_3, a_1 b_2 - a_2 b_1)
             """
         if self.dim() != 3:
             raise DimensionError(self.dim(), 3)
@@ -318,7 +327,9 @@ class Vector(Tuple):
         return leading_0
 
     def no_fractions(self) -> 'Vector':
-        """Returns Vector that does not contain Fractions. Converts Fractions to float."""
+        """Returns Vector that does not contain Fractions.
+        Converts Fractions to float.
+        """
         return Vector(*tuple([float(e) for e in self]))
 
     @staticmethod
@@ -357,7 +368,9 @@ class Structure:
         """Insert the edges of the structure."""
         _check_types(args, Tuple)
         if not Tuple.dim_check(*args):
-            raise DimensionError(other="Tuples have different amount of dimensions.")
+            raise DimensionError(
+                other="Tuples have different amount of dimensions."
+            )
         if args[0].dim() > 3:
             raise DimensionError(other="Tuples must have 2 or 3 dimensions.")
         self.points = args
@@ -365,7 +378,9 @@ class Structure:
             self.points = [e.append(0) for e in self.points]
         self.vectors = [Vector(begin=self.points[-1], end=self.points[0])]
         for i in range(1, len(self.points)):
-            self.vectors.append(Vector(begin=self.points[i - 1], end=self.points[i]))
+            self.vectors.append(
+                Vector(begin=self.points[i - 1], end=self.points[i])
+            )
 
     def flat(self) -> bool:
         """Returns 'True' if the points are in a three-dimensional area."""
@@ -378,7 +393,9 @@ class Structure:
         return True
 
     def circumference(self) -> float:
-        """Returns the circumference of the area opened by any amount of points."""
+        """Returns the circumference of the area
+        opened by any amount of points.
+        """
         u = 0
         for e in self.vectors:
             u += abs(e)
@@ -468,7 +485,8 @@ class Matrix(Tuple):
             else:
                 ret_str += "|" + distance * " "
             for j in range(self.size()[1]):
-                ret_str += str(self[i][j]) + ((digits_list[j] - len(str(self[i][j])) + distance) * " ")
+                ret_str += str(self[i][j])
+                ret_str += ((digits_list[j]-len(str(self[i][j]))+distance)*" ")
             if i == 0:
                 ret_str += "┐"
             elif i == self.size()[0] - 1:
@@ -500,7 +518,8 @@ class Matrix(Tuple):
         if type(other) != Matrix:
             raise ArgumentError(type(other), Matrix)
         elif self.size() != other.size():
-            raise ArgumentError("matrix with size " + str(other.size()), "matrix with size" + str(self.size()))
+            raise ArgumentError("matrix with size " + str(other.size()),
+                                "matrix with size" + str(self.size()))
         args = []
         for i in range(self.size()[0]):
             args.append([])
@@ -512,7 +531,9 @@ class Matrix(Tuple):
         """Subtracts a matrix from another."""
         return self + -other
 
-    def __mul__(self, other: REAL | 'Vector' | 'Matrix') -> Union['Matrix', 'Vector']:
+    def __mul__(self,
+                other: REAL | 'Vector' | 'Matrix')\
+            -> Union['Matrix', 'Vector']:
         """Multiplies two matrices."""
         if type(other) in (int, float):
             args = []
@@ -524,8 +545,9 @@ class Matrix(Tuple):
 
         elif type(other) == Vector:
             if self.size()[1] != other.dim():
-                raise MatrixError(f"Vector with size {other.dim()} cannot be multiplied"
-                                  f" by matrix with size {self.size()}")
+                raise MatrixError(f"Vector with size {other.dim()} cannot "
+                                  f"be multiplied by matrix with "
+                                  f"size {self.size()}")
             v_matrix = Matrix(other)
             ret_mat = self * v_matrix
             args = ()
@@ -535,7 +557,8 @@ class Matrix(Tuple):
 
         elif type(other) == Matrix:
             if self.size()[1] != other.size()[0]:
-                raise MatrixError(f"Matrix with {other.size()[0]} rows cannot be multiplied"
+                raise MatrixError(f"Matrix with {other.size()[0]} "
+                                  f"rows cannot be multiplied"
                                   f" by {self.size()[1]} column matrix.")
             ret_mat = Matrix.create(self.size()[0], other.size()[1])
             for i in range(self.size()[0]):
@@ -620,16 +643,20 @@ class Matrix(Tuple):
         ret_mat = self
         if row:
             if len(row) != self.size()[1]:
-                raise MatrixError(f"Cannot append {len(row)} element row to matrix with size {self.size()}.")
+                raise MatrixError(f"Cannot append {len(row)} element row "
+                                  f"to matrix with size {self.size()}.")
             ret_mat._value.append(list(row))
         elif column:
             if len(column) != self.size()[0]:
-                raise MatrixError(f"Cannot append {len(column)} element row to matrix with size{self.size()}")
+                raise MatrixError(f"Cannot append {len(column)} element "
+                                  f"row to matrix with size{self.size()}")
             for i in range(ret_mat.size()[1]):
                 ret_mat._value[i].append(column[i])
         return ret_mat
 
-    def remove(self, row_index: int = None, column_index: int = None) -> 'Matrix':
+    def remove(self,
+               row_index: int = None,
+               column_index: int = None) -> 'Matrix':
         """Returns a matrix with given row or column removed."""
         ret_mat = copy.deepcopy(self)
         if row_index is not None:
@@ -701,7 +728,8 @@ class Matrix(Tuple):
             for j in range(i+1, len(sorted_arg_list)):
                 jelement = sorted_arg_list[j]
                 if jelement.leading_zeros() == element.leading_zeros():
-                    op_vector = sorted_arg_list[i] * jelement[jelement.leading_zeros()]
+                    op_vector = sorted_arg_list[i]\
+                                * jelement[jelement.leading_zeros()]
                     sorted_arg_list[j] = jelement - op_vector
         sorted_arg_list = tuple(map(list, sorted_arg_list))
         return Matrix(*sorted_arg_list)
@@ -722,12 +750,13 @@ class Matrix(Tuple):
         ret_list = [Vector(Tuple(e)) for e in self.ref()]
         for i in range(self.rank()-1, 0, -1):
             for j in range(i):
-                ret_list[j] -= ret_list[i] * ret_list[j][ret_list[i].leading_zeros()]
+                ret_list[j] -= ret_list[i]\
+                               * ret_list[j][ret_list[i].leading_zeros()]
         return Matrix(*tuple([list(e) for e in ret_list]))
 
     @staticmethod
     def create(m: int, n: int) -> 'Matrix':
-        """Staticmethod to create a m X n matrix that contains
+        """Staticmethod to create an m X n matrix that contains
         only zeros.
         """
         args = []
@@ -753,18 +782,23 @@ class Matrix(Tuple):
         """Sorts value list of matrix for ref."""
         longest_row = []
         for index, element in enumerate(arg_list):
-            longest_row.append([Vector(Tuple(list(element))).leading_zeros(), index])
+            longest_row.append(
+                [Vector(Tuple(list(element))).leading_zeros(), index]
+            )
         sorted_longest_row = sorted(longest_row)
         sorted_arg_list = []
         for i in range(len(arg_list)):
-            sorted_arg_list.append(Vector(Tuple(list(arg_list[sorted_longest_row[i][1]]))))
+            sorted_arg_list.append(
+                Vector(Tuple(list(arg_list[sorted_longest_row[i][1]])))
+            )
         return sorted_arg_list
 
 
 class SLE(Matrix):
     """System of linear equations"""
     def __init__(self, *args: List[REAL]):
-        """Initializes a matrix that contains both, coefficients and results. Insert in the following way:
+        """Initializes a matrix that contains both, coefficients and results.
+        Insert in the following way:
 
         SLE([a_11, a_12, a_13, b_1],
             [a_21, a_22, a_23, b_2],
@@ -776,13 +810,15 @@ class SLE(Matrix):
          """
         super().__init__(*args)
         if self.size()[1] != self.size()[0] + 1:
-            raise MatrixError("Matrix for SLE must have the size m x n where n = m +1")
+            raise MatrixError(
+                "Matrix for SLE must have the size m x n where n = m +1"
+            )
         self.A = self.remove(column_index=-1)
         self.b = self.column(-1)
 
     def solve(self) -> 'Vector':
-        """Splits matrix in coefficients and results and uses matrix multiplication to solve
-        the system.
+        """Splits matrix in coefficients and results and
+        uses matrix multiplication to solve the system.
         """
         return self.A.inverse() * self.b
 
