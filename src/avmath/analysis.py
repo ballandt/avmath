@@ -175,7 +175,7 @@ class Function:
         """Returns derivative of a function.
         Uses an algorithm to calculate the best h."""
         if not h:
-            if self.second_derivative(x) < 1e-3:
+            if self.second_derivative(x) < 1e-3 or self.at(x) == 0:
                 h = eps ** (1/3)
             else:
                 h = 2 * (eps * abs(self.at(x))
