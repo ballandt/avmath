@@ -91,7 +91,7 @@ class Function:
             if return_string[i-1] in "0123456789":
                 return_string = f"{return_string[:i]}*{return_string[i:]}"
             i += 1
-        return return_string.replace("x", "("+str(value)+")")
+        return return_string.replace("x", f"({value})")
 
     def set_scope(self, scope: dict):
         """Sets a new dict as scope."""
@@ -141,7 +141,7 @@ class Function:
         x_pos = xmin
         candidates = []
         for i in range(step):
-            if sgn(self.at(x_pos)) != sgn(self.at(x_pos+sgn_step)):
+            if sgn(self.at(x_pos)) != sgn(self.at(x_pos + sgn_step)):
                 candidates.append(x_pos)
             x_pos += sgn_step
         return_list = []
@@ -176,16 +176,16 @@ class Function:
         Uses an algorithm to calculate the best h."""
         if not h:
             if self.second_derivative(x) < 1e-3 or self.at(x) == 0:
-                h = eps ** (1/3)
+                h = eps ** (1 / 3)
             else:
                 h = 2 * (eps * abs(self.at(x))
                          / abs(self.second_derivative(x))) ** 0.5
-        return (4*self.at(x + h/2) - 3*self.at(x) - self.at(x + h)) / h
+        return (4 * self.at(x + h / 2) - 3 * self.at(x) - self.at(x + h)) / h
 
     def second_derivative(self, x: REAL, h=1e-5) -> float:
         """Returns the second derivative of a formula.
         There may be better h than default instruction."""
-        return (self.at(x + h) - 2*self.at(x) + self.at(x - h)) / h ** 2
+        return (self.at(x + h) - 2 * self.at(x) + self.at(x - h)) / h ** 2
 
     def num_dif(self, x: REAL, h: REAL = 1e-5) -> float:
         """Returns numerical second order differentiation
@@ -193,7 +193,7 @@ class Function:
         === INACTIVE ===
         Use Function.derivative instead.
         """
-        return (self.at(x+h) - self.at(x-h)) / 2*h
+        return (self.at(x + h) - self.at(x - h)) / 2 * h
 
     def second_num_dif(self, x: REAL, h: REAL = 1e-5) -> float:
         """Returns numerical second order differentiation
@@ -201,9 +201,9 @@ class Function:
         === INACTIVE ===
         Use Function.second_derivative instead.
         """
-        x1 = self.num_dif(x-h)
-        x2 = self.num_dif(x+h)
-        return (x2 - x1) / (2*h)
+        x1 = self.num_dif(x - h)
+        x2 = self.num_dif(x + h)
+        return (x2 - x1) / (2 * h)
 
     def num_int(self, a: REAL, b: REAL, n: int = 1000) -> float:
         """Returns the numerical integral of a function in a given space.
@@ -213,7 +213,7 @@ class Function:
         res = (b - a) / n
         term = 0
         for i in range(n):
-            xi = a + i*(b-a)/n + (b-a)/(2*n)
+            xi = a + i * (b - a) / n + (b - a) / (2 * n)
             term += self.at(xi)
         res *= term
         return res
@@ -231,11 +231,11 @@ class Function:
         if option == "trapeze":
             res = (self.at(a) - self.at(b)) / 2
             for i in range(1, n):
-                res += self.at(a + i*h)
+                res += self.at(a + i * h)
         else:
             res = 0
             for i in range(n):
-                res += self.at(a + i*h + h / 2)
+                res += self.at(a + i * h + h / 2)
         res *= h
         return res
 
