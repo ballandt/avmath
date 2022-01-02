@@ -163,7 +163,7 @@ class Vector(Tuple):
                  begin: Optional['Tuple'] = None,
                  end: Optional['Tuple'] = None):
         """Takes whether number arguments, vectorizes Tuple or
-        creates vector beween two Tuples.
+        creates vector between two Tuples.
 
         For number insert:
         Vector(a_1, a_2, a_3)
@@ -309,7 +309,7 @@ class Vector(Tuple):
         For
         a / |a|"""
         if abs(self) == 0:
-            raise GeometricalError("Vector with absolute 0 has no unitvec")
+            raise GeometricalError("Vector with absolute 0 has no unit vector")
         else:
             res = self * (1 / abs(self))
             return res

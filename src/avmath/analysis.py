@@ -53,7 +53,10 @@ class Function:
 
     def __mul__(self, other: REAL | 'Function') -> 'Function':
         """Multiplies two functions."""
-        ret_formula = f"({self.term}) * ({other.term})" if type(other) == Function else f"{other} * {self.term}"
+        if type(other) == Function:
+            ret_formula = f"({self.term}) * ({other.term})"
+        else:
+            ret_formula = f"{other} * ({self.term})"
         return Function(ret_formula)
 
     __rmul__ = __mul__
@@ -113,12 +116,14 @@ class Function:
         x_pos = xmin
         candidates = []
         for i in range(steps):
-            if sgn(self.derivative(x_pos)) != sgn(self.derivative(x_pos+sgn_step)):
+            if sgn(self.derivative(x_pos))\
+                    != sgn(self.derivative(x_pos+sgn_step)):
                 candidates.append(x_pos)
             x_pos += sgn_step
         return_list = []
         for ele in candidates:
-            value = Point(self.newton_method_extrema(ele), self.at(self.newton_method_extrema(ele)))
+            value = Point(self.newton_method_extrema(ele),
+                          self.at(self.newton_method_extrema(ele)))
             if value not in return_list and self.second_derivative(ele) < 0:
                 return_list.append(value)
         return return_list
@@ -150,39 +155,49 @@ class Function:
         x_{n+1} = x_n - f(x_n) / f'(x_n)
         """
         for _ in range(steps):
-            x_n = x_n - self.at(x_n) / self.derivative(x_n) if self.derivative(x_n) != 0 else x_n + 1e-2
+            if self.derivative(x_n) != 0:
+                x_n = x_n - self.at(x_n) / self.derivative(x_n)
+            else:
+                x_n += 1e-2
         return x_n
 
     def newton_method_extrema(self, x_n, steps: int = 50) -> float:
         """Method to find extrema of a function. Derived from Newton's method:
          x_{n+1} = x_n - f'(x_n) / f''(x_n)"""
         for _ in range(steps):
-            x_n = x_n - self.derivative(x_n) /\
-                  self.second_derivative(x_n) if self.second_derivative(x_n) != 0 else x_n + 1e-2
+            if self.second_derivative(x_n) != 0:
+                x_n = x_n - self.derivative(x_n) / self.second_derivative(x_n)
+            else:
+                x_n += 1e-2
         return x_n
 
     def derivative(self, x: REAL, h=None) -> float:
-        """Returns derivative of a function. Uses an algorithm to calculate the best h."""
+        """Returns derivative of a function.
+        Uses an algorithm to calculate the best h."""
         if not h:
             if self.second_derivative(x) < 1e-3:
                 h = eps ** (1/3)
             else:
-                h = 2 * (eps * abs(self.at(x)) / abs(self.second_derivative(x))) ** 0.5
+                h = 2 * (eps * abs(self.at(x))
+                         / abs(self.second_derivative(x))) ** 0.5
         return (4*self.at(x + h/2) - 3*self.at(x) - self.at(x + h)) / h
 
     def second_derivative(self, x: REAL, h=1e-5) -> float:
-        """Returns the second derivative of a formula. There may be better h than default instruction."""
+        """Returns the second derivative of a formula.
+        There may be better h than default instruction."""
         return (self.at(x + h) - 2*self.at(x) + self.at(x - h)) / h ** 2
 
     def num_dif(self, x: REAL, h: REAL = 1e-5) -> float:
-        """Returns numerical second order differentiation of function at x value.
+        """Returns numerical second order differentiation
+        of function at x value.
         === INACTIVE ===
         Use Function.derivative instead.
         """
         return (self.at(x+h) - self.at(x-h)) / 2*h
 
     def second_num_dif(self, x: REAL, h: REAL = 1e-5) -> float:
-        """Returns numerical second order differentiation of function at x value.
+        """Returns numerical second order differentiation
+        of function at x value.
         === INACTIVE ===
         Use Function.second_derivative instead.
         """
@@ -203,8 +218,13 @@ class Function:
         res *= term
         return res
 
-    def integral(self, a: REAL, b: REAL, n: int = 1000, option: str = None) -> float:
-        """Returns a numerical calculation of the integral of a function in the domain between a and b.
+    def integral(self,
+                 a: REAL,
+                 b: REAL,
+                 n: int = 1000,
+                 option: str = None) -> float:
+        """Returns a numerical calculation of the integral of
+        a function in the domain between a and b.
         Option `option="trapeze"` uses trapeze formula.
         """
         h = (b - a) / n
