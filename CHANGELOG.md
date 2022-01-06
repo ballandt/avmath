@@ -26,6 +26,8 @@
 * `__init__`
   * added `sgn` function to `scope`
   * removed `Fraction` scope because of errors in `Function.derivative` and `integral`
+  * `sinh` and `cosh`:
+    * x values with |x| > 710 cause `ArgumentError`
 
 ## 3.1.0 (2022-01-01)
 

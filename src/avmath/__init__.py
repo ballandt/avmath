@@ -392,6 +392,8 @@ def arctan(x: REAL) -> float:
 
 def sinh(x: REAL) -> float:
     """Hyperbolic sine."""
+    if abs(x) > 710:
+        raise ArgumentError(x, "argument |x| < 710")
     res = 0
     k = 0
     while True:
@@ -404,6 +406,8 @@ def sinh(x: REAL) -> float:
 
 def cosh(x: REAL) -> float:
     """Hyperbolic cosine."""
+    if abs(x) > 710:
+        raise ArgumentError(x, "argument |x| < 710")
     res = 0
     k = 0
     while True:
