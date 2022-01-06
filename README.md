@@ -1,4 +1,4 @@
-<a href="https://github.com/ballandt/avmath#readme">
+<a href="https://github.com/ballandt/avmath/wiki">
   <img src="docs/avmath.svg" width="400" title="avmath">
 </a>
 
