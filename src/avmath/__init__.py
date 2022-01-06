@@ -439,7 +439,6 @@ def artanh(x: REAL) -> float:
 
 
 scope = {
-    "Fraction": Fraction,
     "sin": sin, "arcsin": arcsin,
     "cos": cos, "arccos": arccos,
     "tan": tan, "arctan": arctan,
