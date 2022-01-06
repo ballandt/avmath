@@ -23,6 +23,8 @@
   * `Function`
     * `derivative`
       * h calculation does not fail if f(x) = 0
+* `__init__`
+  * added `sgn` function to `scope`
 
 ## 3.1.0 (2022-01-01)
 

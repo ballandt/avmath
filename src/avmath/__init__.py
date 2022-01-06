@@ -449,6 +449,7 @@ scope = {
     "log": log,
     "ln": ln,
     "fac": fac,
+    "sgn": sgn,
     "e": e,
     "pi": pi,
 }
