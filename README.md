@@ -29,6 +29,7 @@ _Avmath_ is a python library for mathematics.
 | Developing version | [Developments](https://github.com/ballandt/avmath/wiki/Developments) |
 | Requirements       | Python 3.10                                                          |
 
+---
 ## Description
 
 Avmath is a library project that uses python algorithms to numerically solve

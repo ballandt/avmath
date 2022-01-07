@@ -95,7 +95,6 @@
 ---
 ## 3.0.0 (2021-12-01)
 
-There may be some changes missing.
 #### API Changes
 
 * `__init__`
