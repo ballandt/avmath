@@ -28,6 +28,11 @@
   * removed `Fraction` scope because of errors in `Function.derivative` and `integral`
   * `sinh` and `cosh`:
     * x values with |x| > 710 cause `ArgumentError`
+  * constants got typehints
+    * `pi`
+    * `e`
+    * `phi`
+    * `gamma`
 
 ## 3.1.0 (2022-01-01)
 

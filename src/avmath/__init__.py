@@ -1,19 +1,25 @@
 """AVMATH
-Avmath is a module for algebra, arithmetics and analysis.
 
-Avmath uses python algorithms to numerically calculate mathematical
-problems. It mainly concentrates on the concepts of functions, vec-
-tors and matrices.
+Avmath is a Python module for mathematical purposes.
+It contains functionalities for simple mathematical
+usage as sine or logarithm functions and submodules
+for more advanced applied math in the topics of ana-
+lysis and linear algebra.
+
+The module uses a mathematical syntax. The classes
+and functions are named in a mathematical manner and
+the class operations enable a mathematical workflow.
+Its issue is to calculate as accurate as possible and
+not firstly the aspect of time.
 
 Documentation: https://github.com/ballandt/avmath/wiki/documentation
-
-Github: https://www.github.com/ballandt/avmath
+GitHub: https://www.github.com/ballandt/avmath
 PyPi: https://www.pypi.org/project/avmath
 """
 
 __author__ = "Camillo Ballandt"
-__version__ = "3.1.0"
-__date__ = "2022/01/01"
+__version__ = "3.1.1"
+__date__ = "2022/01/09"
 
 __all__ = ["Fraction",
            "sin", "cos", "tan",
@@ -30,13 +36,13 @@ _TAYLOR_DIFFERENCE = 1e-16
 _MAX_CALCULATION_TIME = 5
 REAL = _Union[int, float, 'Fraction']
 
-e = 2.718_281_828_459_045_235_360
-pi = 3.141_592_653_589_793_238_463
-phi = 1.618_033_988_749_894_848_205
-gamma = 0.577_215_664_901_532_860_607
+e: float = 2.718_281_828_459_045_235_360
+pi: float = 3.141_592_653_589_793_238_463
+phi: float = 1.618_033_988_749_894_848_205
+gamma: float = 0.577_215_664_901_532_860_607
 
-two_digit_primes: list[int] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37,
-                               41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+two_digit_primes: list[int] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41,
+                               43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
 
 
 class ArgumentError(Exception):
@@ -62,7 +68,8 @@ class DimensionError(Exception):
 
     def __str__(self):
         try:
-            return f"Wrong amount of dimensions. Expected {self.want}; got {self.got}"
+            return f"Wrong amount of dimensions." \
+                   f"Expected {self.want}; got {self.got}"
         except AttributeError:
             return self.other
 
@@ -71,7 +78,7 @@ class Fraction:
     """Mathematical fraction"""
 
     def __init__(self, numerator: REAL, denominator: REAL):
-        """Initializes fraction. Denominator will always be positive.
+        """Initializes fraction. Denominator will be made positive.
         Insert
         Fraction(a, b)
         for
@@ -85,14 +92,15 @@ class Fraction:
         if numerator == 0 and type(denominator) == Fraction:
             self.a = 0
             self.b = denominator.b
-        elif (type(numerator) == Fraction or type(denominator) == Fraction) and numerator != 0:
+        elif (type(numerator) == Fraction or type(denominator) == Fraction)\
+                and numerator != 0:
             self.a = (numerator / denominator).a
             self.b = (numerator / denominator).b
         else:
             self.a = numerator * sgn(denominator)
             self.b = abs(denominator)
         if self.b == 0:
-            raise ZeroDivisionError("Fraction cannot contain 0 as denominator.")
+            raise ZeroDivisionError("Zero inserted as denominator.")
 
     def __repr__(self) -> str:
         """Returns string representation. Always reduced."""
@@ -113,7 +121,8 @@ class Fraction:
     def __eq__(self, other: REAL) -> bool:
         """Verifies the equality of two fractions."""
         if type(other) == Fraction and self.int_args() and other.int_args():
-            return self.reduce().a == other.reduce().a and self.reduce().b == other.reduce().b
+            return self.reduce().a == other.reduce().a \
+                and self.reduce().b == other.reduce().b
         else:
             return float(self) == float(other)
 
