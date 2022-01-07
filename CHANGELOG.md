@@ -36,6 +36,8 @@
 
 ## 3.1.0 (2022-01-01)
 
+[Find release](https://github.com/ballandt/avmath/releases/tag/v3.1.0)
+
 #### Announcement
 
 * `analysis`
@@ -99,6 +101,8 @@
 
 ---
 ## 3.0.0 (2021-12-01)
+
+[Find release](https://github.com/ballandt/avmath/releases/tag/v3.0.0)
 
 #### API Changes
 
@@ -226,6 +230,8 @@
 ---
 ## 2.0.0 (2021-10-24)
 
+[Find release](https://github.com/ballandt/avmath/releases/tag/v2.0.0)
+
 Avmath 2.0 ended the former dependency to the math module. All mathematical
 problems are now solved independently. There have been changes in function
 names and parameters because of necessary syntax changes. Also, a function
@@ -296,19 +302,26 @@ accuracy.
 
 ---
 ## 1.2.0 (2021-09-10)
+
+[Find release](https://github.com/ballandt/avmath/releases/tag/1.2.0)
+
 * Github-PyPi coordination
 * valid metadata
 * link and documentation fixes
 
 ---
 ## 1.1.0 (2021-09-01)
+
+[Find release](https://github.com/ballandt/avmath/releases/tag/1.1.0)
+
 * Angle class
   * Modes DEG, RAD, GRA
   * Angle.get() method
 
 ---
 ## 1.0.0 (2021-09-01)
-Upload to github.
+
+Upload to gitHub.
 
 ---
 ## Before v1.0.0
