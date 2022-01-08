@@ -1,5 +1,5 @@
 The following passages document the
-functionality of  the avmath math module version __v3.1.0__.
+functionality of  the avmath math module version __v3.1.1__.
 
 Some features are followed by code
 examples.
@@ -17,6 +17,9 @@ examples.
   * [Vectors](algebra#vector)
   * [Matrices](algebra#matrix)
   * [Systems of linear equations](algebra#sle)
+* [Analysis](analysis)
+  * [Points](analysis#point)
+  * [Functions](analysis#function)
 * [Errors](#errors)
 
 ---

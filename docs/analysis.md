@@ -43,7 +43,7 @@ Returns point with negative y coordinate.
 
 ---
 ---
-## Function
+# Function
 
 The Function class provides functionalities for mathematical functions.
 
@@ -229,7 +229,7 @@ Executes derivative of Newton method: x_{n+1} = f'(x_n) / f''(x_n).
 
 ### Function.derivative(x \[, h=None])
 
-__Implemented in v3.1.0 | Last change in v3.1.0__
+__Implemented in v3.1.0 | Last change in v3.1.1__
 
 Returns the derivative of the function at a given x. If no `h` specified,
 calculates a height, but this may not be the optimal one.

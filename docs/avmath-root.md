@@ -39,7 +39,7 @@ Avmath includes the following constants:
 | avmath._TAYLOR_DIFFERENCE    |                                                          1e-16 | Loops of functions using <span style="font-variant:small-caps;">Taylor</span>-series calculate until the difference of the values is less equal this value | v3.0.0                 | v3.0.0      |
 | avmath._MAX_CALCULATION_TIME |                                                              5 | Some loops may need a long time for calculation. These loops may not calculate longer as this time (in seconds)                                            | v3.0.0                 | v3.0.0      |
 | avmath.REAL                  |                          typing.Union\[int, float, 'Fraction'] | Real numbers for type hints                                                                                                                                | v3.0.0                 | v3.0.0      |
-| avmath.scope                 |  dictionary that contains all functions for REALs and Fraction | scope for analysis.Function                                                                                                                                | v2.0.0                 | v3.0.0      |
+| avmath.scope                 |  dictionary that contains all functions for REALs and Fraction | scope for analysis.Function                                                                                                                                | v2.0.0                 | v3.1.1      |
 
 ---
 ---
@@ -404,11 +404,11 @@ Calculation time increases when approaching |1|.
 ---
 ### sinh(x)
 
-__Implemented in: v2.0.0 | Last change: v3.0.0__
+__Implemented in: v2.0.0 | Last change: v3.1.1__
 
 Function returning the hyperbolic sine of a number using
 <span style="font-variant:small-caps;">Taylor</span>-series.
-Does only work for x values < 710 then throws OverflowError.
+Does only work for x values |x| < 710 then throws ArgumentError.
 
 | x-domain        | precise decimal places |
 |-----------------|-----------------------:|
@@ -417,11 +417,11 @@ Does only work for x values < 710 then throws OverflowError.
 ---
 ### cosh(x)
 
-__Implemented in: v2.0.0 | Last change: v3.0.0__
+__Implemented in: v2.0.0 | Last change: v3.1.1__
 
 Function returning the hyperbolic cosine of a number using
 <span style="font-variant:small-caps;">Taylor</span>-series.
-Does only work for x values < 710 then throws OverflowError.
+Does only work for x values |x| < 710 then throws ArgumentError.
 
 | x-domain        | precise decimal places |
 |-----------------|-----------------------:|
