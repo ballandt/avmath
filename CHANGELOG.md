@@ -2,19 +2,23 @@
 
 ## Contents
 
-| Release                              | Name          |       Date | Integral developments                                           |
-|:-------------------------------------|---------------|-----------:|-----------------------------------------------------------------|
-| [3.1.1](#311-planned-for-2022-01-09) | -             | 2022-01-09 | fixes for derivatives                                           |
-| [3.1.0](#310-2022-01-01)             | Ondes         | 2022-01-01 | Completions in `analysis`                                       |
-| [3.0.0](#300-2021-12-01)             | Illumination  | 2021-12-01 | implementation of `Fraction`, Gauss-features for matrices       |
-| [2.0.0](#200-2021-10-24)             | Repensé       | 2021-10-24 | independence of math module with Taylor-series, matrix features |
-| [2.0.0-b2](#200-beta2-2021-09-19)    | -             | 2021-09-19 | not yet stable version of 2.0.0                                 |
-| [1.2.0](#120-2021-09-10)             | Amitié        | 2021-09-10 | coordination of elements                                        |
-| [1.1.0](#110-2021-09-01)             | First release | 2021-09-01 | `Angle` class in former `geo`                                   |
-| [1.0.0](#100-2021-09-01)             | -             | 2021-09-01 | Upload to GitHub                                                |
+| Release                           | Name           |       Date | Integral developments                                           |
+|:----------------------------------|----------------|-----------:|-----------------------------------------------------------------|
+| [3.1.1](#311-2022-01-08)          | Ondes bugfix 1 | 2022-01-09 | fixes for derivatives                                           |
+| [3.1.0](#310-2022-01-01)          | Ondes          | 2022-01-01 | Completions in `analysis`                                       |
+| [3.0.0](#300-2021-12-01)          | Illumination   | 2021-12-01 | implementation of `Fraction`, Gauss-features for matrices       |
+| [2.0.0](#200-2021-10-24)          | Repensé        | 2021-10-24 | independence of math module with Taylor-series, matrix features |
+| [2.0.0-b2](#200-beta2-2021-09-19) | Repensé beta 2 | 2021-09-19 | not yet stable version of 2.0.0                                 |
+| [1.2.0](#120-2021-09-10)          | Amitié         | 2021-09-10 | coordination of elements                                        |
+| [1.1.0](#110-2021-09-01)          | First release  | 2021-09-01 | `Angle` class in former `geo`                                   |
+| [1.0.0](#100-2021-09-01)          | Initial avmath | 2021-09-01 | Upload to GitHub                                                |
+
+
 
 ---
-## 3.1.1 (Planned for 2022-01-09)
+## 3.1.1 (2022-01-08)
+
+[Find release](https://github.com/ballandt/avmath/releases/tag/v3.1.1)
 
 #### Patch level changes
 
@@ -320,6 +324,8 @@ accuracy.
 
 ---
 ## 1.0.0 (2021-09-01)
+
+[Find release](https://github.com/ballandt/avmath/releases/tag/v1.0.0)
 
 Upload to gitHub.
 
