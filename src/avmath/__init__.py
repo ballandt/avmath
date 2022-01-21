@@ -177,7 +177,7 @@ class Fraction:
         if type(other) == Fraction:
             res = self * other ** -1
         else:
-            res = Fraction(self.a, self.b * other) ** -1
+            res = Fraction(self.a, self.b * other)
         if type(res) == Fraction and res.int_args():
             res = res.reduce()
         return res
