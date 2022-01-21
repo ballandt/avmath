@@ -13,6 +13,7 @@ _Avmath_ is a python library for mathematics.
 * [Features](https://github.com/ballandt/avmath/wiki#features)
 * [Installation](https://github.com/ballandt/avmath/wiki/Documentation#installation)
 * [Documentation](https://github.com/ballandt/avmath/wiki/Documentation)
+* [Contribute](https://github.com/ballandt/avmath/blob/master/CONTRIBUTING.md)
 * [Changelog](https://github.com/ballandt/avmath/blob/master/CHANGELOG.md)
 * [Developments](https://github.com/ballandt/avmath/wiki#developments)
 * [Releases](https://www.github.com/ballandt/avmath/releases)
