@@ -5,7 +5,7 @@
 ---
 ![GitHub Release Date](https://img.shields.io/github/release-date/ballandt/avmath)
 ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/avmath)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/avmath?color=blue)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/avmath)
 ![GitHub branch checks state](https://img.shields.io/github/checks-status/ballandt/avmath/master)
 
 
