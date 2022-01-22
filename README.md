@@ -3,10 +3,11 @@
 </a>
 
 ---
-![GitHub Release Date](https://img.shields.io/github/release-date/ballandt/avmath)
+![GitHub branch checks state](https://img.shields.io/github/checks-status/ballandt/avmath/master)
+![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ballandt/avmath?include_prereleases)
+![PyPI](https://img.shields.io/pypi/v/avmath)
 ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/avmath)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/avmath)
-![GitHub branch checks state](https://img.shields.io/github/checks-status/ballandt/avmath/master)
 
 
 Avmath is a library project that uses python algorithms to numerically solve
