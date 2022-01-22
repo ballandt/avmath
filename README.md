@@ -9,7 +9,6 @@
 ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/avmath)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/avmath)
 
-
 Avmath is a library project that uses python algorithms to numerically solve
 math problems. Its interface is based on mathematical habits of
 writing. It particularly concentrates on the concepts of linear algebra
