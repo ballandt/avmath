@@ -6,9 +6,8 @@
 ![GitHub branch checks state](https://img.shields.io/github/checks-status/ballandt/avmath/master)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ballandt/avmath?include_prereleases)
 ![PyPI](https://img.shields.io/pypi/v/avmath)
-![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/avmath)
-
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/avmath)
+![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/avmath)
 
 Avmath is a library project that uses python algorithms to numerically solve
 math problems. Its interface is based on mathematical habits of
