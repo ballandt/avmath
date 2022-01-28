@@ -89,12 +89,12 @@ class Fraction:
         for
         a/(b/c)
         """
-        while not type(numerator) == int:
+        while not type(numerator) in (int, Fraction):
             if numerator.is_integer():
                 numerator = int(numerator)
             numerator *= 10
             denominator *= 10
-        while not type(denominator) == int:
+        while not type(denominator) in (int, Fraction):
             if denominator.is_integer():
                 denominator = int(denominator)
             numerator *= 10
