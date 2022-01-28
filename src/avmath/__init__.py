@@ -165,11 +165,13 @@ class Fraction:
         """Multiplies REALS."""
         if type(other) in (int, float):
             return Fraction(self.a * other, self.b)
-        if type(other) == Fraction:
+        elif type(other) == Fraction:
             if self.int_args() and other.int_args:
                 return Fraction(self.a * other.a, self.b * other.b).reduce()
             else:
                 return Fraction(self.a * other.a, self.b * other.b)
+        else:
+            return other.__mul__(self)
 
     __rmul__ = __mul__
 

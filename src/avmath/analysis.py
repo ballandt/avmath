@@ -5,19 +5,26 @@ implementing function features."""
 __all__ = ["Point", "Function"]
 
 import sys
+from typing import Union
 
 from . import scope as _scope, REAL, sgn
-from .algebra import Tuple
 
 eps = sys.float_info.epsilon
 
 
-class Point(Tuple):
+class Point:
     """Point in coordinate system. (Two dimensions)"""
 
     def __init__(self, x: REAL, y: REAL):
         """Initialises the point. Give x and y value."""
-        super().__init__(x, y)
+        self._value = [x, y]
+
+    def __iter__(self):
+        for e in self._value:
+            yield e
+
+    def __getitem__(self, item):
+        return self._value[item]
 
     def negative_y(self) -> 'Point':
         """Returns a point with negative y coordinate."""
@@ -41,10 +48,15 @@ class Function:
         """Returns string representation"""
         return f"f(x) = {self.term}"
 
-    def __add__(self, other: 'Function') -> 'Function':
+    def __add__(self, other: Union[REAL, 'Function']) -> 'Function':
         """Adds two functions"""
-        ret_formula = f"{self.term} + {other.term}"
+        if type(other) == Function:
+            ret_formula = f"{self.term} + {other.term}"
+        else:
+            ret_formula = f"{self.term} + {other}"
         return Function(ret_formula)
+
+    __radd__ = __add__
 
     def __sub__(self, other: 'Function') -> 'Function':
         """Subtracts two functions"""
