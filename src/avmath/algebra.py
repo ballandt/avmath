@@ -211,8 +211,10 @@ class Vector(Tuple):
             \\/ (a_1)^2 + (a_2)^2 + ... + (a_n)^2
             """
         res = 0
+        print(self)
         for i in range(self.dim()):
             res += self[i] ** 2
+            print(res, type(self[i]**2))
         self.abs = res ** 0.5
         return self.abs
 
@@ -320,9 +322,10 @@ class Vector(Tuple):
         for i, e in enumerate(args):
             q.append(e)
             for e2 in q[:-1]:
-                print(Fraction(q[i+1]*e2, abs(e2)**2) * e2)
+                # print(e2)
                 # print(Fraction(q[i+1]*e2, abs(e2)**2) * e2)
-                # q[i+1] -= Fraction(q[i+1]*e2, abs(e2)**2) * e2
+                # print(Fraction(q[i+1]*e2, abs(e2)**2) * e2)
+                q[i+1] -= Fraction(q[i+1]*e2, abs(e2)**2) * e2
         return q
 
     def leading_zeros(self) -> int:

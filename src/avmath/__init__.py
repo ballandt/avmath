@@ -89,6 +89,16 @@ class Fraction:
         for
         a/(b/c)
         """
+        while not type(numerator) == int:
+            if numerator.is_integer():
+                numerator = int(numerator)
+            numerator *= 10
+            denominator *= 10
+        while not type(denominator) == int:
+            if denominator.is_integer():
+                denominator = int(denominator)
+            numerator *= 10
+            denominator *= 10
         if numerator == 0 and type(denominator) == Fraction:
             self.a = 0
             self.b = denominator.b
@@ -190,6 +200,7 @@ class Fraction:
         if power == -1:
             return Fraction(self.b, self.a)
         else:
+            # print(self.a, self.b, power)
             return Fraction(self.a ** float(power), self.b ** float(power))
 
     def __rpow__(self, other: REAL) -> float:
@@ -204,7 +215,8 @@ class Fraction:
         return int(float(self))
 
     def __float__(self) -> float:
-        return self.a / self.b
+        reduced_fraction = self.reduce()
+        return reduced_fraction.a / reduced_fraction.b
 
     def __complex__(self):
         return float(self) + 0j
