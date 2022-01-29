@@ -13,7 +13,33 @@
 | [1.1.0](#110-2021-09-01)          | First release  | 2021-09-01 | `Angle` class in former `geo`                                   |
 | [1.0.0](#100-2021-09-01)          | Initial avmath | 2021-09-01 | Upload to GitHub                                                |
 
+---
+## 3.2.0 (2022-04-01)
 
+Not yet published
+
+### Minor changes
+
+* `algebra`
+  * `Vector`
+    * new method `orthogonal`
+      * transposes given vectors to orthogonal vectors of `self`
+  * `Matrix`
+    * new method `qr`
+      * executes qr decomposition
+
+### Patch level changes
+
+* `__init__`
+  * `Fraction`
+    * `__truediv__`
+      * fixed division by integer ([#1][i1])
+    * `__mul__`
+      * fixed condition branches ([#3][i3])
+* `algebra`
+  * `Matrix`
+    * `append`
+      * fixed column append ([#5][i5])
 
 ---
 ## 3.1.1 (2022-01-08)
@@ -335,3 +361,10 @@ Upload to gitHub.
 When the evmath project was uploaded to github, its version
 number was reset to 1.0.0 . Previously it was on version number
 1.8.0 , but lacking a valid changelog.
+
+
+[i1]: https:github.com/ballandt/avmath/issues/1
+[i2]: https:github.com/ballandt/avmath/issues/2
+[i3]: https:github.com/ballandt/avmath/issues/3
+[i4]: https:github.com/ballandt/avmath/issues/4
+[i5]: https:github.com/ballandt/avmath/issues/5
