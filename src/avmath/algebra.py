@@ -659,7 +659,7 @@ class Matrix(Tuple):
             if len(column) != self.size()[0]:
                 raise MatrixError(f"Cannot append {len(column)} element "
                                   f"row to matrix with size{self.size()}")
-            for i in range(ret_mat.size()[1]):
+            for i in range(ret_mat.size()[0]):
                 ret_mat._value[i].append(column[i])
         return ret_mat
 
@@ -764,7 +764,19 @@ class Matrix(Tuple):
         return Matrix(*tuple([list(e) for e in ret_list]))
 
     def qr(self) -> list:
-        u, v, w = [Matrix.column(i) for i in ]
+        q1 = self.column(0)
+        qi = []
+        for i in range(1, self.size()[1]):
+            qi.append(self.column(i))
+        orthogonal_vectors = q1.orthogonal(*tuple(qi))
+        print(orthogonal_vectors)
+        Q = Matrix(orthogonal_vectors[0])
+        for ele in orthogonal_vectors[1:]:
+            print(ele)
+            # print(Q._value)
+            Q.append(column=ele)
+            print(Q._value)
+        return Q
 
     def eigenvalues(self):
         values = list(self)
