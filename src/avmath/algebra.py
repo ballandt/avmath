@@ -763,20 +763,30 @@ class Matrix(Tuple):
                                * ret_list[j][ret_list[i].leading_zeros()]
         return Matrix(*tuple([list(e) for e in ret_list]))
 
-    def qr(self) -> list:
-        q1 = self.column(0)
+    def qr(self):
+        no_fractions = self.no_fractions()
+        q1 = no_fractions.column(0)
         qi = []
-        for i in range(1, self.size()[1]):
-            qi.append(self.column(i))
-        orthogonal_vectors = q1.orthogonal(*tuple(qi))
-        print(orthogonal_vectors)
-        Q = Matrix(orthogonal_vectors[0])
+        for i in range(1, no_fractions.size()[1]):
+            qi.append(no_fractions.column(i))
+        orthogonal_vectors =\
+            [e.no_fractions() for e in q1.orthogonal(*tuple(qi))]
+        # print(orthogonal_vectors)
+        # print([e.unit().no_fractions() for e in orthogonal_vectors])
+        Q = Matrix(orthogonal_vectors[0].unit())
         for ele in orthogonal_vectors[1:]:
-            print(ele)
-            # print(Q._value)
-            Q.append(column=ele)
-            print(Q._value)
-        return Q
+            Q.append(column=ele.unit())
+        R = Matrix.create(Q.size()[1], Q.size()[0])
+        for i in range(R.size()[0]):
+            for j in range(R.size()[1]):
+                if i == j:
+                    R[i][j] = abs(orthogonal_vectors[i])
+                elif i > j:
+                    R[i][j] = 0
+                else:
+                    R[i][j] = no_fractions.column(j) * orthogonal_vectors[i] \
+                              / abs(orthogonal_vectors[i])
+        return Q.no_fractions(), R.no_fractions()
 
     def eigenvalues(self):
         values = list(self)
