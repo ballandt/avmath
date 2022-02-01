@@ -2,12 +2,12 @@
 AdVanced math  analysis submodule
 implementing function features."""
 
-__all__ = ["Point", "Function"]
+__all__ = ["Point", "Function", "Polynomial"]
 
 import sys
 from typing import Union
 
-from . import scope as _scope, REAL, sgn
+from . import scope as _scope, REAL, sgn, Fraction
 
 eps = sys.float_info.epsilon
 
@@ -262,3 +262,84 @@ class Function:
         a = -self.derivative(x)
         b = a * -x + self.at(x)
         return Function(f"{a} * x + {b}")
+
+
+class Polynomial:
+
+    def __init__(self, *args):
+        self._value = list(args)
+
+    def __iter__(self):
+        for e in self._value:
+            yield e
+
+    def __getitem__(self, item):
+        return self._value[item]
+
+    def __repr__(self):
+        ret_str = "f(x) = "
+        for i, e in enumerate(self._value):
+            power = self.grade()-i
+            if power > 1:
+                ret_str += f"({e})x^{self.grade()-i} + "
+            elif power == 1:
+                ret_str += f"({e})x + "
+            else:
+                ret_str += str(e)
+        return ret_str
+
+    def __mul__(self, other):
+        arg_list = []
+        if type(other) == Polynomial:
+            arg_list = [0 for _ in range(self.grade() + other.grade()+1)]
+            for i, e_self in enumerate(self._value):
+                power_self = self.grade() - i
+                for j, e_other in enumerate(other._value):
+                    power_other = other.grade() - j
+                    arg_list[-power_self-power_other-1] += e_self * e_other
+        elif type(other) in (float, int, Fraction):
+            arg_list = [other * e for e in self._value]
+        return Polynomial(*tuple(arg_list))
+
+    def at(self, x):
+        res = 0
+        for i, e in enumerate(self._value):
+            res += e * x**(self.grade()-i)
+        return res
+
+    def grade(self):
+        return len(self._value) - 1
+
+    def root(self):
+        if self.grade() == 0:
+            return []
+        elif self.grade() == 1:
+            return [Fraction(-self[1], self[0])]
+        elif self.grade() == 2:
+            values = [
+                (-self[1]-(self[1]**2-4*self[0]*self[2])**.5)/(2*self[0]),
+                (-self[1]+(self[1]**2-4*self[0]*self[2])**.5)/(2*self[0])
+            ]
+            return values
+
+    def derivative(self, x: float | int = None):
+        arg_list = []
+        for i, e in enumerate(self._value[:-1]):
+            arg_list.append(e * (self.grade() - i))
+        derivative = Polynomial(*tuple(arg_list))
+        if x:
+            return derivative.at(x)
+        else:
+            return derivative
+
+    def integral(self, a: REAL = None, b: REAL = None):
+        arg_list = []
+        for i, e in enumerate(self._value):
+            power = self.grade() - i + 1
+            arg_list.append(Fraction(e, power))
+        arg_list.append(0)
+        integral = Polynomial(*tuple(arg_list))
+        if not a and b:
+            return integral
+        elif a and b:
+            return integral.at(b) - integral.at(a)
