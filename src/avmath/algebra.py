@@ -789,6 +789,7 @@ class Matrix(Tuple):
         return Q.no_fractions(), R.no_fractions()
 
     def eigenvalues(self, n: int = 100):
+        """Calculates the real eigenvalues of a matrix."""
         A = copy.deepcopy(self)
         x = Vector(1, 1, 1)
         max_item = max(list(x))
@@ -804,6 +805,7 @@ class Matrix(Tuple):
         return Matrix(*tuple(values)).det().root(-root_range, root_range)
 
     def eigenvector(self, eigenvalue):
+        """Calculates the eigenvector to a given eigenvalue."""
         A = list(copy.deepcopy(self))
         for i in range(len(A)):
             A[i][i] = A[i][i] - eigenvalue
