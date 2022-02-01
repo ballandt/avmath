@@ -788,12 +788,29 @@ class Matrix(Tuple):
                               / abs(orthogonal_vectors[i])
         return Q.no_fractions(), R.no_fractions()
 
-    def eigenvalues(self):
-        values = list(self)
+    def eigenvalues(self, n: int = 100):
+        A = copy.deepcopy(self)
+        x = Vector(1, 1, 1)
+        max_item = max(list(x))
+        for i in range(n):
+            x = A * x
+            max_item = max(list(x))
+            x = 1 / max_item * x
+        values = copy.deepcopy(list(self))
+        root_range = abs(max_item) + 1
         for i in range(self.size()[0]):
             function = Function(f"{values[i][i]} - x")
             values[i][i] = function
-        return Matrix(*tuple(values)).det().root(-10, 11)
+        return Matrix(*tuple(values)).det().root(-root_range, root_range)
+
+    def eigenvector(self, eigenvalue):
+        A = list(copy.deepcopy(self))
+        for i in range(len(A)):
+            A[i][i] = A[i][i] - eigenvalue
+        A = Matrix(*tuple(A))
+        A.append(column=[0 for _ in range(A.size()[0])])
+        S = SLE(*tuple(A))
+        return S.solve()
 
     @staticmethod
     def create(m: int, n: int) -> 'Matrix':
