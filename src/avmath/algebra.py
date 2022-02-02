@@ -786,16 +786,16 @@ class Matrix(Tuple):
                               / abs(orthogonal_vectors[i])
         return Q.no_fractions(), R.no_fractions()
 
-    def eigenvalues(self):
-        """Calculates the real eigenvalues of a matrix."""
+    def eigenvalues(self, mode=complex):
+        """Calculates the real eigenvalues of a matrix.
+        `mode=float` or `mode="real"` returns real eigenvalues
+        only.
+        """
         values = copy.deepcopy(list(self))
         for i in range(self.size()[0]):
             function = Polynomial(-1, values[i][i])
             values[i][i] = function
-        try:
-            return Matrix(*tuple(values)).det().roots()
-        except ArithmeticError:
-            return Matrix(*tuple(values)).det().real_roots()
+        return Matrix(*tuple(values)).det().roots(mode=mode)
 
     def eigenvector(self, eigenvalue):
         """Calculates the eigenvector to a given eigenvalue."""

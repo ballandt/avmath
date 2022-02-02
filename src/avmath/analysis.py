@@ -390,12 +390,10 @@ class Polynomial:
             product = x_0 * (e + product)
         return Polynomial(*tuple(arg_list))
 
-    def roots(self):
-        """Returns a list of the real and complex roots of the polynomial if
-        the number of real roots is
-        n_roots >= grade - 2
-        Else the Horner's scheme fails. The real_roots method returns all
-        real roots of a polynomial without causing errors."""
+    def roots(self, mode=complex):
+        """Returns a list of the roots of a polynomial.
+        `mode=float` or `mode="real"` returns real solutions only.
+        """
         if self.grade() == 0:
             if self[0] != 0:
                 return []
@@ -411,47 +409,23 @@ class Polynomial:
             ]
             return values
         else:
-            try:
-                return sorted(
-                        [self.newton_method(0)]
-                        + self.horner(self.newton_method(0)).roots()
+            solutions = sorted(
+                        [self.newton_method(1+1j)]
+                        + self.horner(self.newton_method(1+1j)).roots(),
+                        key=lambda ele: ele.real
                 )
-            except ArithmeticError:
-                raise ArithmeticError("Horner's scheme failed. Use real_roots"
-                                      "method for all found results.")
-
-    def real_roots(self):
-        """Returns all real roots of a polynomial. Should be used if the
-        polynom has possibly more than grade - 2 complex roots because the
-        default roots method crashes.
-        """
-        if self.grade() == 1:
-            return self.roots()
-        elif self.grade() == 2:
-            return self.roots() if type(self.roots()[0]) != complex else []
-        else:
-            ret_list = []
-            function = self
-            while len(ret_list) < self.grade():
-                try:
-                    newton_root = function.newton_method(0)
-                    ret_list.append(newton_root)
-                except ArithmeticError:
-                    return ret_list
-                try:
-                    horner_roots = function.horner(newton_root).roots()
-                    for e in horner_roots:
-                        if type(e) != complex:
-                            horner_roots.append(e)
-                    if len(horner_roots) == self.grade() - 1:
-                        return ret_list
-                except ArithmeticError:
-                    return ret_list
-            return sorted(ret_list)
+            if mode == complex:
+                return solutions
+            elif mode == float or mode == "real":
+                real_solutions = []
+                for e in solutions:
+                    if e.imag == 0:
+                        real_solutions.append(e.real)
+                return real_solutions
 
     def max(self):
         """Returns the maxima of the polynomial based on the real roots."""
-        x_values = self.derivative().real_roots()
+        x_values = self.derivative().roots(mode=float)
         ret_list = []
         for e in x_values:
             if self.derivative(e, grade=2) < 0:
