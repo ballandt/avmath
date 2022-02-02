@@ -10,7 +10,7 @@ from typing import Union, Optional, List
 
 from . import ArgumentError, DimensionError, REAL, Fraction, sin, arccos,\
     _check_types
-from .analysis import Function
+from .analysis import Function, Polynomial
 
 __all__ = ["Tuple", "Structure", "Matrix", "Vector", "SLE"]
 
@@ -461,7 +461,7 @@ class Matrix(Tuple):
             for e in value:
                 if not len(value[0]) == len(e):
                     raise ArgumentError(e, f"row with {len(args[0])} members")
-                _check_types(e, int, float, Fraction, Function)
+                _check_types(e, int, float, Fraction, Polynomial, Function)
             super().__init__(*tuple(args))
 
     def __repr__(self) -> str:
@@ -682,7 +682,7 @@ class Matrix(Tuple):
             args.append(list(self.column(i)))
         return Matrix(*tuple(args))
 
-    def det(self) -> Union[REAL, 'Function']:
+    def det(self) -> Union[REAL, 'Polynomial', 'Function']:
         """Returns determinant of a matrix."""
         if self.size()[0] != self.size()[1]:
             raise MatrixError("Matrix must be quadratic.")
@@ -771,8 +771,6 @@ class Matrix(Tuple):
             qi.append(no_fractions.column(i))
         orthogonal_vectors =\
             [e.no_fractions() for e in q1.orthogonal(*tuple(qi))]
-        # print(orthogonal_vectors)
-        # print([e.unit().no_fractions() for e in orthogonal_vectors])
         Q = Matrix(orthogonal_vectors[0].unit())
         for ele in orthogonal_vectors[1:]:
             Q.append(column=ele.unit())
@@ -788,21 +786,16 @@ class Matrix(Tuple):
                               / abs(orthogonal_vectors[i])
         return Q.no_fractions(), R.no_fractions()
 
-    def eigenvalues(self, n: int = 100):
+    def eigenvalues(self):
         """Calculates the real eigenvalues of a matrix."""
-        A = copy.deepcopy(self)
-        x = Vector(1, 1, 1)
-        max_item = max(list(x))
-        for i in range(n):
-            x = A * x
-            max_item = max(list(x))
-            x = 1 / max_item * x
         values = copy.deepcopy(list(self))
-        root_range = abs(max_item) + 1
         for i in range(self.size()[0]):
-            function = Function(f"{values[i][i]} - x")
+            function = Polynomial(-1, values[i][i])
             values[i][i] = function
-        return Matrix(*tuple(values)).det().root(-root_range, root_range)
+        try:
+            return Matrix(*tuple(values)).det().roots()
+        except ArithmeticError:
+            return Matrix(*tuple(values)).det().real_roots()
 
     def eigenvector(self, eigenvalue):
         """Calculates the eigenvector to a given eigenvalue."""

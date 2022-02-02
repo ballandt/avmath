@@ -412,8 +412,10 @@ class Polynomial:
             return values
         else:
             try:
-                return [self.newton_method(0)]\
-                       + self.horner(self.newton_method(0)).roots()
+                return sorted(
+                        [self.newton_method(0)]
+                        + self.horner(self.newton_method(0)).roots()
+                )
             except ArithmeticError:
                 raise ArithmeticError("Horner's scheme failed. Use real_roots"
                                       "method for all found results.")
@@ -445,7 +447,7 @@ class Polynomial:
                         return ret_list
                 except ArithmeticError:
                     return ret_list
-            return ret_list
+            return sorted(ret_list)
 
     def max(self):
         """Returns the maxima of the polynomial based on the real roots."""
