@@ -294,9 +294,9 @@ class Polynomial:
         """
         ret_str = "f(x) = "
         for i, e in enumerate(self._value):
-            power = self.grade()-i
+            power = self.degree() - i
             if power > 1:
-                ret_str += f"({e})x^{self.grade()-i} + "
+                ret_str += f"({e})x^{self.degree() - i} + "
             elif power == 1:
                 ret_str += f"({e})x + "
             else:
@@ -340,11 +340,11 @@ class Polynomial:
         """Multiplies two polynomials or a polynomial with a REAL."""
         arg_list = []
         if type(other) == Polynomial:
-            arg_list = [0 for _ in range(self.grade() + other.grade()+1)]
+            arg_list = [0 for _ in range(self.degree() + other.degree() + 1)]
             for i, e_self in enumerate(self._value):
-                power_self = self.grade() - i
+                power_self = self.degree() - i
                 for j, e_other in enumerate(other._value):
-                    power_other = other.grade() - j
+                    power_other = other.degree() - j
                     arg_list[-power_self-power_other-1] += e_self * e_other
         elif type(other) in (float, int, Fraction):
             arg_list = [other * e for e in self._value]
@@ -356,10 +356,10 @@ class Polynomial:
         """Returns y value to given x"""
         res = 0
         for i, e in enumerate(self._value):
-            res += e * x**(self.grade()-i)
+            res += e * x**(self.degree() - i)
         return res
 
-    def grade(self):
+    def degree(self):
         """Returns the grade of the polynomial."""
         return len(self._value) - 1
 
@@ -394,15 +394,15 @@ class Polynomial:
         """Returns a list of the roots of a polynomial.
         `mode=float` or `mode="real"` returns real solutions only.
         """
-        if self.grade() == 0:
+        if self.degree() == 0:
             if self[0] != 0:
                 return []
             else:
                 return ArithmeticError("Null function has an infinite amount"
                                        "of roots")
-        elif self.grade() == 1:
+        elif self.degree() == 1:
             return [Fraction(-self[1], self[0])]
-        elif self.grade() == 2:
+        elif self.degree() == 2:
             values = [
                 (-self[1]-(self[1]**2-4*self[0]*self[2])**.5)/(2*self[0]),
                 (-self[1]+(self[1]**2-4*self[0]*self[2])**.5)/(2*self[0])
@@ -448,7 +448,7 @@ class Polynomial:
             if len(function._value) == 1:
                 arg_list = [0]
             for i, e in enumerate(function._value[:-1]):
-                arg_list.append(e * (function.grade() - i))
+                arg_list.append(e * (function.degree() - i))
             function = Polynomial(*tuple(arg_list))
             if function._value == [0]:
                 break
@@ -467,7 +467,7 @@ class Polynomial:
         for _ in range(grade):
             arg_list = []
             for i, e in enumerate(function._value):
-                power = function.grade() - i + 1
+                power = function.degree() - i + 1
                 arg_list.append(Fraction(e, power))
             arg_list.append(0)
             function = Polynomial(*tuple(arg_list))
