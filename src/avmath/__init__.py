@@ -258,6 +258,8 @@ def is_prime(x: int) -> bool:
 
 def gcd(x: int, y: int) -> int:
     """Greatest common divisor."""
+    if y == 0:
+        return x
     while x % y != 0:
         r = x % y
         x = y
@@ -267,7 +269,7 @@ def gcd(x: int, y: int) -> int:
 
 def lcm(x: int, y: int) -> int:
     """Least common multiply."""
-    return int(abs(x * y) / gcd(x, y))
+    return int(abs(x * y) / gcd(x, y)) if y != 0 else 0
 
 
 def sgn(x: REAL) -> int:
