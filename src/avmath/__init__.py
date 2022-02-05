@@ -194,7 +194,11 @@ class Fraction:
             res = res.reduce()
         return res
 
-    __rtruediv__ = __truediv__
+    def __rtruediv__(self, other):
+        res = Fraction(self.b * other, self.a)
+        if type(res) == Fraction and res.int_args():
+            res = res.reduce()
+        return res
 
     def __pow__(self, power: REAL) -> 'Fraction':
         if power == -1:

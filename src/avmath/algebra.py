@@ -688,6 +688,14 @@ class Matrix(Tuple):
             raise MatrixError("Matrix must be quadratic.")
         if self.size() == [1, 1]:
             return self[0][0]
+        elif self.size() == [3, 3]:
+            det = self[0][0] * self[1][1] * self[2][2]\
+                  + self[0][1] * self[1][2] * self[2][0]\
+                  + self[0][2] * self[1][0] * self[2][1]\
+                  - self[0][0] * self[1][2] * self[2][1]\
+                  - self[0][1] * self[1][0] * self[2][2]\
+                  - self[0][2] * self[1][1] * self[2][0]
+            return det
         else:
             answer = 0
             for i in range(self.size()[1]):
@@ -697,6 +705,34 @@ class Matrix(Tuple):
         return answer
 
     __abs__ = det
+
+    def det2(self):
+        det = 1
+        mat_list = [self.row(i) for i in range(self.size()[0])]
+        for i in range(len(mat_list)):
+            if mat_list[i].leading_zeros() > i:
+                for j in range(i+1, len(mat_list)):
+                    if mat_list[j].leading_zeros() == i:
+                        mat_list[i], mat_list[j] = mat_list[j], mat_list[i]
+                        det *= -1
+                    else:
+                        return 0
+            element = mat_list[i]
+            if element.leading_zeros() == len(element):
+                continue
+            if i == len(mat_list):
+                break
+            for j in range(i+1, len(mat_list)):
+                jelement = mat_list[j]
+                if jelement.leading_zeros() == element.leading_zeros():
+                    op_vector = Fraction(jelement[jelement.leading_zeros()],
+                                         mat_list[i][i]) * mat_list[i]
+                    print(jelement[jelement.leading_zeros()], mat_list[i][i])
+                    mat_list[j] = jelement - op_vector
+            print(mat_list)
+        for i in range(len(mat_list)):
+            det *= mat_list[i][i]
+        return det
 
     def cof(self) -> 'Matrix':
         """Returns cofactor matrix."""
@@ -771,8 +807,6 @@ class Matrix(Tuple):
             qi.append(no_fractions.column(i))
         orthogonal_vectors =\
             [e.no_fractions() for e in q1.orthogonal(*tuple(qi))]
-        # print(orthogonal_vectors)
-        # print([e.unit().no_fractions() for e in orthogonal_vectors])
         Q = Matrix(orthogonal_vectors[0].unit())
         for ele in orthogonal_vectors[1:]:
             Q.append(column=ele.unit())
