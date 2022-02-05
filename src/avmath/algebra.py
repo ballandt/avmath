@@ -682,7 +682,7 @@ class Matrix(Tuple):
             args.append(list(self.column(i)))
         return Matrix(*tuple(args))
 
-    def det(self) -> Union[REAL, 'Function']:
+    def det(self, mode: str = "gauss") -> Union[REAL, 'Function']:
         """Returns determinant of a matrix."""
         if self.size()[0] != self.size()[1]:
             raise MatrixError("Matrix must be quadratic.")
@@ -696,12 +696,36 @@ class Matrix(Tuple):
                   - self[0][1] * self[1][0] * self[2][2]\
                   - self[0][2] * self[1][1] * self[2][0]
             return det
-        else:
+        elif (3 < self.size()[0] < 6) or mode == "laplace":
             answer = 0
             for i in range(self.size()[1]):
                 smaller_matrix = self.remove(0, i)
                 k = (-1) ** i * self[0][i] * smaller_matrix.det()
                 answer += k
+        else:
+            det = 1
+            mat_list = [self.row(i) for i in range(self.size()[0])]
+            for i in range(len(mat_list)):
+                if mat_list[i].leading_zeros() > i:
+                    for j in range(i + 1, len(mat_list)):
+                        if mat_list[j].leading_zeros() == i:
+                            mat_list[i], mat_list[j] = mat_list[j], mat_list[i]
+                            det *= -1
+                element = mat_list[i]
+                if element.leading_zeros() == len(element):
+                    continue
+                if i == len(mat_list):
+                    break
+                for j in range(i + 1, len(mat_list)):
+                    j_element = mat_list[j]
+                    if j_element.leading_zeros() == element.leading_zeros():
+                        op_vector = Fraction(
+                            j_element[j_element.leading_zeros()],
+                            mat_list[i][i]) * mat_list[i]
+                        mat_list[j] = j_element - op_vector
+            for i in range(len(mat_list)):
+                det *= mat_list[i][i]
+            return det
         return answer
 
     __abs__ = det
@@ -715,21 +739,17 @@ class Matrix(Tuple):
                     if mat_list[j].leading_zeros() == i:
                         mat_list[i], mat_list[j] = mat_list[j], mat_list[i]
                         det *= -1
-                    else:
-                        return 0
             element = mat_list[i]
             if element.leading_zeros() == len(element):
                 continue
             if i == len(mat_list):
                 break
             for j in range(i+1, len(mat_list)):
-                jelement = mat_list[j]
-                if jelement.leading_zeros() == element.leading_zeros():
-                    op_vector = Fraction(jelement[jelement.leading_zeros()],
+                j_element = mat_list[j]
+                if j_element.leading_zeros() == element.leading_zeros():
+                    op_vector = Fraction(j_element[j_element.leading_zeros()],
                                          mat_list[i][i]) * mat_list[i]
-                    print(jelement[jelement.leading_zeros()], mat_list[i][i])
-                    mat_list[j] = jelement - op_vector
-            print(mat_list)
+                    mat_list[j] = j_element - op_vector
         for i in range(len(mat_list)):
             det *= mat_list[i][i]
         return det
