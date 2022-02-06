@@ -682,7 +682,7 @@ class Matrix(Tuple):
             args.append(list(self.column(i)))
         return Matrix(*tuple(args))
 
-    def det(self, mode: str = "gauss") -> Union[REAL, 'Function']:
+    def det(self, mode: str = "gauss") -> Union[REAL, 'Polynomial']:
         """Returns determinant of a matrix."""
         if self.size()[0] != self.size()[1]:
             raise MatrixError("Matrix must be quadratic.")
@@ -827,7 +827,7 @@ class Matrix(Tuple):
         for i in range(self.size()[0]):
             function = Polynomial(-1, values[i][i])
             values[i][i] = function
-        return Matrix(*tuple(values)).det().roots(mode=mode)
+        return Matrix(*tuple(values)).det(mode="laplace").roots(mode=mode)
 
     def eigenvector(self, eigenvalue):
         """Calculates the eigenvector to a given eigenvalue."""

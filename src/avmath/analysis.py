@@ -286,14 +286,14 @@ class Polynomial:
 
     def __getitem__(self, item):
         """Allows item access for coefficients."""
-        return self._value[item]
+        return copy.deepcopy(self._value[item])
 
     def __repr__(self):
         """Gives string return in form
         f(x) = (a_0)x^n + (a_1)x^{n-1} + ...
         """
         ret_str = "f(x) = "
-        for i, e in enumerate(self._value):
+        for i, e in enumerate(self):
             power = self.degree() - i
             if power > 1:
                 ret_str += f"({e})x^{self.degree() - i} + "
@@ -307,17 +307,20 @@ class Polynomial:
         """Returns negative polynomial. All coefficient signs are switched."""
         return Polynomial(*tuple([-e for e in self]))
 
+    def __len__(self):
+        return len(self._value)
+
     def __add__(self, other):
         """Adds two polynomials or a polynomial with a REAL."""
         if type(other) == Polynomial:
-            self_list, self_len = list(self), len(list(self))
-            other_list, other_len = list(other), len(list(other))
+            self_list, self_len = list(self), len(self)
+            other_list, other_len = list(other), len(other)
             if self_len > other_len:
                 other_list = [0 for _ in range(self_len - other_len)]\
                              + other_list
             elif self_len < other_len:
                 self_list = [0 for _ in range(other_len - self_len)]\
-                             + other_list
+                             + self_list
             arg_list = [e + other_list[i] for i, e in enumerate(self_list)]
         elif type(other) in (int, float, Fraction):
             arg_list = list(self)
@@ -341,13 +344,13 @@ class Polynomial:
         arg_list = []
         if type(other) == Polynomial:
             arg_list = [0 for _ in range(self.degree() + other.degree() + 1)]
-            for i, e_self in enumerate(self._value):
+            for i, e_self in enumerate(self):
                 power_self = self.degree() - i
-                for j, e_other in enumerate(other._value):
+                for j, e_other in enumerate(other):
                     power_other = other.degree() - j
                     arg_list[-power_self-power_other-1] += e_self * e_other
         elif type(other) in (float, int, Fraction):
-            arg_list = [other * e for e in self._value]
+            arg_list = [other * e for e in self] if other != 0 else [0]
         return Polynomial(*tuple(arg_list))
 
     __rmul__ = __mul__
@@ -355,13 +358,13 @@ class Polynomial:
     def at(self, x):
         """Returns y value to given x"""
         res = 0
-        for i, e in enumerate(self._value):
+        for i, e in enumerate(self):
             res += e * x**(self.degree() - i)
         return res
 
     def degree(self):
         """Returns the grade of the polynomial."""
-        return len(self._value) - 1
+        return len(self) - 1
 
     def newton_method(self, x_n, max_steps: int = 10000):
         """Executes Newton's method to find a root of the polynomial
@@ -377,7 +380,7 @@ class Polynomial:
         if abs(self.at(x_n)) < 1e-12:
             return x_n
         else:
-            raise ArithmeticError("No real root found")
+            raise ArithmeticError("No root found")
 
     def horner(self, x_0: int | float = 0):
         """Returns a polynomial with executed Horner's scheme with given
@@ -385,7 +388,7 @@ class Polynomial:
         """
         arg_list = []
         product = 0
-        for i, e in enumerate(self._value[:-1]):
+        for i, e in enumerate(self[:-1]):
             arg_list.append(e + product)
             product = x_0 * (e + product)
         return Polynomial(*tuple(arg_list))
@@ -445,12 +448,12 @@ class Polynomial:
         function = copy.deepcopy(self)
         for _ in range(grade):
             arg_list = []
-            if len(function._value) == 1:
+            if len(function) == 1:
                 arg_list = [0]
-            for i, e in enumerate(function._value[:-1]):
+            for i, e in enumerate(function[:-1]):
                 arg_list.append(e * (function.degree() - i))
             function = Polynomial(*tuple(arg_list))
-            if function._value == [0]:
+            if list(function) == [0]:
                 break
         if x is not None:
             return function.at(x)
@@ -466,7 +469,7 @@ class Polynomial:
         function = copy.deepcopy(self)
         for _ in range(grade):
             arg_list = []
-            for i, e in enumerate(function._value):
+            for i, e in enumerate(function):
                 power = function.degree() - i + 1
                 arg_list.append(Fraction(e, power))
             arg_list.append(0)
