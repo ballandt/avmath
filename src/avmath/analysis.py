@@ -460,6 +460,16 @@ class Polynomial:
         else:
             return function
 
+    def tangent(self, x):
+        m = self.derivative(x)
+        n = self.at(x) - m * x
+        return Polynomial(m, n)
+
+    def normal(self, x):
+        m = -Fraction(1, self.derivative(x))
+        n = self.at(x) - m * x
+        return Polynomial(m, n)
+
     def integral(self,
                  a: REAL = None,
                  b: REAL = None,
