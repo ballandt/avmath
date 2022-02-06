@@ -169,7 +169,8 @@ class Fraction:
         """Subtracts either real from Fraction or Fraction from Fraction."""
         return self + -other
 
-    __rsub__ = __sub__
+    def __rsub__(self, other: REAL) -> 'Fraction':
+        return other + -self
 
     def __mul__(self, other: REAL) -> 'Fraction':
         """Multiplies REALS."""

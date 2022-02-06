@@ -14,6 +14,7 @@ Version 3.2 is planned to implement more advanced linear algebra features and mo
 | `root` object                            | Not yet begun | -                                | Will maybe be cancelled    |
 | Polynomial                               | Developing    | developed in `polynomial` branch |                            |
 | nth grade differentiation for `Function` | Not yet begun | -                                | Will probably be cancelled |
+| Fast determinant                         | Finished      | successfully merged to `main`    | Complications during merge |
 
 
 ---
