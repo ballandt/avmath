@@ -730,30 +730,6 @@ class Matrix(Tuple):
 
     __abs__ = det
 
-    def det2(self):
-        det = 1
-        mat_list = [self.row(i) for i in range(self.size()[0])]
-        for i in range(len(mat_list)):
-            if mat_list[i].leading_zeros() > i:
-                for j in range(i+1, len(mat_list)):
-                    if mat_list[j].leading_zeros() == i:
-                        mat_list[i], mat_list[j] = mat_list[j], mat_list[i]
-                        det *= -1
-            element = mat_list[i]
-            if element.leading_zeros() == len(element):
-                continue
-            if i == len(mat_list):
-                break
-            for j in range(i+1, len(mat_list)):
-                j_element = mat_list[j]
-                if j_element.leading_zeros() == element.leading_zeros():
-                    op_vector = Fraction(j_element[j_element.leading_zeros()],
-                                         mat_list[i][i]) * mat_list[i]
-                    mat_list[j] = j_element - op_vector
-        for i in range(len(mat_list)):
-            det *= mat_list[i][i]
-        return det
-
     def cof(self) -> 'Matrix':
         """Returns cofactor matrix."""
         ret_mat = Matrix.create(self.size()[0], self.size()[1])
