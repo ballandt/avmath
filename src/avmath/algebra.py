@@ -10,7 +10,7 @@ from typing import Union, Optional, List
 
 from . import ArgumentError, DimensionError, REAL, Fraction, sin, arccos,\
     _check_types
-from .analysis import Function, Polynomial
+from .analysis import Polynomial
 
 __all__ = ["Tuple", "Structure", "Matrix", "Vector", "SLE"]
 
@@ -461,7 +461,7 @@ class Matrix(Tuple):
             for e in value:
                 if not len(value[0]) == len(e):
                     raise ArgumentError(e, f"row with {len(args[0])} members")
-                _check_types(e, int, float, Fraction, Polynomial, Function)
+                _check_types(e, int, float, Fraction, Polynomial)
             super().__init__(*tuple(args))
 
     def __repr__(self) -> str:

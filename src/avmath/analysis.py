@@ -277,7 +277,21 @@ class Polynomial:
         """Insert arguments in analytical order:
         args[0] x^n + args[1] x^{n-1} + ...
         """
-        self._value = list(args)
+        if type(args[0]) in (int, float, complex, Fraction):
+            self._value = list(args)
+        elif type(args[0]) == Point:
+            arg_list = [[] for _ in range(len(args))]
+            for i, e in enumerate(args):
+                for j in range(len(args)):
+                    if e[0] == arg_list[i-1][0]:
+                        raise ArithmeticError("Points with same x coordinate"
+                                              "cannot be processed")
+                    arg_list[i].append(e[0] ** (len(args)-j-1))
+                arg_list[i].append(e[-1])
+            from .algebra import SLE
+            self._value = list(SLE(*tuple(arg_list)).solve())
+        else:
+            raise ArgumentError(type(args[0]), "int, float, complex, Fraction")
 
     def __iter__(self):
         """Yields an iterator of the polynomial coefficients."""
@@ -361,6 +375,9 @@ class Polynomial:
         for i, e in enumerate(self):
             res += e * x**(self.degree() - i)
         return res
+
+    def no_fractions(self):
+        return Polynomial(*tuple([float(e) for e in self]))
 
     def degree(self):
         """Returns the grade of the polynomial."""
