@@ -89,39 +89,27 @@ class Fraction:
         for
         a/(b/c)
         """
-        while not type(numerator) in (int, Fraction):
-            if numerator.is_integer():
-                numerator = int(numerator)
-            numerator *= 10
-            denominator *= 10
-        while not type(denominator) in (int, Fraction):
-            if denominator.is_integer():
-                denominator = int(denominator)
-            numerator *= 10
-            denominator *= 10
-        if numerator == 0 and type(denominator) == Fraction:
-            self.a = 0
-            self.b = denominator.b
-        elif (type(numerator) == Fraction or type(denominator) == Fraction)\
-                and numerator != 0:
-            self.a = (numerator / denominator).a
-            self.b = (numerator / denominator).b
-        else:
+        if denominator == 0:
+            raise ZeroDivisionError("Denominator must not be zero")
+        if type(numerator) == int and type(denominator) == int:
             self.a = numerator * sgn(denominator)
             self.b = abs(denominator)
-        if self.b == 0:
-            raise ZeroDivisionError("Zero inserted as denominator.")
+        elif type(numerator) == Fraction or type(denominator) == Fraction:
+            self.a = (numerator / denominator).a
+            self.b = (numerator / denominator).b
+        elif type(numerator) == float or type(denominator) == float:
+            numerator, denominator = float(numerator), float(denominator)
+            numerators = numerator.as_integer_ratio()
+            denominators = denominator.as_integer_ratio()
+            self.a = numerators[0] * denominators[1]
+            self.b = numerators[1] * denominators[0]
 
     def __repr__(self) -> str:
         """Returns string representation. Always reduced."""
-        if self.b == 1:
-            ret_str = f"{self.a}"
-        elif self.a / self.b == self.a // self.b:
+        if self.a / self.b == self.a // self.b:
             ret_str = f"{self.a // self.b}"
-        elif self.int_args():
-            ret_str = f"{self.reduce().a}/{self.reduce().b}"
         else:
-            ret_str = f"{self.a}/{self.b}" if not self.b == 1 else f"{self.a}"
+            ret_str = f"{self.reduce().a}/{self.reduce().b}"
         return ret_str
 
     def __neg__(self) -> 'Fraction':
@@ -130,11 +118,8 @@ class Fraction:
 
     def __eq__(self, other: REAL) -> bool:
         """Verifies the equality of two fractions."""
-        if type(other) == Fraction and self.int_args() and other.int_args():
-            return self.reduce().a == other.reduce().a \
-                and self.reduce().b == other.reduce().b
-        else:
-            return float(self) == float(other)
+        return self.reduce().a == other.reduce().a \
+            and self.reduce().b == other.reduce().b
 
     def __lt__(self, other: REAL) -> bool:
         """Less than."""
@@ -153,7 +138,7 @@ class Fraction:
         elif type(other) == complex:
             return complex(self) + other
 
-        elif type(other) == Fraction and self.int_args() and other.int_args():
+        elif type(other) == Fraction:
             reduced_self = self.reduce()
             reduced_other = other.reduce()
             factor = lcm(reduced_self.b, reduced_other.b)
@@ -177,10 +162,7 @@ class Fraction:
         if type(other) in (int, float):
             return Fraction(self.a * other, self.b)
         elif type(other) == Fraction:
-            if self.int_args() and other.int_args:
-                return Fraction(self.a * other.a, self.b * other.b).reduce()
-            else:
-                return Fraction(self.a * other.a, self.b * other.b)
+            return Fraction(self.a * other.a, self.b * other.b).reduce()
         else:
             return other.__mul__(self)
 
@@ -191,13 +173,13 @@ class Fraction:
             res = self * other ** -1
         else:
             res = Fraction(self.a, self.b * other)
-        if type(res) == Fraction and res.int_args():
+        if type(res) == Fraction:
             res = res.reduce()
         return res
 
     def __rtruediv__(self, other):
         res = Fraction(self.b * other, self.a)
-        if type(res) == Fraction and res.int_args():
+        if type(res) == Fraction:
             res = res.reduce()
         return res
 
@@ -205,7 +187,6 @@ class Fraction:
         if power == -1:
             return Fraction(self.b, self.a)
         else:
-            # print(self.a, self.b, power)
             return Fraction(self.a ** float(power), self.b ** float(power))
 
     def __rpow__(self, other: REAL) -> float:
@@ -217,7 +198,7 @@ class Fraction:
     __rmod__ = __mod__
 
     def __int__(self) -> int:
-        return int(float(self))
+        return self.a // self.b
 
     def __float__(self) -> float:
         reduced_fraction = self.reduce()
@@ -230,8 +211,6 @@ class Fraction:
         return Fraction(abs(self.a), self.b)
 
     def reduce(self) -> 'Fraction':
-        if not self.int_args():
-            raise ArgumentError("float values", "integer values")
         divisor = gcd(self.a, self.b)
         return Fraction(int(self.a / divisor), int(self.b / divisor))
 
