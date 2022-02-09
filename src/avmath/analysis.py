@@ -278,7 +278,10 @@ class Polynomial:
         args[0] x^n + args[1] x^{n-1} + ...
         """
         if type(args[0]) in (int, float, complex, Fraction):
-            self._value = list(args)
+            self._value = []
+            for e in args:
+                if e != 0:
+                    self._value.append(e)
         elif type(args[0]) == Point:
             arg_list = [[] for _ in range(len(args))]
             for i, e in enumerate(args):
