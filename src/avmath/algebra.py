@@ -462,7 +462,7 @@ class Matrix(Tuple):
                 if not len(value[0]) == len(e):
                     raise ArgumentError(e, f"row with {len(args[0])} members")
                 _check_types(e, int, float, Fraction, Function)
-            super().__init__(*tuple(args))
+            super().__init__(value)
 
     def __repr__(self) -> str:
         """Prints matrix in an understandable view."""
