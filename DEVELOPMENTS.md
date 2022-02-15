@@ -10,7 +10,7 @@ Version 3.2 is planned to implement more advanced linear algebra features and mo
 |------------------------------------------|---------------|----------------------------------|----------------------------|
 | Eigenvalues                              | Finished      | successfully merged to `main`    |                            |
 | Eigenvectors                             | Pending       | merged to `main`                 | Depends on SLE             |
-| SLE under-determined solution            | Not yet begun | -                                |                            |
+| SLE under-determined solution            | Testing       | developed in `sles` branch       |                            |
 | `root` object                            | Not yet begun | -                                | Will maybe be cancelled    |
 | Polynomial                               | Developing    | developed in `polynomial` branch |                            |
 | nth grade differentiation for `Function` | Not yet begun | -                                | Will probably be cancelled |
