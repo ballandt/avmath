@@ -325,6 +325,7 @@ class Polynomial:
         return Polynomial(*tuple([-e for e in self]))
 
     def __len__(self):
+        """Returns the amount of coefficients. Corresponds to degree + 1"""
         return len(self._value)
 
     def __add__(self, other):
@@ -373,13 +374,14 @@ class Polynomial:
     __rmul__ = __mul__
 
     def at(self, x):
-        """Returns y value to given x"""
+        """Returns y value to given x."""
         res = 0
         for i, e in enumerate(self):
             res += e * x**(self.degree() - i)
         return res
 
     def no_fractions(self):
+        """All coefficients are made to floats."""
         return Polynomial(*tuple([float(e) for e in self]))
 
     def degree(self):
@@ -481,11 +483,17 @@ class Polynomial:
             return function
 
     def tangent(self, x):
+        """Returns a Polynomial of degree 1 (linear function) that lies tangent
+        to the function.
+        """
         m = self.derivative(x)
         n = self.at(x) - m * x
         return Polynomial(m, n)
 
     def normal(self, x):
+        """Returns a Polynomial of degree 1 (linear function) that lies normal
+        to the function.
+        """
         m = -Fraction(1, self.derivative(x))
         n = self.at(x) - m * x
         return Polynomial(m, n)
