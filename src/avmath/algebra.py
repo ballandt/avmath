@@ -907,11 +907,25 @@ class SLE(Matrix):
         self.b = self.column(-1)
 
     def solve(self) -> 'Vector':
-        """Splits matrix in coefficients and results and
-        uses matrix multiplication to solve the system.
+        """Returns a vector with the solution of the SLE.
+        In case the solution is ambiguously (x_i = x_i) the result is set to 1.
+        If the SLE cannot be solved (0 = 1), ArithmeticError is raised.
         """
-        return self.A.inverse() * self.b
+        rref = self.rref()
+        ret_val = []
+        for i in range(rref.size()[0]):
+            if rref.row(i).leading_zeros() == rref.size()[1]:
+                ret_val.append(1)
+                continue
+            elif rref.row(i).leading_zeros() == rref.size()[1] - 1\
+                    and rref.row(i)[-1] != 0:
+                raise ArithmeticError("SLE does not have a solution")
+            ret_val_i = rref.column(-1)[i]
+            for j in range(rref.row(i).leading_zeros()+1, rref.size()[1]-1):
+                ret_val_i -= rref[i][j]
+            ret_val.append(ret_val_i)
+        return Vector(*ret_val)
 
     def x(self, index: int) -> REAL:
-        """Returns the unknown of given index. Starts at 0"""
+        """Returns the unknown variable of given index. Starts at 0"""
         return self.solve()[index]
