@@ -10,7 +10,7 @@ from typing import Union, Optional, List
 
 from . import ArgumentError, DimensionError, REAL, Fraction, sin, arccos,\
     _check_types
-from .analysis import Function
+from .analysis import Polynomial
 
 __all__ = ["Tuple", "Structure", "Matrix", "Vector", "SLE"]
 
@@ -682,18 +682,18 @@ class Matrix(Tuple):
             args.append(list(self.column(i)))
         return Matrix(*tuple(args))
 
-    def det(self, mode: str = "gauss") -> Union[REAL, 'Function']:
+    def det(self, mode: str = "gauss") -> Union[REAL, 'Polynomial']:
         """Returns determinant of a matrix."""
         if self.size()[0] != self.size()[1]:
             raise MatrixError("Matrix must be quadratic.")
         if self.size() == [1, 1]:
             return self[0][0]
         elif self.size() == [3, 3]:
-            det = self[0][0] * self[1][1] * self[2][2]\
-                  + self[0][1] * self[1][2] * self[2][0]\
-                  + self[0][2] * self[1][0] * self[2][1]\
-                  - self[0][0] * self[1][2] * self[2][1]\
-                  - self[0][1] * self[1][0] * self[2][2]\
+            det = self[0][0] * self[1][1] * self[2][2] \
+                  + self[0][1] * self[1][2] * self[2][0] \
+                  + self[0][2] * self[1][0] * self[2][1] \
+                  - self[0][0] * self[1][2] * self[2][1] \
+                  - self[0][1] * self[1][0] * self[2][2] \
                   - self[0][2] * self[1][1] * self[2][0]
             return det
         elif (3 < self.size()[0] < 6) or mode == "laplace":
@@ -818,21 +818,16 @@ class Matrix(Tuple):
                               / abs(orthogonal_vectors[i])
         return Q.no_fractions(), R.no_fractions()
 
-    def eigenvalues(self, n: int = 100):
-        """Calculates the real eigenvalues of a matrix."""
-        A = copy.deepcopy(self)
-        x = Vector(1, 1, 1)
-        max_item = max(list(x))
-        for i in range(n):
-            x = A * x
-            max_item = max(list(x))
-            x = 1 / max_item * x
+    def eigenvalues(self, mode=complex):
+        """Calculates the real eigenvalues of a matrix.
+        `mode=float` or `mode="real"` returns real eigenvalues
+        only.
+        """
         values = copy.deepcopy(list(self))
-        root_range = abs(max_item) + 1
         for i in range(self.size()[0]):
-            function = Function(f"{values[i][i]} - x")
+            function = Polynomial(-1, values[i][i])
             values[i][i] = function
-        return Matrix(*tuple(values)).det().root(-root_range, root_range)
+        return Matrix(*tuple(values)).det(mode="laplace").roots(mode=mode)
 
     def eigenvector(self, eigenvalue):
         """Calculates the eigenvector to a given eigenvalue."""

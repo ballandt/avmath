@@ -4,6 +4,7 @@
 
 | Release                           | Name           |       Date | Integral developments                                           |
 |:----------------------------------|----------------|-----------:|-----------------------------------------------------------------|
+| [3.2.0](#320-2022-04-01)          | Eigenname      | 2022-04-01 | Eigenvalues, eigenvectors and polynomials                       |
 | [3.1.1](#311-2022-01-08)          | Ondes bugfix 1 | 2022-01-09 | fixes for derivatives                                           |
 | [3.1.0](#310-2022-01-01)          | Ondes          | 2022-01-01 | Completions in `analysis`                                       |
 | [3.0.0](#300-2021-12-01)          | Illumination   | 2021-12-01 | implementation of `Fraction`, Gauss-features for matrices       |
@@ -20,9 +21,6 @@ Not yet published
 
 ### Minor changes
 
-* `__init__`
-  * `Fraction`
-    * added own `__rtruediv__` method to fix ([#9][i9])
 * `algebra`
   * `Vector`
     * new method `orthogonal`
@@ -33,9 +31,10 @@ Not yet published
     * new method `eigenvalues`
       * returns the eigenvalues of a matrix
     * new method `eigenvector`
-      * returns the eigenvector to a given eigenvalue of a matrix
+      * returns the eigenvector of a matrix and a given eigenvalue
 * `analysis`
   * new class `Polynomial`
+    * methods for the implementation of polynomials
 
 ### Patch level changes
 
@@ -45,10 +44,6 @@ Not yet published
       * fixed division by integer ([#1][i1])
     * `__mul__`
       * fixed condition branches ([#3][i3])
-  * `gcd`
-    * `gcd([x], 0)` returns x ([#7][i7])
-  * `lcm`
-    * `lcm([x], 0)` returns 0 ([#7][i7])
 * `algebra`
   * `Matrix`
     * `append`
@@ -381,5 +376,3 @@ number was reset to 1.0.0 . Previously it was on version number
 [i3]: https:github.com/ballandt/avmath/issues/3
 [i4]: https:github.com/ballandt/avmath/issues/4
 [i5]: https:github.com/ballandt/avmath/issues/5
-[i7]: https:github.com/ballandt/avmath/issues/7
-[i9]: https:github.com/ballandt/avmath/issues/9
