@@ -461,7 +461,7 @@ class Matrix(Tuple):
             for e in value:
                 if not len(value[0]) == len(e):
                     raise ArgumentError(e, f"row with {len(args[0])} members")
-                _check_types(e, int, float, Fraction, Function)
+                _check_types(e, int, float, Fraction, Polynomial)
             super().__init__(value)
 
     def __repr__(self) -> str:
