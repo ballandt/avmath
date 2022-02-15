@@ -118,8 +118,11 @@ class Fraction:
 
     def __eq__(self, other: REAL) -> bool:
         """Verifies the equality of two fractions."""
-        return self.reduce().a == other.reduce().a \
-            and self.reduce().b == other.reduce().b
+        if type(other) == Fraction:
+            return self.reduce().a == other.reduce().a \
+                and self.reduce().b == other.reduce().b
+        else:
+            return float(self) == float(other)
 
     def __lt__(self, other: REAL) -> bool:
         """Less than."""
