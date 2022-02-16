@@ -162,7 +162,7 @@ class Fraction:
 
     def __mul__(self, other: REAL) -> 'Fraction':
         """Multiplies REALS."""
-        if type(other) in (int, float):
+        if type(other) in (int, float, complex):
             return Fraction(self.a * other, self.b)
         elif type(other) == Fraction:
             return Fraction(self.a * other.a, self.b * other.b).reduce()

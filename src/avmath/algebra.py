@@ -61,7 +61,7 @@ class Tuple:
     """
 
     def __init__(self, *args: REAL | list | tuple | 'Vector'):
-        _check_types(args, int, float, list, tuple, Fraction, Vector)
+        _check_types(args, int, float, list, tuple, Fraction, Vector, complex)
         if type(args[0]) in (list, tuple) and len(args) == 1:
             self._value = list(args[0])
         else:
