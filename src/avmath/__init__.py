@@ -221,6 +221,24 @@ class Fraction:
         return type(self.a) == int and type(self.b) == int
 
 
+class ComplexFraction:
+
+    def __init__(self, numerator, denominator):
+        numerator = complex(numerator)
+        denominator = complex(denominator)
+        self.real = Fraction(numerator.real.as_integer_ratio()[0]
+                             * denominator.real.as_integer_ratio()[1],
+                             numerator.real.as_integer_ratio()[1]
+                             * denominator.real.as_integer_ratio()[0])
+        self.imag = Fraction(numerator.imag.as_integer_ratio()[0]
+                             * denominator.imag.as_integer_ratio()[1],
+                             numerator.imag.as_integer_ratio()[1]
+                             * denominator.imag.as_integer_ratio()[0])
+
+    def __repr__(self):
+        return f"{repr(self.real)} + {repr(self.imag)}j"
+
+
 def _check_types(arg: _Iterable, *types):
     """Checks if the elements of the argument belong to the given types."""
     for ele in arg:
