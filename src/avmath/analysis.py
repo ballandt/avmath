@@ -461,6 +461,9 @@ class Polynomial:
         """Returns the minima of a function based on the real roots."""
         return [e.negative_y() for e in (-self).max()]
 
+    def intersection(self, other, mode=complex):
+        return [Point(e, self.at(e)) for e in (self - other).roots(mode=mode)]
+
     def derivative(self,
                    x: float | int = None,
                    grade: int = 1) -> REAL | 'Polynomial':
