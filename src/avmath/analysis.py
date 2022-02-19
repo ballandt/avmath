@@ -8,7 +8,7 @@ import copy
 import sys
 from typing import Union
 
-from . import scope as _scope, REAL, sgn, Fraction, ArgumentError
+from . import scope as _scope, REAL, sgn,is_even, Fraction, ArgumentError
 
 eps = sys.float_info.epsilon
 
@@ -279,9 +279,10 @@ class Polynomial:
         """
         if type(args[0]) in (int, float, complex, Fraction):
             self._value = []
-            for e in args:
-                if e != 0:
-                    self._value.append(e)
+            i = 0
+            while args[i] == 0:
+                i += 1
+            self._value = list(args[i:])
         elif type(args[0]) == Point:
             arg_list = [[] for _ in range(len(args))]
             for i, e in enumerate(args):
@@ -373,6 +374,9 @@ class Polynomial:
 
     __rmul__ = __mul__
 
+    def __truediv__(self, other: REAL) -> 'Polynomial':
+        return Polynomial(*tuple([Fraction(e, other) for e in self]))
+
     def at(self, x):
         """Returns y value to given x."""
         res = 0
@@ -404,6 +408,32 @@ class Polynomial:
         else:
             raise ArithmeticError("No root found")
 
+    def even_powers(self):
+        for index, e in enumerate(reversed(list(self))):
+            if not is_even(index) and e != 0:
+                return False
+        return True
+
+    def odd_powers(self):
+        for index, e in enumerate(reversed(list(self))):
+            if is_even(index) and e != 0:
+                return False
+        return True
+
+    def decomposition(self):
+        ret_list = [copy.deepcopy(self)]
+        while True:
+            new_ret_list = []
+            for e in ret_list:
+                if len(e) <= 2:
+                    continue
+                if e[-1] == 0:
+                    new_ret_list += [Polynomial(1, 0),
+                                     Polynomial(*tuple(e[:-1]))]
+                    continue
+                elif e.even_powers():
+                    pass
+
     def horner(self, x_0: int | float = 0):
         """Returns a polynomial with executed Horner's scheme with given
         root x_0. Note that the root must be exact for proper results.
@@ -426,27 +456,36 @@ class Polynomial:
                 return ArithmeticError("Null function has an infinite amount"
                                        "of roots")
         elif self.degree() == 1:
-            return [Fraction(-self[1], self[0])]
+            ret_list = [Fraction(-self[1], self[0])]
         elif self.degree() == 2:
-            values = [
+            ret_list = [
                 (-self[1]-(self[1]**2-4*self[0]*self[2])**.5)/(2*self[0]),
                 (-self[1]+(self[1]**2-4*self[0]*self[2])**.5)/(2*self[0])
             ]
-            return values
+        elif self.degree() > 2 and self.even_powers():
+            first_one = self / self[0]
+            substitute = []
+            for e in first_one:
+                if e != 0:
+                    substitute.append(e)
+            ret_list = []
+            for e in Polynomial(*tuple(substitute)).roots():
+                ret_list.append(e**0.5)
+                ret_list.append(-e**0.5)
         else:
-            solutions = sorted(
+            ret_list = sorted(
                         [self.newton_method(1+1j)]
                         + self.horner(self.newton_method(1+1j)).roots(),
                         key=lambda ele: ele.real
                 )
-            if mode == complex:
-                return solutions
-            elif mode == float or mode == "real":
-                real_solutions = []
-                for e in solutions:
-                    if e.imag == 0:
-                        real_solutions.append(e.real)
-                return real_solutions
+        if mode == complex:
+            return ret_list
+        elif mode == float or mode == "real":
+            real_solutions = []
+            for e in ret_list:
+                if e.imag == 0:
+                    real_solutions.append(e.real)
+            return real_solutions
 
     def max(self):
         """Returns the maxima of the polynomial based on the real roots."""
