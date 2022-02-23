@@ -232,7 +232,7 @@ class Fraction:
 class CFraction:
     """Fraction with complex values"""
 
-    def __init__(self, numerator, denominator, real=None, imag=None):
+    def __init__(self, numerator=None, denominator=None, real=None, imag=None):
         """Enter complex numerator and denominator or real and imaginary
         values. Works with real values too."""
         if denominator == 0:
