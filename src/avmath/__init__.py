@@ -21,7 +21,7 @@ __author__ = "Camillo Ballandt"
 __version__ = "3.1.1"
 __date__ = "2022/01/08"
 
-__all__ = ["Fraction",
+__all__ = ["Fraction", "CFraction",
            "sin", "cos", "tan",
            "arcsin", "arccos", "arctan",
            "sinh", "cosh", "tanh",
@@ -132,6 +132,14 @@ class Fraction:
         """Greater than."""
         return float(other) < float(self)
 
+    def __ge__(self, other):
+        """Greater or equal."""
+        return float(self) >= float(other)
+
+    def __le__(self, other):
+        """Less or equal."""
+        return float(self) <= float(other)
+
     def __add__(self, other: REAL | complex) -> 'Fraction':
         """Adds either two fractions or fractions and numbers."""
         if type(other) in (int, float):
@@ -221,22 +229,105 @@ class Fraction:
         return type(self.a) == int and type(self.b) == int
 
 
-class ComplexFraction:
+class CFraction:
+    """Fraction with complex values"""
 
-    def __init__(self, numerator, denominator):
-        numerator = complex(numerator)
-        denominator = complex(denominator)
-        self.real = Fraction(numerator.real.as_integer_ratio()[0]
-                             * denominator.real.as_integer_ratio()[1],
-                             numerator.real.as_integer_ratio()[1]
-                             * denominator.real.as_integer_ratio()[0])
-        self.imag = Fraction(numerator.imag.as_integer_ratio()[0]
-                             * denominator.imag.as_integer_ratio()[1],
-                             numerator.imag.as_integer_ratio()[1]
-                             * denominator.imag.as_integer_ratio()[0])
+    def __init__(self, numerator, denominator, real=None, imag=None):
+        """Enter complex numerator and denominator or real and imaginary
+        values. Works with real values too."""
+        if denominator == 0:
+            raise ZeroDivisionError("Denominator must not be zero")
+        if real is not None and imag is not None:
+            if type(real) == type(imag) == Fraction:
+                self.real = real
+                self.imag = imag
+            else:
+                self.real = Fraction(*float(real).as_integer_ratio())
+                self.imag = Fraction(*float(imag).as_integer_ratio())
+        elif type(numerator) == CFraction or type(denominator) == CFraction:
+            self.real = (numerator/denominator).real
+            self.imag = (numerator/denominator).imag
+        else:
+            numerator = complex(numerator)
+            denominator = complex(denominator)
+            a = Fraction(*numerator.real.as_integer_ratio())
+            b = Fraction(*numerator.imag.as_integer_ratio())
+            c = Fraction(*denominator.real.as_integer_ratio())
+            d = Fraction(*denominator.imag.as_integer_ratio())
+            self.real = Fraction(a*c + b*d, c**2 + d**2)
+            self.imag = Fraction(b*c - a*d, c**2 + d**2)
 
     def __repr__(self):
-        return f"{repr(self.real)} + {repr(self.imag)}j"
+        """Returns string reproduction of the complex fraction."""
+        if self.imag < 0:
+            return f"{self.real} - {abs(self.imag)} j"
+        else:
+            return f"{self.real} + {self.imag} j"
+
+    def __complex__(self):
+        return float(self.real) + float(self.imag) * 0+1j
+
+    def __neg__(self):
+        return CFraction(real=-self.real, imag=-self.imag)
+
+    def __add__(self, other):
+        if type(other) == CFraction:
+            real = self.real + other.real
+            imag = self.imag + other.imag
+            return CFraction(real=real, imag=imag)
+        if type(other) in (int, float, Fraction):
+            return CFraction(real=self.real+other, imag=self.imag)
+
+    __radd__ = __add__
+
+    def __sub__(self, other):
+        return self + -other
+
+    def __rsub__(self, other):
+        return other + -self
+
+    def __mul__(self, other):
+        if type(other) == CFraction:
+            real = self.real * other.real - self.imag * other.imag
+            imag = self.real * other.imag + self.imag * other.real
+            return CFraction(real=real, imag=imag)
+        else:
+            return CFraction(real=self.real*other, imag=self.imag*other)
+
+    def __truediv__(self, other):
+        if type(other) == CFraction:
+            return self * other**-1
+        else:
+            return CFraction(
+                real=Fraction(self.real, other),
+                imag=Fraction(self.imag, other)
+            )
+
+    def __pow__(self, power):
+        if power == -1:
+            return CFraction(
+                real=Fraction(self.real, self.real**2 + self.imag**2),
+                imag=Fraction(-self.imag, self.real**2 + self.imag**2)
+            )
+        elif type(power) == int and power > 0:
+            res = self
+            for i in range(power-1):
+                res *= self
+            return res
+        else:
+            return (abs(self)*(cos(self.phi()) + sin(self.phi()) * 1j))**power
+
+    def __abs__(self) -> float:
+        return float((self.real**2 + self.imag**2)**0.5)
+
+    def __eq__(self, other):
+        return complex(self) == complex(other)
+
+    def phi(self):
+        return arctan(self.imag / self.real)
+
+    def conjugate(self):
+        return CFraction(real=self.real, imag=-self.imag)
 
 
 def _check_types(arg: _Iterable, *types):
