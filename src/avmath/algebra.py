@@ -590,7 +590,7 @@ class Matrix(Tuple):
 
     def __pow__(self, power: int) -> 'Matrix':
         """Power operation for matrix^scalar."""
-        if self.size()[0] == self.size()[1]:
+        if self.size()[0] != self.size()[1]:
             raise MatrixError("Matrix must be quadratic.")
         if type(power) is not int:
             raise ArgumentError("Power od type"+str(type(power)), int)
