@@ -67,3 +67,27 @@ def intpow(mat, power):
                 new_res[j].append(dot(res[j], columns[k]))
         res = new_res
     return res
+
+
+def laplacedet(mat):
+    """Determinant using Laplace development."""
+    if len(mat) == 1:
+        # Base case
+        return mat[0][0]
+    elif len(mat) == 3:
+        # Rule of Sarrus for faster calculation
+        return mat[0][0] * mat[1][1] * mat[2][2] \
+               + mat[0][1] * mat[1][2] * mat[2][0] \
+               + mat[0][2] * mat[1][0] * mat[2][1] \
+               - mat[0][0] * mat[1][2] * mat[2][1] \
+               - mat[0][1] * mat[1][0] * mat[2][2] \
+               - mat[0][2] * mat[1][1] * mat[2][0]
+    else:
+        # Development
+        res = 0
+        for i in range(len(mat[0])):
+            smaller_mat = []
+            for j in range(1, len(mat)):
+                smaller_mat.append(mat[j][:i] + mat[j][i+1:])
+            res += (-1)**i * mat[0][i] * laplacedet(smaller_mat)
+        return res
