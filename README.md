@@ -1,6 +1,6 @@
-<a href="https://github.com/ballandt/avmath/wiki">
-  <img src="docs/avmath.svg" width="400" title="avmath">
-</a>
+<img src="https://ballandt.github.io/p/avmath/avmath.svg" height="100" align="right" />
+
+# Avmath 4.0
 
 ---
 ![GitHub branch checks state](https://img.shields.io/github/checks-status/ballandt/avmath/master)
