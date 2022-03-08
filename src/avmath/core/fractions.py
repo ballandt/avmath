@@ -29,8 +29,8 @@ class _Fraction:
             self.den = den_num
         # Fraction value
         elif isinstance(num, _Fraction) or isinstance(den, _Fraction):
-            num = (num / den).num
-            den = (num / den).den
+            self.num = (num / den).num
+            self.den = (num / den).den
         # Reduction
         divisor = _gcd(self.num, self.den)
         self.num = self.num * _sgn(self.den) // divisor
@@ -55,6 +55,8 @@ class _Fraction:
         else:
             return _Fraction(self.num * other, self.den)
 
+    __rmul__ = __mul__
+
     def __truediv__(self, other):
         """Fraction division."""
         return _Fraction(self.num, self.den * other)
@@ -68,15 +70,41 @@ class _Fraction:
         # reciprocate
         if power == -1:
             return _Fraction(self.den, self.num)
+        else:
+            return _Fraction(self.num**power, self.den**power)
+
+    def __abs__(self):
+        return _Fraction(abs(self.num), self.den)
 
     # Comparison methods
     def __eq__(self, other):
-        """Returns equality of elements"""
+        """Returns equality of elements."""
         return float(self) == float(other)
+
+    def __gt__(self, other):
+        """Greater than method."""
+        return float(self) > other
+
+    def __lt__(self, other):
+        """Less than method."""
+        return float(self) < other
+
+    def __ge__(self, other):
+        """Greater equal method."""
+        return float(self) >= other
+
+    def __le__(self, other):
+        """Less equal method."""
+        return float(self) <= other
 
     # Type conversion methods
     def __float__(self):
+        """Float conversion."""
         return self.num / self.den
+
+    def __int__(self):
+        """Integer conversion."""
+        return self.num // self.den
 
 
 class Fraction:
@@ -143,8 +171,9 @@ class Fraction:
         # Note that 1 / (0/1) is treated as 1 / 0
         if den == 0:
             raise ZeroDivisionError("Denominator must not be 0")
-        if isinstance(num, (int, float)):
-            pass
+        if isinstance(num, Fraction) or isinstance(den, Fraction):
+            self._real = (num / den)._real
+            self._imag = (num / den)._imag
         # kwargs initialisation
         elif kwargs.get("real") or kwargs.get("imag"):
             real = kwargs.get("real")
@@ -159,5 +188,64 @@ class Fraction:
                 raise TypeError("Too many arguments given")
             self._real = _Fraction(real, 1)
             self._imag = _Fraction(imag, 1)
+        elif kwargs.get("real"):
+            self._real = kwargs.get("_real")
+            self._imag = _Fraction(0, 1)
+        else:
+            num = complex(num)
+            den = complex(den)
+            a = _Fraction(*num.real.as_integer_ratio())
+            b = _Fraction(*num.imag.as_integer_ratio())
+            c = _Fraction(*den.real.as_integer_ratio())
+            d = _Fraction(*den.imag.as_integer_ratio())
+            self._real = _Fraction(a * c + b * d, c ** 2 + d ** 2)
+            self._imag = _Fraction(b * c + (-a) * d, c ** 2 + d ** 2)
+
+    def __repr__(self):
+        """Returns string reproduction of the complex fraction."""
+        if self._imag < 0:
+            return f"{self._real} - {abs(self._imag)} j"
+        else:
+            return f"{self._real} + {self._imag} j"
+
+    # Type conversion
+    def __int__(self):
+        """Converts fraction p/q to the biggest integer a such that a < p/q.
+        Can only be executed if imaginary part is 0 else causes
+        ArithmeticError.
+        """
+        if self._imag != 0:
+            raise ArithmeticError("Complex fraction cannot be converted to"
+                                  " integer")
+        return int(self._real)
+
+    def __float__(self):
+        """Converts fraction to float. Can only be executed if imaginary part
+        is 0 else causes ArithmeticError.
+        """
+        if self._imag != 0:
+            raise ArithmeticError("Complex fraction cannot be converted to"
+                                  " float")
+        return float(self._real)
+
+    def __complex__(self):
+        """Converts fraction to complex number."""
+        return float(self._real) + float(self._imag)*1j
+
+    # Comparison methods
+    def __eq__(self, other):
+        """Returns equality of fraction with another number."""
+        return complex(self) == other
+
+    def __gt__(self, other):
+        """Checks if fraction is greater than another number. Can only be
+        executed if the imaginary part is 0 else causes ArithmeticError.
+        """
+        if self._imag != 0:
+            raise ArithmeticError("Complex fraction does not support"
+                                  " greater than operation")
+        return self._real > other
+
+
 
 
