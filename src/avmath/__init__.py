@@ -41,7 +41,7 @@ pi: float = 3.141_592_653_589_793_238_463
 phi: float = 1.618_033_988_749_894_848_205
 gamma: float = 0.577_215_664_901_532_860_607
 
-two_digit_primes: list[int] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41,
+two_digit_primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41,
                                43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
 
 
@@ -140,7 +140,7 @@ class Fraction:
         """Less or equal."""
         return float(self) <= float(other)
 
-    def __add__(self, other: REAL | complex) -> 'Fraction':
+    def __add__(self, other) -> 'Fraction':
         """Adds either two fractions or fractions and numbers."""
         if type(other) in (int, float):
             a = self.a + other * self.b
