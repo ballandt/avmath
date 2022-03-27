@@ -3,6 +3,7 @@
 Definition of the root objects for the public API and backend procession.
 """
 from .constants import square_numbers_to_20
+from math import isqrt
 
 
 def find_square_factor(x):
@@ -26,9 +27,16 @@ class Root:
         """Square root initialisation. Creates root of the form
         <constant> + <factor>*(<radical>)**(1/2).
         """
-        self.radical = radical
-        self.factor = factor
-        self.constant = constant
+        decomposed = find_square_factor(radical)
+        self.radical = decomposed[0]
+        if factor:
+            self.factor = factor * isqrt(decomposed[1])
+        else:
+            self.factor = isqrt(decomposed[1])
+        if constant:
+            self.constant = constant
+        else:
+            self.constant = 0
 
     def __repr__(self):
         """Returns string representation:
@@ -46,5 +54,49 @@ class Root:
         ret_str += f"{self.radical}**(1/2)"
         return ret_str
 
+    def __neg__(self):
+        return Root(self.radical, -self.factor, -self.constant)
+
     def __add__(self, other):
-        """Adds a complex number to the square root."""
+        """Adds a complex number to the square root.
+        Does not return Root type if other is a root too.
+        """
+        if isinstance(other, Root):
+            if not self.radical == other.radical:
+                res = complex(self) + complex(other)
+                if res.imag == 0:
+                    return res.real
+                else:
+                    return res
+            else:
+                return Root(self.radical,
+                            self.factor+other.factor,
+                            self.constant+other.constant)
+        else:
+            return Root(self.radical, self.factor, self.constant+other)
+
+    __radd__ = __add__
+
+    def __sub__(self, other):
+        """Root subtraction method. See __add__."""
+        return self + -other
+
+    def __rsub__(self, other):
+        """Reversed subtraction method."""
+        return other + -self
+
+    def __float__(self):
+        """Returns float representation of the root.
+        If the result is a complex number, raises ValueError."""
+        res = self.factor * self.radical**0.5 + self.constant
+        if isinstance(res, complex):
+            raise ValueError("Complex root cannot be converted to float")
+        else:
+            return res
+
+    def __complex__(self):
+        """Returns complex representation of the root."""
+        return complex(self.factor * self.radical**0.5 + self.constant)
+
+
+
