@@ -2,6 +2,8 @@
 
 Definition of the root objects for the public API and backend procession.
 """
+import copy
+
 from .constants import square_numbers_to_20
 from math import isqrt
 
@@ -96,11 +98,16 @@ class Root:
     def __mul__(self, other):
         if isinstance(other, Root):
             if self.radical == other.radical:
-                return Root(radical=self.radical,
-                            factor=self.factor*other.constant +
-                            other.factor*self.constant,
-                            constant=self.factor*other.factor*self.radical +
-                            self.constant*other.constant)
+                fac = self.factor*other.constant + other.factor*self.constant
+                if fac != 0:
+                    return Root(radical=self.radical,
+                                factor=self.factor*other.constant +
+                                other.factor*self.constant,
+                                constant=self.factor*other.factor*self.radical +
+                                self.constant*other.constant)
+                else:
+                    return self.factor*other.factor*self.radical + \
+                           self.constant*other.constant
             else:
                 res = complex(self) * complex(other)
                 if res.imag == 0:
@@ -114,6 +121,12 @@ class Root:
 
     __rmul__ = __mul__
 
+    def __pow__(self, power):
+        if int(power) == power and power > 0:
+            res = self
+            for _ in range(power-1):
+                res *= self
+
     def __float__(self):
         """Returns float representation of the root.
         If the result is a complex number, raises ValueError."""
@@ -126,6 +139,25 @@ class Root:
     def __complex__(self):
         """Returns complex representation of the root."""
         return complex(self.factor * self.radical**0.5 + self.constant)
+
+    def __lt__(self, other):
+        if not isinstance(self.factor, complex) or \
+                isinstance(self.constant, complex):
+            return float(self) < other
+        else:
+            raise ValueError("Cannot compare with complex value")
+
+    def __gt__(self, other):
+        return not self < other
+
+    def __abs__(self):
+        if isinstance(self.factor, complex) or \
+                isinstance(self.constant, complex):
+            return 0
+        if self > 0:
+            return copy.deepcopy(self)
+        else:
+            return -self
 
 
 

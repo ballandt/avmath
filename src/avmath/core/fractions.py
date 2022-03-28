@@ -5,6 +5,26 @@ fully defined in this space.
 """
 
 from .logics import _sgn, _gcd, _lcm
+from .roots import Root
+
+
+class Fraction:
+    """Real fraction."""
+
+    def __init__(self, num, den):
+        """Takes integer or root arguments only."""
+        self.num = num
+        self.den = den
+        if isinstance(den, Root):
+            expand_value = Root(den.radical, den.factor, -den.constant)
+            self.num *= expand_value
+            self.den *= expand_value
+        self.den *= _sgn(self.num)
+        self.num = abs(self.num)
+
+    def __repr__(self):
+        if isinstance(self.num, int):
+            return f"{self.num}/{self.den}"
 
 
 class _Fraction:
@@ -107,7 +127,7 @@ class _Fraction:
         return self.num // self.den
 
 
-class Fraction:
+class CFraction:
     """AVMATH FRACTION
 
     A complex fraction of the form p/q + s/t*j with p, q, s, t in Z. Used for
