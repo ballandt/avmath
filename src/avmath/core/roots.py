@@ -27,12 +27,20 @@ class Root:
         """Square root initialisation. Creates root of the form
         <constant> + <factor>*(<radical>)**(1/2).
         """
+        # Tries to divide a square number
         decomposed = find_square_factor(radical)
-        self.radical = decomposed[0]
         if factor:
             self.factor = factor * isqrt(decomposed[1])
         else:
             self.factor = isqrt(decomposed[1])
+        # Checks if root is real or complex
+        if decomposed[0] >= 0:
+            self.radical = decomposed[0]
+        else:
+            # Multiplies factor times j
+            self.radical = abs(decomposed[0])
+            self.factor *= 0+1j
+        # Appends constant
         if constant:
             self.constant = constant
         else:
@@ -48,10 +56,10 @@ class Root:
         """
         ret_str = ""
         if self.constant:
-            ret_str += f"{self.constant} + "
+            ret_str += f"{self.constant}+"
         if self.factor:
-            ret_str += f"{self.factor}*"
-        ret_str += f"{self.radical}**(1/2)"
+            ret_str += f"{self.factor}"
+        ret_str += f"\u221A({self.radical})"
         return ret_str
 
     def __neg__(self):
@@ -84,6 +92,27 @@ class Root:
     def __rsub__(self, other):
         """Reversed subtraction method."""
         return other + -self
+
+    def __mul__(self, other):
+        if isinstance(other, Root):
+            if self.radical == other.radical:
+                return Root(radical=self.radical,
+                            factor=self.factor*other.constant +
+                            other.factor*self.constant,
+                            constant=self.factor*other.factor*self.radical +
+                            self.constant*other.constant)
+            else:
+                res = complex(self) * complex(other)
+                if res.imag == 0:
+                    return res.real
+                else:
+                    return res
+        else:
+            return Root(radical=self.radical,
+                        factor=self.factor*other,
+                        constant=self.constant*other)
+
+    __rmul__ = __mul__
 
     def __float__(self):
         """Returns float representation of the root.
