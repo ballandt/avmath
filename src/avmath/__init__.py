@@ -18,8 +18,8 @@ PyPi: https://www.pypi.org/project/avmath
 """
 
 __author__ = "Camillo Ballandt"
-__version__ = "3.1.1"
-__date__ = "2022/01/08"
+__version__ = "3.2.0alpha1"
+__date__ = "2022/04/03"
 
 __all__ = ["Fraction", "CFraction",
            "sin", "cos", "tan",
