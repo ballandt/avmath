@@ -1,6 +1,6 @@
 from math import isqrt, sqrt
 from .constants import square_numbers_to_20
-from .logics import _lcm, _gcd, _sgn
+from .logics import lcm, gcd, sgn
 
 
 def find_square_factor(x):
@@ -19,8 +19,8 @@ class Real:
 
     def __init__(self, num, den=1, rad=0, fac=1):
         # Sign handling
-        num *= _sgn(den)
-        fac *= _sgn(den)
+        num *= sgn(den)
+        fac *= sgn(den)
         den = abs(den)
         # Root decomposition
         if rad != 0:
@@ -33,8 +33,8 @@ class Real:
                 fac *= isqrt(decom[1])
                 rad = decom[0]
         # Reduction
-        gcd_num = _gcd(num, fac)
-        gcd = _gcd(gcd_num, den)
+        gcd_num = gcd(num, fac)
+        gcd = gcd(gcd_num, den)
         num, fac, den = num // gcd, fac // gcd, den // gcd
         # Attribute assignments
         self.num = num
@@ -74,7 +74,7 @@ class Real:
         if isinstance(other, Real):
             if self.rad != other.rad:
                 return float(self) + float(other)
-            den = _lcm(self.den, other.den)
+            den = lcm(self.den, other.den)
             num = self.num * den // self.den + other.num * den // other.den
             fac = self.fac * den // self.den + other.fac * den // other.den
             return Real(num, den, self.rad, fac)

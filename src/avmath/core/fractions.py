@@ -4,7 +4,7 @@ Builds the avmath Fraction class. Is used elsewhere in core so needs to be
 fully defined in this space.
 """
 
-from .logics import _sgn, _gcd, _lcm
+from .logics import sgn, gcd, lcm
 from .roots import Root
 
 
@@ -19,7 +19,7 @@ class Fraction:
             expand_value = Root(den.radical, den.factor, -den.constant)
             self.num *= expand_value
             self.den *= expand_value
-        self.den *= _sgn(self.num)
+        self.den *= sgn(self.num)
         self.num = abs(self.num)
 
     def __repr__(self):
@@ -52,8 +52,8 @@ class _Fraction:
             self.num = (num / den).num
             self.den = (num / den).den
         # Reduction
-        divisor = _gcd(self.num, self.den)
-        self.num = self.num * _sgn(self.den) // divisor
+        divisor = gcd(self.num, self.den)
+        self.num = self.num * sgn(self.den) // divisor
         self.den = abs(self.den) // divisor
 
     # Mathematical methods
@@ -63,7 +63,7 @@ class _Fraction:
 
     def __add__(self, other):
         """Fraction addition."""
-        common_factor = _lcm(self.den, other.den)
+        common_factor = lcm(self.den, other.den)
         fac1 = self.num * common_factor // self.den
         fac2 = other.num * common_factor // other.den
         return _Fraction(fac1+fac2, common_factor)

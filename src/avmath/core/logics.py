@@ -3,7 +3,7 @@
 Builds the logic functions for public API and processing."""
 
 
-def _sgn(arg):
+def sgn(arg):
     """Sign function."""
     if arg > 0:
         return 1
@@ -13,7 +13,7 @@ def _sgn(arg):
         return 0
 
 
-def _gcd(arg1, arg2):
+def gcd(arg1, arg2):
     """Greatest common divisor."""
     if arg2 == 0:
         # Greatest common divisor of x and 0 defined as x
@@ -25,10 +25,11 @@ def _gcd(arg1, arg2):
     return abs(arg2)
 
 
-def _lcm(arg1, arg2):
+def lcm(arg1, arg2):
     """Least common multiply."""
     if arg2 != 0:
-        return abs(arg1 * arg2) // _gcd(arg1, arg2)
+        return abs(arg1 * arg2) // gcd(arg1, arg2)
     else:
         # Least common multiply of x and 0 defined as 0
         return 0
+
