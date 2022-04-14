@@ -34,7 +34,7 @@ def lcm(__x, __y, /):
         return 0
 
 
-def real_to_frac(__r, /, md=10000):
+def real_to_frac(__r, /, md=10000, ff=True):
     a = 1
     b = 1
     while b <= md:
@@ -44,4 +44,6 @@ def real_to_frac(__r, /, md=10000):
             b += 1
         else:
             return a, b
+    if ff:
+        return False
     return __r.as_integer_ratio()

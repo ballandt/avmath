@@ -1,6 +1,6 @@
 from math import isqrt, sqrt
 from .constants import square_numbers_to_20
-from .logics import lcm, gcd, sgn
+from .logics import lcm, gcd, sgn, real_to_frac
 
 
 def find_square_factor(x):
@@ -17,40 +17,51 @@ def find_square_factor(x):
 
 class Real:
 
-    def __init__(self, num, den=1, rad=0, fac=1):
-        # Sign handling
-        num *= sgn(den)
-        fac *= sgn(den)
-        den = abs(den)
-        # Root decomposition
-        if rad != 0:
-            if isqrt(rad) == sqrt(rad):
-                num += fac * isqrt(rad)
-                fac = 1
-                rad = 0
+    def __init__(self, num, den=1, rad=0, fac=1, **kwargs):
+        if isinstance(num, float):
+            if md := kwargs.get("md"):
+                num, den = real_to_frac(num, md=md)
             else:
-                decom = find_square_factor(rad)
-                fac *= isqrt(decom[1])
-                rad = decom[0]
-        # Reduction
-        gcd_num = gcd(num, fac)
-        gcd = gcd(gcd_num, den)
-        num, fac, den = num // gcd, fac // gcd, den // gcd
-        # Attribute assignments
-        self.num = num
-        self.den = den
-        self.fac = fac
-        self.rad = rad
+                num, den = real_to_frac(num)
+            self.num = num
+            self.den = den
+            self.rad = 0
+            self.fac = 1
+        elif isinstance(num, Real):
+            self.num = num.num
+            self.den = num.den
+            self.rad = num.rad
+            self.fac = num.fac
+        else:
+            # Sign handling
+            num *= sgn(den)
+            fac *= sgn(den)
+            den = abs(den)
+            # Root decomposition
+            if rad != 0:
+                if isqrt(rad) == sqrt(rad):
+                    num += fac * isqrt(rad)
+                    fac = 1
+                    rad = 0
+                else:
+                    decom = find_square_factor(rad)
+                    fac *= isqrt(decom[1])
+                    rad = decom[0]
+            # Reduction
+            gcd_num = gcd(num, fac)
+            gcd_gen = gcd(gcd_num, den)
+            num, fac, den = num // gcd_gen, fac // gcd_gen, den // gcd_gen
+            # Attribute assignments
+            self.num = num
+            self.den = den
+            self.fac = fac
+            self.rad = rad
 
     def __repr__(self):
-        ret_str = str(self.num)
-        if self.fac not in (0, 1):
-            ret_str += f"+{self.fac}"
-        if self.rad != 0 and self.fac != 0:
-            ret_str += f"\u221A({self.rad})"
-        if self.den != 1:
-            ret_str = f"({ret_str})/{self.den}"
-        return ret_str
+        ret_str = ""
+        if self.num:
+            ret_str += str(self.num)
+        # Accomplished soon
 
     def __neg__(self):
         return Real(-self.num, self.den, self.rad, -self.fac)
@@ -149,3 +160,63 @@ class Real:
         else:
             return self
 
+
+class Complex:
+    pass
+
+
+def div(__x, __y, /, md=10000, ff=False):
+    """Division function. Executes the best possible division.
+    Decides the following cases:
+    1. Two variables of type int
+      returns Real
+    2. Floats or complex in division
+      Tries to convert floats/complex to fractions. 'md' (maximal denominator)
+      specifies the maximal duration of the search algorithm for small
+      fractions.
+      If successful returns Real/Complex type.
+      If 'ff' (force fraction) is False and the algorithm failed, will return
+      the result of the float/complex division, else (ff=True) returns the
+      fraction with the float.as_integer_ratio() method.
+    3. Real or Complex with each other
+      Standard real/complex division
+    4. Real/Complex with int
+      Converts int to Real. Returns Real/Complex
+    """
+    var_types = {type(__x), type(__y)}
+    # 1. Only integers
+    if var_types == {int}:
+        return Real(__x, __y)
+    # 2. floats or complex
+    elif float in var_types or complex in var_types:
+        arg_list = [__x, __y]
+        for i, ele in enumerate(arg_list):
+            if isinstance(ele, float):
+                if ff:
+                    arg_list[i] = Real(*real_to_frac(ele, md))
+                elif vals := real_to_frac(ele, md, ff=False):
+                    arg_list[i] = Real(*vals)
+                else:
+                    return float(__x) / float(__y)
+            elif isinstance(ele, complex):
+                # Force fractions
+                if ff:
+                    real = Real(*real_to_frac(ele.real, md))
+                    imag = Real(*real_to_frac(ele.imag, md))
+                    arg_list[i] = Complex(real=real, imag=imag)
+                # Do not force fraction
+                elif (vals_real := real_to_frac(ele.real, md, False))\
+                        and (vals_imag := real_to_frac(ele.imag, md, False)):
+                    arg_list[i] = Complex(real=Real(*vals_real), imag=Real(*vals_imag))
+                else:
+                    return complex(__x) / complex(__y)
+        return div(*tuple(arg_list))
+    # Real and Complex
+    elif var_types == {Real} or var_types == {Complex} \
+            or var_types == {Real, Complex}:
+        return __x / __y
+    # Real/Complex and integer
+    elif var_types == {Real, int}:
+        return Real(__x) / Real(__y)
+    elif var_types == {Complex, int}:
+        return Complex(__x) / Complex(__y)
