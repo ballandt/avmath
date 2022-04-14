@@ -5,9 +5,9 @@ Builds the logic functions for public API and processing."""
 
 def _sgn(arg):
     """Sign function."""
-    if abs(arg) > 0:
+    if arg > 0:
         return 1
-    elif abs(arg) < 0:
+    elif arg < 0:
         return -1
     else:
         return 0
