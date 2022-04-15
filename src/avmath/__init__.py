@@ -31,8 +31,12 @@ Additional information and license terms can be found at
 https://github.com/ballandt/avmath
 """
 
-__version__ = "4.0.0a1"
+from .core.numbers import Real, Complex
+
+from .version import version
+
+__version__ = version
 __author__ = "Camillo Ballandt"
 __date__ = "2022/04/17"
 
-from .core.numbers import Real, Complex
+del version
