@@ -7,9 +7,12 @@ def find_square_factor(x):
     """Returns tuple with number decomposed to integer a and highest square
     b such that a*b = x.
     Returns tuple in form (a, b).
+    If x == 0 returns (0, 0)
+    If x == 1 returns (1, 1)
+    If x is negative a value will be negative and b positive
     """
     if x == 0:
-        return 1, 0
+        return 0, 0
     for e in reversed(square_numbers_to_20):
         if x / e == x // e:
             return x // e, e
@@ -18,6 +21,14 @@ def find_square_factor(x):
 class Real:
 
     def __init__(self, num, den=1, rad=0, fac=1, **kwargs):
+        """Initialises the Real. Default values are:
+        denominator = 1
+        radical = 0
+        factor = 0
+        If factor * radical == 0 both are set to 0.
+        If initialised with float or Real only num value is checked.
+        Initialisation with float forces fraction.
+        """
         if isinstance(num, float):
             if md := kwargs.get("md"):
                 num, den = real_to_frac(num, md=md)
@@ -64,6 +75,24 @@ class Real:
             self.rad = rad
 
     def __repr__(self):
+        """Returns shortest possible string to represent the Real.
+        1. num == den == fac == rad == 0
+            0
+        2. num != 0; den == fac == rad == 0
+            num
+        3. num != 0; rad != 0; fac == 1
+            num+√(rad)        - no braces if len(str(rad)) == 1
+        4.a num != 0; rad != 0; fac < 0
+            num-abs(fac)√(rad)
+        4.b num != 0; rad != 0; fac > 0
+            num+fac√(rad)
+        5. num == 0; rad != 0
+            [fac]√(rad)        - fac like in previous examples
+        6. den != 1; num != 0; rad != 0
+            (num[+fac]√(rad))/den
+        7. den != 1; either num or rad == 0
+            [num/[fac]√(rad)]/den        - no braces for numerator
+        """
         ret_str = ""
         if self == 0:
             ret_str = "0"
