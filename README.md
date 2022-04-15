@@ -9,7 +9,7 @@
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/avmath)
 ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/avmath)
 
-Avmath is a Python math library for symbolic calculations.
+**Avmath is a Python math library for symbolic calculations.**
 
 * Website: [https://ballandt.github.io/p/avmath](https://ballandt.github.io/p/avmath)
 * Documentation: [https://ballandt.github.com/p/avmath/docs](https://ballandt.github.com/p/avmath/docs)
@@ -19,7 +19,7 @@ Avmath is a Python math library for symbolic calculations.
 > This software is in development. Visit the [master branch](https://github.com/ballandt/avmath/tree/master)
 > for the latest stable release.
 
-### [Features](https://ballandt.github.io/p/avmath/#features)
+### [Features](https://ballandt.github.io/p/avmath/features)
 
 * Symbolic number objects
 * Linear algebra
@@ -29,7 +29,7 @@ Avmath is a Python math library for symbolic calculations.
 
 Avmath is a python library and can be downloaded using the `pip install avmath`
 command or read the [installation help](https://ballandt.github.com/p/avmath/docs/?a=installation).
-Visit the [getting-started-section](https://ballandt.github.io/p/avmath/getting-started/)
+Visit the [getting-started-section](https://ballandt.github.io/p/avmath/get-started/)
 or consult the [documentation](https://ballandt.github.com/p/avmath/docs) to learn
 how to use avmath.
 
