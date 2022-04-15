@@ -292,7 +292,7 @@ class Polynomial:
                                               "cannot be processed")
                     arg_list[i].append(e[0] ** (len(args)-j-1))
                 arg_list[i].append(e[-1])
-            from .algebra import SLE
+            from .algebra_old import SLE
             self._value = list(SLE(*tuple(arg_list)).solve())
         else:
             raise ArgumentError(type(args[0]), "int, float, complex, Fraction")

@@ -10,7 +10,7 @@ from typing import Union, Optional, List
 
 from . import ArgumentError, DimensionError, REAL, Fraction, sin, arccos,\
     _check_types
-from .analysis import Polynomial
+from .analysis_old import Polynomial
 
 __all__ = ["Tuple", "Structure", "Matrix", "Vector", "SLE"]
 
