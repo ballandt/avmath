@@ -37,11 +37,17 @@ class Real:
             num *= sgn(den)
             fac *= sgn(den)
             den = abs(den)
+            # Root standard
+            if not fac:
+                fac = 0
+                rad = 0
+            if not rad:
+                fac = 0
             # Root decomposition
             if rad != 0:
                 if isqrt(rad) == sqrt(rad):
                     num += fac * isqrt(rad)
-                    fac = 1
+                    fac = 0
                     rad = 0
                 else:
                     decom = find_square_factor(rad)
@@ -59,9 +65,29 @@ class Real:
 
     def __repr__(self):
         ret_str = ""
-        if self.num:
-            ret_str += str(self.num)
-        # Accomplished soon
+        if self == 0:
+            ret_str = "0"
+        else:
+            if self.num:
+                ret_str += str(self.num)
+            if self.rad:
+                if self.num and self.rad:
+                    if self.fac > 0:
+                        ret_str += "+"
+                    else:
+                        ret_str += "-"
+                if self.fac and self.fac != 1:
+                    ret_str += str(self.fac)
+                if len(str(self.rad)) > 1:
+                    ret_str += f"\u221A({self.rad})"
+                else:
+                    ret_str += f"\u221A{self.rad}"
+            if self.den != 1:
+                if self.num and self.rad:
+                    ret_str = f"({ret_str})/{self.den}"
+                else:
+                    ret_str += f"/{self.den}"
+        return ret_str
 
     def __neg__(self):
         return Real(-self.num, self.den, self.rad, -self.fac)
