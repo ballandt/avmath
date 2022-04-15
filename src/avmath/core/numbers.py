@@ -19,6 +19,24 @@ def find_square_factor(x):
 
 
 class Real:
+    """Real number
+
+    The avmath number type with
+         p + c√(r)
+    a = ----------        p in Z; c, q, r in N
+            q
+    Allows symbolic calculations with fractions and square roots.
+
+    Examples:
+    ---------
+
+    >>> Real(1, 2)
+    1/2
+    >>> Real(0.25)
+    1/4
+    >>> Real(3, 5, 8, 2)
+    (3+4√2)/5
+    """
 
     def __init__(self, num, den=1, rad=0, fac=1, **kwargs):
         """Initialises the Real. Default values are:
