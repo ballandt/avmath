@@ -103,7 +103,9 @@ def ref(mat):
         if lead0(ele) == len(ele):
             continue
         ret_mat[i] = scamul(ele, div(1, ele[lead0(ele)]))
-        for j, jele in enumerate(ret_mat[i:]):
+        for j, jele in enumerate(ret_mat[i+1:]):
+            print(jele)
             if lead0(jele) == lead0(ele):
                 ret_mat[j] = vsub(jele, scamul(ele, jele[lead0(jele)]))
+        print("\n")
     return ret_mat
