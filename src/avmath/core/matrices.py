@@ -7,8 +7,10 @@ Contained functions do not check input, wrong arguments will raise unexpected
 errors. Standard input and output type is two-dimensional list. Input lists
 are not changed.
 """
+import copy
 
-from .vectors import dot
+from .vectors import sub as vsub, scamul, dot, lead0
+from .numbers import div
 
 
 def add(mat1, mat2):
@@ -91,3 +93,17 @@ def laplacedet(mat):
                 smaller_mat.append(mat[j][:i] + mat[j][i+1:])
             res += (-1)**i * mat[0][i] * laplacedet(smaller_mat)
         return res
+
+
+def ref(mat):
+    """Row echelon form using GAUSS-algorithm"""
+    ret_mat = copy.deepcopy(mat)
+    for i, ele in enumerate(ret_mat):
+        ret_mat.sort(key=lambda vec: lead0(vec))
+        if lead0(ele) == len(ele):
+            continue
+        ret_mat[i] = scamul(ele, div(1, ele[lead0(ele)]))
+        for j, jele in enumerate(ret_mat[i:]):
+            if lead0(jele) == lead0(ele):
+                ret_mat[j] = vsub(jele, scamul(ele, jele[lead0(jele)]))
+    return ret_mat
