@@ -98,14 +98,16 @@ def laplacedet(mat):
 def ref(mat):
     """Row echelon form using GAUSS-algorithm"""
     ret_mat = copy.deepcopy(mat)
-    for i, ele in enumerate(ret_mat):
+    for i in range(len(ret_mat)):
         ret_mat.sort(key=lambda vec: lead0(vec))
-        if lead0(ele) == len(ele):
+        print(ret_mat)
+        if lead0(ret_mat[i]) == len(ret_mat[i]):
             continue
-        ret_mat[i] = scamul(ele, div(1, ele[lead0(ele)]))
-        for j, jele in enumerate(ret_mat[i+1:]):
-            print(jele)
-            if lead0(jele) == lead0(ele):
-                ret_mat[j] = vsub(jele, scamul(ele, jele[lead0(jele)]))
-        print("\n")
+        ret_mat[i] = scamul(ret_mat[i], div(1, ret_mat[i][lead0(ret_mat[i])]))
+        for j in range(i+1, len(ret_mat[i+1:])+1):
+            if lead0(ret_mat[j]) == lead0(ret_mat[i]):
+                ret_mat[j] = vsub(
+                    ret_mat[j],
+                    scamul(ret_mat[i], ret_mat[j][lead0(ret_mat[j])])
+                )
     return ret_mat
