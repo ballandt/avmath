@@ -256,6 +256,9 @@ def div(__x, __y, /, md=10000, ff=False):
     4. Real/Complex with int
       Converts int to Real. Returns Real/Complex
     """
+    # Zero division handling
+    if __y == 0:
+        raise ZeroDivisionError("denominator must not be 0")
     var_types = {type(__x), type(__y)}
     # 1. Only integers
     if var_types == {int}:
