@@ -95,6 +95,17 @@ def laplacedet(mat):
         return res
 
 
+def gaussdet(mat):
+    """Determinant calculated with GAUSS-algorithm"""
+    ret_mat = copy.deepcopy(mat)
+    for i in range(len(ret_mat)):
+        if lead0(ret_mat[i]) == i:
+            for j in range(i+1, len(ret_mat)):
+                if lead0(ret_mat[j]) == i:
+                    ret_mat[j] = vsub(ret_mat[j],
+                                      scamul(ret_mat[i], ret_mat[j][i]))
+
+
 def ref(mat):
     """Row echelon form using GAUSS-algorithm"""
     ret_mat = copy.deepcopy(mat)
