@@ -100,11 +100,10 @@ def ref(mat):
     ret_mat = copy.deepcopy(mat)
     for i in range(len(ret_mat)):
         ret_mat.sort(key=lambda vec: lead0(vec))
-        print(ret_mat)
         if lead0(ret_mat[i]) == len(ret_mat[i]):
             continue
         ret_mat[i] = scamul(ret_mat[i], div(1, ret_mat[i][lead0(ret_mat[i])]))
-        for j in range(i+1, len(ret_mat[i+1:])+1):
+        for j in range(i+1, len(ret_mat)):
             if lead0(ret_mat[j]) == lead0(ret_mat[i]):
                 ret_mat[j] = vsub(
                     ret_mat[j],

@@ -81,3 +81,4 @@ def lead0(vec):
     for i in range(len(vec)):
         if vec[i] != 0:
             return i
+    return 0
