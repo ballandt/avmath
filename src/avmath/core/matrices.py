@@ -95,15 +95,35 @@ def laplacedet(mat):
         return res
 
 
-def gaussdet(mat):
-    """Determinant calculated with GAUSS-algorithm"""
+def diagonal(mat):
+    """Transforms matrix to diagonal matrix using GAUSS-algorithm. Returns
+    diagonal matrix and the factor of the change of the determinant.
+    """
     ret_mat = copy.deepcopy(mat)
+    det_fac = 1
     for i in range(len(ret_mat)):
+        if lead0(ret_mat[i]) > i:
+            for j in range(i+1, len(ret_mat)):
+                if lead0(ret_mat[j]) == i:
+                    ret_mat[i], ret_mat[j] = ret_mat[j], ret_mat[i]
+                    det_fac *= -1
+                    break
         if lead0(ret_mat[i]) == i:
             for j in range(i+1, len(ret_mat)):
                 if lead0(ret_mat[j]) == i:
-                    ret_mat[j] = vsub(ret_mat[j],
-                                      scamul(ret_mat[i], ret_mat[j][i]))
+                    ret_mat[j] = vsub(
+                        ret_mat[j],
+                        scamul(ret_mat[i], div(ret_mat[j][i], ret_mat[i][i]))
+                    )
+    return ret_mat, det_fac
+
+
+def gaussdet(mat):
+    """Calculates determinant using diagonal matrix."""
+    ret_mat, det = diagonal(mat)
+    for i in range(len(ret_mat)):
+        det *= ret_mat[i][i]
+    return det
 
 
 def ref(mat):
