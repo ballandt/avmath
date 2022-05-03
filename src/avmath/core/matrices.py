@@ -141,3 +141,33 @@ def ref(mat):
                     scamul(ret_mat[i], ret_mat[j][lead0(ret_mat[j])])
                 )
     return ret_mat
+
+
+def rank(mat):
+    """Rank of a matrix"""
+    ret_val = len(mat)
+    ret_mat = ref(mat)
+    for ele in reversed(ret_mat):
+        if lead0(ele) == len(ret_mat[0]):
+            ret_val -= 1
+        else:
+            break
+    return ret_val
+
+
+def rref(mat):
+    """Reduced row echelon form of a matrix"""
+    ret_mat = ref(mat)
+    n = len(ret_mat[0])
+    for i in range(len(ret_mat)-1, 0, -1):
+        if lead0(ret_mat[i]) == n:
+            continue
+        for j in range(i):
+            ret_mat[j] = vsub(
+                ret_mat[j],
+                scamul(ret_mat[i], ret_mat[j][lead0(ret_mat[i])])
+            )
+    return ret_mat
+
+
+
