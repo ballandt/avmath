@@ -1,4 +1,4 @@
-from math import isqrt, sqrt
+from math import isqrt, sqrt as msqrt
 from .constants import square_numbers_to_20
 from .logics import lcm, gcd, sgn, real_to_frac
 
@@ -296,3 +296,9 @@ def div(__x, __y, /, md=10000, ff=False):
         return Real(__x) / Real(__y)
     elif var_types == {Complex, int}:
         return Complex(__x) / Complex(__y)
+
+
+def sqrt(__x):
+    if isinstance(__x, Real):
+        if __x.rad == 0:
+            return Real(0, 1, __x.num) / Real(0, 1, __x.den)
