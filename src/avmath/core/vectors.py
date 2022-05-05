@@ -6,6 +6,7 @@ avmath.algebra.Vector.
 Contained functions do not check input, wrong arguments will raise unexpected
 errors. Standard input and output type is list. Input lists are not changed.
 """
+from .numbers import sqrt
 
 
 def add(vec1, vec2):
@@ -82,3 +83,10 @@ def lead0(vec):
         if vec[i] != 0:
             return i
     return len(vec)
+
+
+def euclidean(vec):
+    rad = 0
+    for i in range(len(vec)):
+        rad += vec[i] ** 2
+    return sqrt(rad)

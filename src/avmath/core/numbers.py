@@ -75,7 +75,7 @@ class Real:
                 fac = 0
             # Root decomposition
             if rad != 0:
-                if isqrt(rad) == sqrt(rad):
+                if isqrt(rad) == msqrt(rad):
                     num += fac * isqrt(rad)
                     fac = 0
                     rad = 0
