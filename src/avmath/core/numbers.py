@@ -1,4 +1,5 @@
 from math import isqrt, sqrt as msqrt
+from cmath import sqrt as csqrt
 from .constants import square_numbers_to_20
 from .logics import lcm, gcd, sgn, real_to_frac
 
@@ -140,7 +141,7 @@ class Real:
         return Real(-self.num, self.den, self.rad, -self.fac)
 
     def __float__(self):
-        return (self.num + self.fac * sqrt(self.rad)) / self.den
+        return (self.num + self.fac * msqrt(self.rad)) / self.den
 
     def __int__(self):
         return int(float(self))
@@ -181,6 +182,13 @@ class Real:
                 rad = self.rad
                 fac = self.num * other.fac + other.num * self.fac
                 return Real(num, den, rad, fac)
+            elif self.num == other.num == 0:
+                return Real(0,
+                            self.den * other.den,
+                            self.rad * other.rad,
+                            self.fac * other.fac)
+            else:
+                return float(self) * float(other)
         elif isinstance(other, int):
             num = self.num * other
             fac = self.fac * other
@@ -219,7 +227,7 @@ class Real:
         return self**-1 * other
 
     def __eq__(self, other):
-        return complex(self) == other
+        return float(self) == other
 
     def __lt__(self, other):
         return float(self) < other
@@ -298,7 +306,22 @@ def div(__x, __y, /, md=10000, ff=False):
         return Complex(__x) / Complex(__y)
 
 
-def sqrt(__x):
+def sqrt(__x, /):
     if isinstance(__x, Real):
         if __x.rad == 0:
             return Real(0, 1, __x.num) / Real(0, 1, __x.den)
+    elif isinstance(__x, int):
+        if __x >= 0:
+            return Real(0, rad=__x)
+        else:
+            return Complex(real=Real(0), imag=Real(0, rad=abs(__x)))
+    elif isinstance(__x, float):
+        if __x.is_integer():
+            return sqrt(int(__x))
+        else:
+            if r := real_to_frac(__x, ff=False):
+                return sqrt(Real(r[0], r[1]))
+            else:
+                return sqrt(__x)
+    else:
+        return csqrt(__x)
