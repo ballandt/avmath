@@ -1,5 +1,6 @@
 from math import isqrt, sqrt as msqrt
 from cmath import sqrt as csqrt
+from numbers import Real as nReal, Complex as nComplex
 from .constants import square_numbers_to_20
 from .logics import lcm, gcd, sgn, real_to_frac
 
@@ -19,7 +20,7 @@ def find_square_factor(x):
             return x // e, e
 
 
-class Real:
+class Real(nReal):
     """Real number
 
     The avmath number type with
@@ -92,6 +93,7 @@ class Real:
             self.den = den
             self.fac = fac
             self.rad = rad
+        super().__init__()
 
     def __repr__(self):
         """Returns shortest possible string to represent the Real.
@@ -242,7 +244,7 @@ class Real:
             return self
 
 
-class Complex:
+class Complex(nComplex):
     pass
 
 
