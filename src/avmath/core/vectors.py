@@ -86,7 +86,35 @@ def lead0(vec):
 
 
 def euclidean(vec):
+    """Euclidean absolute of the vector"""
     rad = 0
     for i in range(len(vec)):
         rad += vec[i] ** 2
     return sqrt(rad)
+
+
+class vec:
+    """VECTOR
+
+    Datatype for complex vector calculations.
+
+    Examples
+    --------
+
+    >>> linalg.vec(3, 2, 5)
+    (3, 2, 5)
+
+    >>> linalg.vec(4, 0, 2-3j)
+    (4, 0, 2-3j)
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Initialises vector. Coordinates can be passed to `*args`, special
+        preferences to `**kwargs`. Accepted keywords are:
+          - checks (boolean)
+            specifies whether checks are skipped (False) or not (True)
+        """
+        checks = kwargs.get("checks")
+        if checks:
+            for ele in args:
+                pass
