@@ -145,8 +145,16 @@ class Real(nReal):
     def __float__(self):
         return (self.num + self.fac * msqrt(self.rad)) / self.den
 
+    def __round__(self, n=None):
+        return round(float(self), n)
+
     def __int__(self):
         return int(float(self))
+
+    __trunc__ = __int__
+
+    def __floor__(self):
+        return int(self)
 
     def __ceil__(self):
         if int(self) == float(self):
@@ -228,6 +236,18 @@ class Real(nReal):
     def __rtruediv__(self, other):
         return self**-1 * other
 
+    def __floordiv__(self, other):
+        return int(self / other)
+
+    def __rfloordiv__(self, other):
+        return int(other / self)
+
+    def __mod__(self, other):
+        return float(self) % other
+
+    def __rmod__(self, other):
+        return other % float(self)
+
     def __eq__(self, other):
         return float(self) == other
 
@@ -237,11 +257,19 @@ class Real(nReal):
     def __gt__(self, other):
         return float(self) > other
 
+    def __le__(self, other):
+        return float(self) <= other
+
+    def __ge__(self, other):
+        return float(self) >= other
+
     def __abs__(self):
         if self < 0:
             return -self
         else:
             return self
+
+    __pos__ = __abs__
 
 
 class Complex(nComplex):
