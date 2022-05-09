@@ -6,6 +6,8 @@ avmath.algebra.Vector.
 Contained functions do not check input, wrong arguments will raise unexpected
 errors. Standard input and output type is list. Input lists are not changed.
 """
+from numbers import Number
+from typing import Iterable
 from .numbers import sqrt
 
 
@@ -109,12 +111,39 @@ class vec:
     """
 
     def __init__(self, *args, **kwargs):
-        """Initialises vector. Coordinates can be passed to `*args`, special
-        preferences to `**kwargs`. Accepted keywords are:
+        """Initialises vector. Coordinates can be passed to `*args`. Can be
+        either multiple numbers or a list. Special preferences can be passed to
+         `**kwargs`. Accepted keywords are:
           - checks (boolean)
             specifies whether checks are skipped (False) or not (True)
         """
+        if len(args) == 1 and isinstance(args[0], Iterable):
+            args = args[0]
         checks = kwargs.get("checks")
         if checks:
             for ele in args:
-                pass
+                if not isinstance(ele, Number):
+                    raise TypeError(f"Elements must be numbers. Got '{ele}'")
+        self._value = list(args)
+
+    def __repr__(self):
+        return str(tuple(self._value))
+
+    def __iter__(self):
+        for ele in self._value:
+            yield ele
+
+    def __getitem__(self, item):
+        return self._value[item]
+
+    @staticmethod
+    def from_points(p1, p2):
+        return vec(sub(p2, p1))
+
+    @staticmethod
+    def zeros(n):
+        return vec([0 for _ in range(n)])
+
+    @staticmethod
+    def ones(n):
+        return vec([1 for _ in range(n)])
