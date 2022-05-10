@@ -6,9 +6,10 @@ avmath.algebra.Vector.
 Contained functions do not check input, wrong arguments will raise unexpected
 errors. Standard input and output type is list. Input lists are not changed.
 """
-from numbers import Number
-from typing import Iterable
-from .numbers import sqrt
+from math import acos, degrees
+from numbers import Number, Real
+from typing import Iterable, Sized
+from .numbers import sqrt, div
 
 
 def add(vec1, vec2):
@@ -133,8 +134,48 @@ class vec:
         for ele in self._value:
             yield ele
 
+    def __len__(self):
+        return len(self._value)
+
+    dim = __len__
+
     def __getitem__(self, item):
         return self._value[item]
+
+    def __neg__(self):
+        return scamul(self._value, -1)
+
+    def __add__(self, other):
+        """Vector addition."""
+        if not isinstance(other, vec):
+            raise TypeError(f"Cannot add '{other}' to vector")
+        if len(self) != len(other):
+            raise ValueError("Vectors must have the same dimensions")
+        return vec(add(self._value, other._value))
+
+    def __sub__(self, other):
+        return self + -other
+
+    def __mul__(self, other):
+        if isinstance(other, Number):
+            return scamul(self._value, other)
+        elif isinstance(other, vec):
+            if len(self) != len(other):
+                raise ValueError("Vectors must have the same dimensions.")
+            return dot(self._value, other._value)
+        else:
+            raise TypeError(f"Cannot multiply '{other}' with vector")
+
+    def __truediv__(self, other):
+        if not isinstance(other, Number):
+            raise TypeError(f"Cannot divide vector by '{other}'")
+        return scamul(self._value, div(1, other))
+
+    def norm(self):
+        return euclidean(self._value)
+
+    euclidean = norm
+    __abs__ = norm
 
     @staticmethod
     def from_points(p1, p2):
@@ -147,3 +188,21 @@ class vec:
     @staticmethod
     def ones(n):
         return vec([1 for _ in range(n)])
+
+
+# Public functions
+
+def angle(__v1, __v2, /, deg=False):
+    """Angle between two real value vectors."""
+    if not (isinstance(__v1, Sized) and isinstance(__v2, Sized)):
+        raise TypeError("Arguments must be vector like")
+    if len(__v1) != len(__v2):
+        return ValueError("Vectors must contain the same dimensions.")
+    for i in range(len(__v1)):
+        if not (isinstance(__v1[i], Real) or isinstance(__v2[i], Real)):
+            raise ValueError("Vectors must contain real values")
+    res = acos(dot(__v1, __v2) / (euclidean(__v1) * euclidean(__v2)))
+    if not deg:
+        return res
+    else:
+        return degrees(res)
