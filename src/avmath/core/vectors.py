@@ -67,7 +67,7 @@ def cross3x3(vec1, vec2):
 
 def intpow(vec, power):
     """Power operation for vector and integer.
-    a ^ t := a * a * a * a    (a in R^n, t in R)
+    a ^ t := a * a * a * a    (a in R^n, t in N\\{0})
               t times
     """
     res = vec[:]
