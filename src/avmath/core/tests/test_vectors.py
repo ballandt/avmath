@@ -82,5 +82,13 @@ class FunctionTests(unittest.TestCase):
         self.assertAlmostEqual(norm, euclidean(a), delta=1e-14)
 
 
+class VecClassTest(unittest.TestCase):
+    """Tests for vector class"""
+    def test_init(self):
+        a = vec([randint(-10, 10) for _ in range(vec_dims)])
+        self.assertIsInstance(a, vec)
+        self.assertRaises(TypeError, vec, "a")
+
+
 if __name__ == "__main__":
     unittest.main()
