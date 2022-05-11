@@ -121,6 +121,8 @@ class vec:
         if len(args) == 1 and isinstance(args[0], Iterable):
             args = args[0]
         checks = kwargs.get("checks")
+        if checks is None:
+            checks = True
         if checks:
             for ele in args:
                 if not isinstance(ele, Number):
