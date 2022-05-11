@@ -88,6 +88,10 @@ class VecClassTest(unittest.TestCase):
         a = vec([randint(-10, 10) for _ in range(vec_dims)])
         self.assertIsInstance(a, vec)
         self.assertRaises(TypeError, vec, "a")
+        b = [randint(-10, 10) for _ in range(vec_dims)]
+        b_vec = vec(*tuple(b))
+        b_list_vec = vec(b)
+        self.assertEqual(b_vec, b_list_vec)
 
 
 if __name__ == "__main__":
