@@ -12,6 +12,14 @@ from typing import Iterable, Sized
 from .numbers import sqrt, div
 
 
+def eq(vec1, vec2):
+    """Checks if vectors are equal"""
+    for i in range(len(vec1)):
+        if vec1[i] != vec2[i]:
+            return False
+    return True
+
+
 def add(vec1, vec2):
     """Vector addition."""
     res = []
@@ -143,6 +151,14 @@ class vec:
 
     def __getitem__(self, item):
         return self._value[item]
+
+    def __eq__(self, other):
+        if not isinstance(other, vec):
+            raise TypeError("Vector must be compared to vector")
+        if len(self) != len(other):
+            return False
+        else:
+            return eq(self._value, other._value)
 
     def __neg__(self):
         return scamul(self._value, -1)
