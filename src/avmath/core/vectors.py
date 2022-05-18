@@ -157,7 +157,7 @@ class vector:
             raise TypeError(f"Cannot add '{other}' to vector")
         if len(self) != len(other):
             raise ValueError("Vectors must have the same dimensions")
-        return vec(add(self._value, other._value))
+        return vector(add(self._value, other._value))
 
     def __sub__(self, other):
         return self + -other
@@ -185,15 +185,15 @@ class vector:
 
     @staticmethod
     def from_points(p1, p2):
-        return vec(sub(p2, p1))
+        return vector(sub(p2, p1))
 
     @staticmethod
     def zeros(n):
-        return vec([0 for _ in range(n)])
+        return vector([0 for _ in range(n)])
 
     @staticmethod
     def ones(n):
-        return vec([1 for _ in range(n)])
+        return vector([1 for _ in range(n)])
 
 
 # Vector creation
