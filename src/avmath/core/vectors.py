@@ -104,7 +104,7 @@ def euclidean(vec):
     return sqrt(rad)
 
 
-class vec:
+class vector:
     """VECTOR
 
     Datatype for complex vector calculations.
@@ -119,23 +119,11 @@ class vec:
     (4, 0, 2-3j)
     """
 
-    def __init__(self, *args, **kwargs):
-        """Initialises vector. Coordinates can be passed to `*args`. Can be
-        either multiple numbers or a list. Special preferences can be passed to
-         `**kwargs`. Accepted keywords are:
-          - checks (boolean)
-            specifies whether checks are skipped (False) or not (True)
+    def __init__(self, __ValuesList):
+        """Vector initialisation. Takes argument list and does not run any
+        tests on the arguments.
         """
-        if len(args) == 1 and isinstance(args[0], Iterable):
-            args = args[0]
-        checks = kwargs.get("checks")
-        if checks is None:
-            checks = True
-        if checks:
-            for ele in args:
-                if not isinstance(ele, Number):
-                    raise TypeError(f"Elements must be numbers. Got '{ele}'")
-        self._value = list(args)
+        self._value = __ValuesList
 
     def __repr__(self):
         return str(tuple(self._value))
@@ -206,6 +194,28 @@ class vec:
     @staticmethod
     def ones(n):
         return vec([1 for _ in range(n)])
+
+
+# Vector creation
+
+def vec(*args, **kwargs):
+    """Creates a vector object.
+    Initialises vector. Coordinates can be passed to `*args`. Can be
+    either multiple numbers or a list. Special preferences can be passed to
+    `**kwargs`. Accepted keywords are:
+       - checks (boolean)
+           specifies whether checks are skipped (False) or not (True)
+    """
+    if len(args) == 1 and isinstance(args[0], Iterable):
+        args = args[0]
+    checks = kwargs.get("checks")
+    if checks is None:
+        checks = True
+    if checks:
+        for ele in args:
+            if not isinstance(ele, Number):
+                raise TypeError(f"Elements must be numbers. Got '{ele}'")
+    return vector(list(args))
 
 
 # Public functions
