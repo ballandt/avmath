@@ -59,3 +59,6 @@ NaN arguments cause TypeError.
 """
 
 from ..core.vectors import vector, vec, angle
+
+__all__ = ["angle", "vec",
+           "vector"]
