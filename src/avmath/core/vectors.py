@@ -12,95 +12,95 @@ from typing import Iterable, Sized
 from .numbers import sqrt, div
 
 
-def eq(vec1, vec2):
+def eq(v1, v2):
     """Checks if vectors are equal"""
-    for i in range(len(vec1)):
-        if vec1[i] != vec2[i]:
+    for i in range(len(v1)):
+        if v1[i] != v2[i]:
             return False
     return True
 
 
-def add(vec1, vec2):
+def add(v1, v2):
     """Vector addition."""
     res = []
-    for i in range(len(vec1)):
-        res.append(vec1[i]+vec2[i])
+    for i in range(len(v1)):
+        res.append(v1[i]+v2[i])
     return res
 
 
-def sub(vec1, vec2):
+def sub(v1, v2):
     """Vector subtraction."""
     res = []
-    for i in range(len(vec1)):
-        res.append(vec1[i]-vec2[i])
+    for i in range(len(v1)):
+        res.append(v1[i]-v2[i])
     return res
 
 
-def scamul(vec, sca):
+def scamul(v, sca):
     """Scalar multiplication for vector and scalar."""
-    res = vec[:]
+    res = v[:]
     # range(len()) is faster than enumerate
     for i in range(len(res)):
         res[i] = res[i] * sca
     return res
 
 
-def dot(vec1, vec2):
+def dot(v1, v2):
     """Vector dot product.
     (a_1, a_2, ..., a_n) * (b_1, b_2, ..., b_n)
     := a_1 * b_1 + a_2 * b_2 + ... + a_n * b_n
     """
     res = 0
-    for i in range(len(vec1)):
-        res += vec1[i] * vec2[i]
+    for i in range(len(v1)):
+        res += v1[i] * v2[i]
     return res
 
 
-def cross2x2(vec1, vec2):
+def cross2x2(v1, v2):
     """Vector cross product for R^2 vectors.
     (a_1, a_2) x (b_1, b_2) := a_1 * b_2 - a_2 * b_1
     """
-    return vec1[0] * vec2[1] - vec1[1] * vec2[0]
+    return v1[0] * v2[1] - v1[1] * v2[0]
 
 
-def cross3x3(vec1, vec2):
+def cross3x3(v1, v2):
     """Vector cross product for R^3 vectors.
     (a_1, a_2, a_3) x (b_1, b_2, b_3)
     := (a_2 * b_3 - b_2 * a_3, a_3 * b_1 - a_1 * b_3, a_1 * b_2 - a_2 * b_1)
     """
-    return [vec1[1]*vec2[2] - vec1[2]*vec2[1],
-            vec1[2]*vec2[0] - vec1[0]*vec2[2],
-            vec1[0]*vec2[1] - vec1[1]*vec2[0]]
+    return [v1[1]*v2[2] - v1[2]*v2[1],
+            v1[2]*v2[0] - v1[0]*v2[2],
+            v1[0]*v2[1] - v1[1]*v2[0]]
 
 
-def intpow(vec, power):
+def intpow(v, power):
     """Power operation for vector and integer.
     a ^ t := a * a * a * a    (a in R^n, t in N\\{0})
               t times
     """
-    res = vec[:]
+    res = v[:]
     for i in range(power-1):
         if i % 2 == 0:
-            res = dot(vec, res)
+            res = dot(v, res)
         else:
-            res = scamul(vec, res)
+            res = scamul(v, res)
     return res
 
 
-def lead0(vec):
+def lead0(v):
     """Number of leading zeros of a vector.
     Needed for GAUSS-algorithm."""
-    for i in range(len(vec)):
-        if vec[i] != 0:
+    for i in range(len(v)):
+        if v[i] != 0:
             return i
-    return len(vec)
+    return len(v)
 
 
-def euclidean(vec):
+def euclidean(v):
     """Euclidean absolute of the vector"""
     rad = 0
-    for i in range(len(vec)):
-        rad += vec[i] ** 2
+    for i in range(len(v)):
+        rad += v[i] ** 2
     return sqrt(rad)
 
 
@@ -141,7 +141,7 @@ class vector:
         return self._value[item]
 
     def __eq__(self, other):
-        if not isinstance(other, vec):
+        if not isinstance(other, vector):
             raise TypeError("Vector must be compared to vector")
         if len(self) != len(other):
             return False
@@ -153,7 +153,7 @@ class vector:
 
     def __add__(self, other):
         """Vector addition."""
-        if not isinstance(other, vec):
+        if not isinstance(other, vector):
             raise TypeError(f"Cannot add '{other}' to vector")
         if len(self) != len(other):
             raise ValueError("Vectors must have the same dimensions")
@@ -164,11 +164,11 @@ class vector:
 
     def __mul__(self, other):
         if isinstance(other, Number):
-            return scamul(self._value, other)
-        elif isinstance(other, vec):
+            return vec(scamul(self._value, other))
+        elif isinstance(other, vector):
             if len(self) != len(other):
                 raise ValueError("Vectors must have the same dimensions.")
-            return dot(self._value, other._value)
+            return vec(dot(self._value, other._value))
         else:
             raise TypeError(f"Cannot multiply '{other}' with vector")
 
