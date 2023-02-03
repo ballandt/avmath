@@ -176,16 +176,31 @@ def solve(mat):
     ret_val = []
     m = len(ret_mat)
     n = len(ret_mat[0])
-    for i in range(m-1, -1, -1):
-        l0 = lead0(ret_mat[i])
-        if l0 == n:
-            ret_val.append(1)
-        elif l0 == n - 1:
-            raise ArithmeticError("Cannot calculate solutions")
-        else:
-            ret_val.append(ret_mat[i][n-1])
-            for j in range(l0+1, m):
-                ret_val[-1] -= ret_mat[i][j] * ret_val[-j]
-    return list(reversed(ret_val))
-
+    if m <= n-1:
+        for i in range(m-1, -1, -1):
+            l0 = lead0(ret_mat[i])
+            if l0 == n:
+                ret_val.append(1)
+            elif l0 == n - 1:
+                raise ArithmeticError("Cannot calculate solutions")
+            else:
+                ret_val.append(ret_mat[i][n-1])
+                for j in range(l0+1, n-2):
+                    ret_val[-1] -= ret_mat[i][j] * ret_val[i-j]
+        return list(reversed(ret_val))
+    else:
+        for i in range(m-1, n-2, -1):
+            if lead0(ret_mat[i]) != n:
+                raise ArithmeticError("Cannot calculate solutions: overdetermined")
+        for i in range(n-2, -1, -1):
+            l0 = lead0(ret_mat[i])
+            if l0 == n:
+                ret_val.append(1)
+            elif l0 == n - 1:
+                raise ArithmeticError("Cannot calculate solutions")
+            else:
+                ret_val.append(ret_mat[i][n-1])
+                for j in range(l0+1, n-2):
+                    ret_val[-1] -= ret_mat[i][j] * ret_val[i-j]
+        return list(reversed(ret_val))
 
